@@ -1,0 +1,51 @@
+{
+  "name": "orion-utility-suite",
+  "private": true,
+  "version": "0.2.0",
+  "author": "Firmandez",
+  "license": "MIT",
+  "homepage": "https://github.com/Firmandez",
+  "description": "Offline-first cross-platform desktop utility suite built with Tauri v2, React, TypeScript, Rust, Vite, and Tailwind CSS.",
+  "type": "module",
+  "scripts": {
+    "sync:version": "node scripts/sync-version.mjs",
+    "predev": "npm run sync:version",
+    "prebuild": "npm run sync:version",
+    "prepreview": "npm run sync:version",
+    "pretauri": "npm run sync:version",
+    "dev": "vite --configLoader native",
+    "build": "tsc -b && vite build --configLoader native",
+    "preview": "vite preview --configLoader native",
+    "tauri:installer": "node scripts/run-tauri-build.mjs build -b nsis",
+    "tauri:portable": "node scripts/run-tauri-build.mjs build --no-bundle",
+    "tauri": "node scripts/run-tauri-build.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "^5.1.1",
+    "@fontsource-variable/space-grotesk": "^5.1.1",
+    "@tauri-apps/api": "^2.11.0",
+    "@tauri-apps/plugin-dialog": "^2.7.1",
+    "@tauri-apps/plugin-store": "^2.4.3",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.15.0",
+    "lucide-react": "^0.511.0",
+    "qr-code-styling": "^1.9.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-dropzone": "^14.3.8",
+    "react-router-dom": "^7.6.1",
+    "sonner": "^2.0.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.8",
+    "@tauri-apps/cli": "^2.11.1",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
+    "@vitejs/plugin-react": "^5.0.0",
+    "esbuild": "^0.28.0",
+    "tailwindcss": "^4.1.8",
+    "typescript": "~5.8.3",
+    "vite": "^8.0.0"
+  }
+}
