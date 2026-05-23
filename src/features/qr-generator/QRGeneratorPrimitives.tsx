@@ -8,9 +8,9 @@ export function ValidationPanel({ errors, warnings }: { errors: string[]; warnin
         <div className="flex items-start gap-3">
           <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-300" />
           <div>
-            <div className="text-sm font-semibold text-[var(--text-primary)]">Payload looks good</div>
+            <div className="text-sm font-semibold text-[var(--text-primary)]">Konten QR siap</div>
             <div className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
-              QR siap dipreview dan diexport. Ubah preset atau styling kapan saja, hasil akan diperbarui secara realtime.
+              QR siap dipreview dan diexport. Ubah jenis atau tampilan kapan saja, hasil akan diperbarui otomatis.
             </div>
           </div>
         </div>

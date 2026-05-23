@@ -40,7 +40,7 @@ export function UuidGeneratorPanel({ className }: UuidGeneratorPanelProps) {
         value: nextValue,
         errorMessage: undefined,
       });
-      notify.success("UUID generated", "Identifier baru siap dipakai untuk payload, seed, atau testing.");
+      notify.success("UUID generated", "Identifier baru siap dipakai.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "UUID generator gagal dijalankan.";
       setUuidResult({

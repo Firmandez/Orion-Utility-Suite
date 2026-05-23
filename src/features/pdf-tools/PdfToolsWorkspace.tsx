@@ -66,7 +66,7 @@ export function PdfToolsWorkspace() {
   const resultRows = buildResultRows(result);
   const placeholderNote =
     result?.operation === "pdf-to-images" && result.data.status === "placeholder"
-      ? result.data.note
+      ? "Fitur ini sedang disiapkan dan belum membuat file gambar."
       : undefined;
 
   return (
@@ -77,16 +77,14 @@ export function PdfToolsWorkspace() {
           <div className="space-y-5">
             <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-500/10 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-amber-300">
               <Files className="size-3.5" />
-              Rust Document Pipeline
+              PDF Tools
             </div>
             <div className="max-w-3xl">
               <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                PDF Tools untuk merge, split, dan image-to-PDF secara lokal tanpa backend online.
+                Gabungkan, pisahkan, dan buat PDF dari file lokal.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                Tahap 8 mengaktifkan operasi PDF dasar di Rust dengan fokus pada merge, split, dan
-                image-to-PDF yang aman untuk file lokal. PDF to Image disiapkan sebagai placeholder
-                teknis yang rapi sampai wiring `pdfium-render` lintas platform siap dipakai.
+                Pilih operasi, susun file, tentukan folder output, lalu jalankan proses PDF dari perangkat Anda.
               </p>
             </div>
 
@@ -110,19 +108,19 @@ export function PdfToolsWorkspace() {
           </div>
 
           <div className="surface-panel-alt p-5 sm:p-6">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Execution Notes</div>
+            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Tips</div>
             <div className="mt-4 space-y-3">
               <InfoItem
-                title="Corrupt-safe handling"
-                description="File PDF yang corrupt atau tidak bisa diparse akan memunculkan error terkontrol dari backend Rust, bukan membuat aplikasi crash."
+                title="Penanganan aman"
+                description="Jika file PDF bermasalah, Orion menampilkan pesan error tanpa menutup aplikasi."
               />
               <InfoItem
-                title="Desktop-native paths"
-                description="Queue memakai path file asli dari Tauri, jadi Rust bisa memproses file secara langsung dan tetap ringan di sisi UI."
+                title="File lokal"
+                description="File diproses dari perangkat Anda dan hasilnya disimpan ke folder pilihan."
               />
               <InfoItem
-                title="Future PDF to Image"
-                description="Placeholder saat ini menjaga UX tetap utuh sambil menunggu integrasi binary PDFium per platform yang lebih stabil."
+                title="PDF to Image"
+                description="Fitur ini sedang disiapkan dan akan tersedia di pembaruan berikutnya."
               />
             </div>
           </div>
@@ -149,7 +147,7 @@ export function PdfToolsWorkspace() {
 
         <PageSection
           title="Operation Settings"
-          description="Pilih jenis operasi, output folder, dan nama file output bila diperlukan sebelum menjalankan pipeline PDF."
+          description="Pilih jenis operasi, folder output, dan nama file hasil bila diperlukan."
           actions={
             <Button
               variant="outline"
@@ -175,7 +173,7 @@ export function PdfToolsWorkspace() {
               hint={
                 outputFolderSource === "default"
                   ? "Saat ini Orion memakai default output folder dari Settings. Pilih folder baru bila ingin override khusus operasi ini."
-                  : "Folder ini dipakai untuk file hasil merge, split, image-to-PDF, atau placeholder export image."
+                  : "Folder ini dipakai untuk file hasil merge, split, image-to-PDF, atau PDF to Image."
               }
               placeholder="Pilih folder output..."
               value={outputFolderPath ?? ""}
@@ -195,7 +193,7 @@ export function PdfToolsWorkspace() {
 
             <Input
               label="Output preview"
-              hint="Preview path lokal yang akan dipakai saat command Rust dijalankan."
+              hint="Lokasi hasil berdasarkan folder dan nama file yang Anda pilih."
               value={outputPathPreview}
               readOnly
             />
@@ -230,7 +228,7 @@ export function PdfToolsWorkspace() {
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <PageSection
           title="Progress & Summary"
-          description="Progress backend Rust dikirim ke UI lewat event Tauri agar operasi file tetap terasa responsif."
+          description="Pantau proses PDF dan lihat ringkasan hasil terakhir."
         >
           <div className="space-y-5">
             <ProgressBar
@@ -242,13 +240,13 @@ export function PdfToolsWorkspace() {
             {errorMessage ? <ErrorBanner title="Operasi PDF gagal" message={errorMessage} /> : null}
 
             {placeholderNote ? (
-              <NoticeBanner title="PDF to Image masih placeholder" message={placeholderNote} />
+              <NoticeBanner title="PDF to Image segera hadir" message={placeholderNote} />
             ) : null}
 
             {resultRows.length > 0 ? (
               <ResultCard
                 title="Operation Summary"
-                description="Ringkasan hasil terakhir dari backend Rust untuk operasi PDF aktif."
+                description="Ringkasan hasil terakhir untuk operasi PDF aktif."
                 rows={resultRows}
                 footer={
                   <Button variant="outline" leadingIcon={ClipboardCopy} onClick={copyResultSummary}>
@@ -268,9 +266,9 @@ export function PdfToolsWorkspace() {
 
         <ResultCard
           title="Current Configuration"
-          description="Snapshot cepat dari mode operasi PDF yang sedang aktif."
+          description="Ringkasan pengaturan PDF yang sedang aktif."
           rows={[
-            { label: "Runtime", value: isDesktopRuntime ? "Tauri Desktop" : "Browser Preview" },
+            { label: "Status aplikasi", value: isDesktopRuntime ? "Siap digunakan" : "Mode terbatas" },
             { label: "Operation", value: getOperationLabel(operation) },
             { label: "Queue size", value: `${files.length} file`, mono: true },
             { label: "Accepted", value: getAcceptedExtensions(operation).join(", ").toUpperCase() },
@@ -286,12 +284,12 @@ export function PdfToolsWorkspace() {
           footer={
             <div className="grid gap-3 sm:grid-cols-2">
               <MiniInfoCard
-                title="lopdf + printpdf"
-                description="Merge dan split memakai lopdf, sedangkan image-to-PDF memakai printpdf dengan source image lokal."
+                title="Operasi lokal"
+                description="Merge, split, dan image-to-PDF berjalan dari file yang Anda pilih."
               />
               <MiniInfoCard
-                title="Async execution"
-                description="Operasi file berjalan di worker blocking terpisah supaya webview tetap halus selama pemrosesan dokumen."
+                title="Tetap responsif"
+                description="Orion tetap nyaman digunakan selama dokumen diproses."
               />
             </div>
           }

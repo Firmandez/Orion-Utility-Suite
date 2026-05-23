@@ -23,7 +23,7 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
 
     try {
       await copyText(result.copyValue);
-      notify.success("JWT copied", "Header dan payload decoded berhasil disalin ke clipboard.");
+      notify.success("JWT copied", "Header dan isi token berhasil disalin ke clipboard.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
       notify.error("Copy gagal", message);
@@ -38,7 +38,7 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
   return (
     <DeveloperToolCard
       title="JWT Decoder"
-      description="Decode header dan payload JWT secara lokal tanpa verifikasi signature, cocok untuk inspeksi cepat payload."
+      description="Baca header dan isi JWT secara lokal tanpa verifikasi signature."
       icon={ShieldAlert}
       className={className}
       actions={
@@ -69,7 +69,7 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
             <JwtNotice
               tone="success"
               title="JWT decoded"
-              description={`Header dan payload berhasil dibaca. Token memiliki ${result.segments} segmen dan signature ${result.signaturePresent ? "tersedia" : "tidak ada"}.`}
+              description={`Header dan isi token berhasil dibaca. Token memiliki ${result.segments} segmen dan signature ${result.signaturePresent ? "tersedia" : "tidak ada"}.`}
             />
             <div className="grid gap-3 md:grid-cols-2">
               <StatPill label="Segments" value={String(result.segments ?? 0)} />
@@ -77,14 +77,14 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
             </div>
             <div className="grid gap-4 xl:grid-cols-2">
               <TextArea label="Header" value={result.headerPretty ?? ""} readOnly className="min-h-[260px] font-mono text-[13px]" />
-              <TextArea label="Payload" value={result.payloadPretty ?? ""} readOnly className="min-h-[260px] font-mono text-[13px]" />
+              <TextArea label="Isi token" value={result.payloadPretty ?? ""} readOnly className="min-h-[260px] font-mono text-[13px]" />
             </div>
           </>
         ) : (
           <JwtNotice
             tone="idle"
             title="Menunggu token"
-            description="Paste JWT untuk melihat header dan payload. Tool ini tidak melakukan signature verification."
+            description="Paste JWT untuk melihat header dan isi token. Tool ini tidak melakukan signature verification."
           />
         )}
       </div>

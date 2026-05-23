@@ -12,19 +12,15 @@ import {
 import { open } from "@tauri-apps/plugin-dialog";
 import { useOutletContext } from "react-router-dom";
 import { useShell } from "@/app/providers/ShellProvider";
+import orionLogo from "@/assets/orion-logo.png";
 import { EmptyState } from "@/components/common/EmptyState";
 import { PageSection } from "@/components/common/PageSection";
-import { ResultCard } from "@/components/common/ResultCard";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Toggle } from "@/components/ui/Toggle";
 import { notify } from "@/components/ui/Toast";
-import {
-  accentPalettes,
-  githubProfileUrl,
-  settingsStoreFileName,
-} from "@/services/settings-store";
+import { accentPalettes, githubProfileUrl } from "@/services/settings-store";
 import type { AppBootstrapState, ThemeMode } from "@/types/app";
 
 const themeModeOptions = [
@@ -50,20 +46,21 @@ export function SettingsWorkspace() {
     reloadSettings,
   } = useShell();
   const isDesktopRuntime = bootstrap.source === "rust";
+  const activeAccent = accentPalettes.find((item) => item.id === accentColor);
 
   const handleThemeModeChange = async (value: ThemeMode) => {
     await setThemeMode(value);
-    notify.success("Theme updated", `Theme mode sekarang memakai ${value}.`);
+    notify.success("Theme updated", `Tampilan Orion sekarang memakai mode ${value}.`);
   };
 
   const handleAccentChange = async (value: (typeof accentPalettes)[number]["id"]) => {
     await setAccentColor(value);
-    notify.success("Accent updated", "Accent color Orion berhasil diperbarui.");
+    notify.success("Accent updated", "Warna aksen Orion berhasil diperbarui.");
   };
 
   const handlePickDefaultFolder = async () => {
     if (!isDesktopRuntime) {
-      notify.info("Desktop runtime required", "Default output folder hanya bisa dipilih lewat dialog native saat Orion berjalan sebagai desktop app.");
+      notify.info("Buka aplikasi desktop", "Folder output hanya bisa dipilih dari aplikasi desktop Orion.");
       return;
     }
 
@@ -75,81 +72,65 @@ export function SettingsWorkspace() {
 
     if (typeof selection === "string") {
       await setDefaultOutputFolder(selection);
-      notify.success("Default output folder updated", "Image Converter dan PDF Tools sekarang bisa memakai folder default ini.");
+      notify.success("Folder output diperbarui", "Folder ini akan dipakai sebagai lokasi output default.");
     }
   };
 
   const handleClearDefaultFolder = async () => {
     await setDefaultOutputFolder("");
-    notify.info("Default output folder cleared", "Workspace akan kembali meminta output folder secara manual bila diperlukan.");
+    notify.info("Folder output dihapus", "Orion akan meminta folder tujuan saat diperlukan.");
   };
 
   const handleResetSettings = async () => {
     await resetAppSettings();
-    notify.success("Settings reset", "Semua preferensi Orion dikembalikan ke default aman.");
+    notify.success("Settings reset", "Pengaturan Orion dikembalikan ke bawaan.");
+  };
+
+  const handleUnavailablePreference = (label: string) => {
+    notify.info(`${label} belum tersedia`, "Opsi ini disiapkan untuk versi berikutnya.");
   };
 
   return (
     <div className="space-y-6">
       <section className="surface-panel relative overflow-hidden p-6 lg:p-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(77,216,246,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(139,92,246,0.12),transparent_24%)]" />
-        <div className="relative grid gap-6 xl:grid-cols-[1.12fr_0.88fr]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(77,216,246,0.14),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(139,92,246,0.1),transparent_24%)]" />
+        <div className="relative grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <div className="space-y-5">
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-soft)] bg-[var(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent-strong)]">
               <Settings2 className="size-3.5" />
-              Persistent App Preferences
+              Settings
             </div>
             <div className="max-w-3xl">
               <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Settings center untuk tema, accent, output defaults, dan build readiness Orion.
+                Atur Orion sesuai cara kerja Anda.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                Tahap 10 memindahkan preferensi ke plugin resmi Tauri Store agar native, persistent antar
-                restart, dan lebih siap untuk penggunaan desktop production-ready.
+                Ubah tampilan, pilih folder output, dan cek informasi aplikasi. Pengaturan akan otomatis tersimpan.
               </p>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <StatCard
-                label="Store file"
-                value={settingsStoreFileName}
-                caption="Disimpan di app data directory milik Tauri, bukan localStorage utama."
-              />
-              <StatCard
-                label="Theme"
-                value={`${themeMode} / ${resolvedTheme}`}
-                caption="System mode mengikuti preferensi OS, sementara dark dan light bisa dipaksa manual."
-              />
-              <StatCard
-                label="Runtime"
-                value={isDesktopRuntime ? "Tauri Desktop" : "Browser Preview"}
-                caption="Persistence penuh tersedia saat Orion berjalan di runtime desktop."
-              />
             </div>
           </div>
 
           <div className="surface-panel-alt p-5 sm:p-6">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Polish Notes</div>
-            <div className="mt-4 space-y-3">
-              <InfoItem
-                title="Settings fallback"
-                description="Jika file settings corrupt atau key hilang, Orion akan kembali ke default aman lalu menulis ulang file store."
-              />
-              <InfoItem
-                title="Cross-workspace output folder"
-                description="Default output folder sekarang bisa dipakai ulang oleh Image Converter dan PDF Tools ketika user belum memilih folder khusus."
-              />
-              <InfoItem
-                title="No dead header button"
-                description="Tombol notifikasi di header sekarang memberi placeholder toast yang jelas, bukan lagi klik kosong tanpa feedback."
-              />
+            <div className="flex items-center gap-4">
+              <div className="flex size-16 items-center justify-center overflow-hidden rounded-[22px] border border-[var(--accent-soft)] bg-[var(--accent-surface)]">
+                <img src={orionLogo} alt="Orion Utility Suite logo" className="size-full object-cover" />
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-[var(--text-primary)]">Orion Utility Suite</div>
+                <div className="mt-1 text-sm text-[var(--text-secondary)]">v{bootstrap.data.version}</div>
+              </div>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+              <SummaryItem label="Theme" value={`${themeMode} / ${resolvedTheme}`} />
+              <SummaryItem label="Accent" value={activeAccent?.label ?? accentColor} />
+              <SummaryItem label="Status" value={isDesktopRuntime ? "Siap digunakan" : "Mode terbatas"} />
             </div>
           </div>
         </div>
       </section>
 
       {settingsState.status === "loading" ? (
-        <PageSection title="Loading Settings" description="Orion sedang memuat preferensi dari settings.json.">
+        <PageSection title="Memuat Pengaturan" description="Sebentar, pengaturan sedang disiapkan.">
           <div className="grid gap-4 md:grid-cols-3">
             {Array.from({ length: 3 }).map((_, index) => (
               <div key={index} className="surface-panel-alt p-5">
@@ -168,23 +149,23 @@ export function SettingsWorkspace() {
                 <div className="flex items-start gap-3">
                   <Info className="mt-0.5 size-5 shrink-0 text-amber-300" />
                   <div>
-                    <div className="text-sm font-semibold text-[var(--text-primary)]">Settings fallback activated</div>
+                    <div className="text-sm font-semibold text-[var(--text-primary)]">Pengaturan dipulihkan</div>
                     <div className="mt-1 text-sm leading-6 text-amber-100/85">{settingsState.errorMessage}</div>
                   </div>
                 </div>
                 <Button variant="outline" size="sm" leadingIcon={RefreshCw} onClick={() => void reloadSettings()}>
-                  Reload
+                  Muat ulang
                 </Button>
               </div>
             </div>
           ) : null}
 
           <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-            <PageSection title="Appearance" description="Kelola theme mode dan accent color global yang dipakai shell Orion.">
+            <PageSection title="Tampilan" description="Pilih tema dan warna aksen Orion.">
               <div className="space-y-5">
                 <Select
-                  label="Theme mode"
-                  hint="System mode mengikuti preferensi OS. Header toggle tetap bisa memaksa dark/light dengan sekali klik."
+                  label="Theme"
+                  hint="System mengikuti pengaturan perangkat. Dark dan Light bisa dipilih manual."
                   options={themeModeOptions}
                   value={themeMode}
                   onChange={(event) => void handleThemeModeChange(event.target.value as ThemeMode)}
@@ -194,7 +175,7 @@ export function SettingsWorkspace() {
                   <div>
                     <div className="text-sm font-semibold text-[var(--text-primary)]">Accent color</div>
                     <div className="mt-1 text-xs text-[var(--text-muted)]">
-                      Accent ini dipakai untuk shell, tombol utama, focus ring, dan state interaktif yang sudah dipoles di Tahap 10.
+                      Warna ini dipakai untuk tombol utama, highlight, dan elemen aktif.
                     </div>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2">
@@ -230,12 +211,12 @@ export function SettingsWorkspace() {
             </PageSection>
 
             <PageSection
-              title="Default Paths"
-              description="Folder default ini dipakai lintas workspace sebagai fallback saat user belum memilih lokasi output secara manual."
+              title="Output"
+              description="Pilih folder default untuk menyimpan hasil dari Image Converter dan PDF Tools."
               actions={
                 <div className="flex flex-wrap gap-2">
                   <Button variant="outline" size="sm" leadingIcon={FolderSearch2} onClick={handlePickDefaultFolder}>
-                    Pick folder
+                    Pilih folder
                   </Button>
                   <Button
                     variant="ghost"
@@ -243,9 +224,9 @@ export function SettingsWorkspace() {
                     leadingIcon={FolderX}
                     onClick={handleClearDefaultFolder}
                     disabled={!defaultOutputFolder}
-                    title={defaultOutputFolder ? "Clear default output folder" : "Tidak ada default output folder untuk dibersihkan"}
+                    title={defaultOutputFolder ? "Hapus folder output default" : "Belum ada folder output default"}
                   >
-                    Clear folder
+                    Hapus
                   </Button>
                 </div>
               }
@@ -253,17 +234,17 @@ export function SettingsWorkspace() {
               <div className="space-y-5">
                 <Input
                   label="Default output folder"
-                  hint="Saat field ini kosong, Image Converter dan PDF Tools akan tetap meminta output folder secara manual."
+                  hint="Jika kosong, Orion akan meminta folder tujuan saat Anda menjalankan proses ekspor."
                   value={defaultOutputFolder}
-                  placeholder="Belum ada default output folder yang dipilih."
+                  placeholder="Belum ada folder output default."
                   readOnly
                 />
 
                 {!defaultOutputFolder ? (
                   <EmptyState
                     icon={FolderSearch2}
-                    title="Belum ada default output folder"
-                    description="Pilih folder default jika Anda ingin workflow batch lebih cepat saat membuka Image Converter atau PDF Tools."
+                    title="Belum ada folder output"
+                    description="Pilih folder default untuk mempercepat pekerjaan batch."
                   />
                 ) : null}
               </div>
@@ -271,100 +252,91 @@ export function SettingsWorkspace() {
           </div>
 
           <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-            <PageSection title="Window Preferences" description="Preferensi ini membantu Orion mengingat ukuran dan posisi window desktop bila runtime mengizinkan.">
+            <PageSection
+              title="Aplikasi"
+              description="Atur perilaku dasar Orion saat dibuka dan digunakan."
+              actions={
+                <Button variant="outline" size="sm" leadingIcon={RefreshCw} onClick={handleResetSettings}>
+                  Reset settings
+                </Button>
+              }
+            >
               <div className="space-y-4">
                 <Toggle
-                  label="Remember window size and position"
-                  hint="Saat aktif, Orion menyimpan snapshot window terakhir ke settings.json dan mencoba mengembalikannya pada startup berikutnya."
+                  label="Start with Windows"
+                  hint="Belum tersedia."
+                  checked={false}
+                  onCheckedChange={() => handleUnavailablePreference("Start with Windows")}
+                />
+                <Toggle
+                  label="Minimize to tray"
+                  hint="Belum tersedia."
+                  checked={false}
+                  onCheckedChange={() => handleUnavailablePreference("Minimize to tray")}
+                />
+                <Toggle
+                  label="Ingat ukuran dan posisi jendela"
+                  hint="Orion akan membuka kembali jendela dengan ukuran terakhir."
                   checked={settings.windowPreferences.rememberWindowState}
                   onCheckedChange={(checked) => {
                     void updateWindowPreferences({ rememberWindowState: checked });
-                    notify.success("Window preference updated", checked ? "Orion akan mengingat state window terakhir." : "Orion tidak lagi menyimpan state window terakhir.");
+                    notify.success("Pengaturan diperbarui", checked ? "Ukuran jendela akan diingat." : "Ukuran jendela tidak lagi diingat.");
                   }}
                 />
                 <Toggle
-                  label="Restore maximized state"
-                  hint="Jika window terakhir ditutup dalam keadaan maximized, Orion akan mencoba membukanya kembali dalam mode yang sama."
+                  label="Pulihkan mode layar penuh"
+                  hint="Jika sebelumnya ditutup dalam mode maksimal, Orion akan mencoba membukanya seperti itu lagi."
                   checked={settings.windowPreferences.restoreMaximizedWindow}
                   onCheckedChange={(checked) => {
                     void updateWindowPreferences({ restoreMaximizedWindow: checked });
-                    notify.success("Maximized restore updated", checked ? "State maximized akan dipulihkan bila tersedia." : "Orion hanya akan memulihkan ukuran dan posisi biasa.");
+                    notify.success("Pengaturan diperbarui", checked ? "Mode maksimal akan dipulihkan." : "Mode maksimal tidak lagi dipulihkan.");
                   }}
                 />
               </div>
             </PageSection>
 
-            <ResultCard
-              title="Current Settings Snapshot"
-              description="Ringkasan cepat dari preferensi global yang sedang aktif di shell Orion."
-              rows={[
-                { label: "Theme mode", value: themeMode },
-                { label: "Resolved theme", value: resolvedTheme },
-                { label: "Accent", value: accentPalettes.find((item) => item.id === accentColor)?.label ?? accentColor },
-                { label: "Default output", value: defaultOutputFolder || "Not set" },
-                {
-                  label: "Remember window",
-                  value: settings.windowPreferences.rememberWindowState ? "Enabled" : "Disabled",
-                },
-                {
-                  label: "Restore maximized",
-                  value: settings.windowPreferences.restoreMaximizedWindow ? "Enabled" : "Disabled",
-                },
-              ]}
-              footer={
-                <Button variant="outline" leadingIcon={RefreshCw} onClick={handleResetSettings}>
-                  Reset to defaults
-                </Button>
-              }
-            />
-          </div>
+            <PageSection title="Tentang" description="Informasi singkat tentang Orion Utility Suite.">
+              <div className="space-y-5">
+                <div className="flex items-start gap-4 rounded-[24px] border bg-black/10 p-5">
+                  <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-[22px] border border-[var(--accent-soft)] bg-[var(--accent-surface)]">
+                    <img src={orionLogo} alt="Orion Utility Suite logo" className="size-full object-cover" />
+                  </div>
+                  <div>
+                    <div className="text-xl font-semibold text-[var(--text-primary)]">Orion Utility Suite</div>
+                    <div className="mt-1 text-sm text-[var(--text-secondary)]">Version {bootstrap.data.version}</div>
+                    <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--text-secondary)]">
+                      Kumpulan utility desktop modern untuk mengolah file, teks, QR, PDF, dan jaringan secara lokal.
+                    </p>
+                  </div>
+                </div>
 
-          <div className="grid gap-6 xl:grid-cols-[0.94fr_1.06fr]">
-            <ResultCard
-              title="About Orion Utility Suite"
-              description="Metadata build dan runtime saat ini untuk membantu review release readiness."
-              rows={[
-                { label: "App version", value: bootstrap.data.version, mono: true },
-                { label: "Backend mode", value: bootstrap.data.backendMode },
-                { label: "Platform", value: bootstrap.data.platformLabel },
-                { label: "Runtime status", value: bootstrap.data.runtimeStatus },
-                { label: "Store file", value: settingsStoreFileName, mono: true },
-              ]}
-              footer={
-                <a
-                  href={githubProfileUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--accent-soft)] hover:bg-white/5"
-                >
-                  <ExternalLink className="size-4" />
-                  GitHub profile
-                </a>
-              }
-            />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <AboutItem icon={Sparkles} label="Nama aplikasi" value="Orion Utility Suite" />
+                  <AboutItem icon={SunMoon} label="Versi" value={bootstrap.data.version} />
+                  <AboutItem icon={Palette} label="License" value="MIT License" />
+                  <AboutItem icon={Settings2} label="Platform Sistem" value={bootstrap.data.platformLabel} />
+                </div>
 
-            <PageSection title="Build Readiness Notes" description="Catatan kecil yang membantu menjaga Tahap 10 tetap fokus pada stabilitas dan kesiapan rilis lokal.">
-              <div className="grid gap-3 sm:grid-cols-2">
-                <MiniInfoCard
-                  icon={SunMoon}
-                  title="Native persistence"
-                  description="Theme, accent, output folder default, dan window preference sekarang memakai plugin store resmi Tauri."
-                />
-                <MiniInfoCard
-                  icon={Palette}
-                  title="UI consistency"
-                  description="Shared input, button, toggle, empty state, dan chrome shell sekarang mengikuti accent color global yang sama."
-                />
-                <MiniInfoCard
-                  icon={Sparkles}
-                  title="Light polish"
-                  description="Loading state, error fallback, toast placeholder, dan layout responsive dirapikan tanpa menambah fitur berat baru."
-                />
-                <MiniInfoCard
-                  icon={Info}
-                  title="Recovery path"
-                  description="Jika settings.json hilang atau corrupt, Orion kembali ke default aman lalu mencoba menulis ulang file store untuk sesi berikutnya."
-                />
+                <div className="flex flex-wrap gap-3">
+                  <a
+                    href={githubProfileUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--accent-soft)] hover:bg-white/5"
+                  >
+                    <ExternalLink className="size-4" />
+                    GitHub
+                  </a>
+                  <a
+                    href="https://opensource.org/license/mit"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--accent-soft)] hover:bg-white/5"
+                  >
+                    <ExternalLink className="size-4" />
+                    License
+                  </a>
+                </div>
               </div>
             </PageSection>
           </div>
@@ -374,41 +346,23 @@ export function SettingsWorkspace() {
   );
 }
 
-function StatCard({
+function SummaryItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border bg-black/10 px-4 py-3">
+      <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">{label}</div>
+      <div className="mt-2 text-sm font-semibold text-[var(--text-primary)]">{value}</div>
+    </div>
+  );
+}
+
+function AboutItem({
+  icon: Icon,
   label,
   value,
-  caption,
-}: {
-  label: string;
-  value: string;
-  caption: string;
-}) {
-  return (
-    <div className="surface-panel-alt p-4">
-      <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">{label}</div>
-      <div className="mt-3 text-lg font-semibold text-[var(--text-primary)]">{value}</div>
-      <div className="mt-2 text-xs leading-6 text-[var(--text-secondary)]">{caption}</div>
-    </div>
-  );
-}
-
-function InfoItem({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="rounded-[22px] border bg-black/10 p-4">
-      <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-      <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</div>
-    </div>
-  );
-}
-
-function MiniInfoCard({
-  icon: Icon,
-  title,
-  description,
 }: {
   icon: typeof Settings2;
-  title: string;
-  description: string;
+  label: string;
+  value: string;
 }) {
   return (
     <div className="rounded-[22px] border bg-black/10 p-4">
@@ -416,9 +370,11 @@ function MiniInfoCard({
         <div className="flex size-10 items-center justify-center rounded-2xl border bg-[var(--accent-surface)] text-[var(--accent-strong)]">
           <Icon className="size-4" />
         </div>
-        <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
+        <div>
+          <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">{label}</div>
+          <div className="mt-1 text-sm font-semibold text-[var(--text-primary)]">{value}</div>
+        </div>
       </div>
-      <div className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{description}</div>
     </div>
   );
 }

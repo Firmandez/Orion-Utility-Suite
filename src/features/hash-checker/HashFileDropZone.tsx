@@ -33,11 +33,10 @@ export function HashFileDropZone({
         </div>
         <div>
           <div className="text-lg font-semibold text-[var(--text-primary)]">
-            {isDragActive ? "Lepaskan file untuk memilih target hashing" : "Drop file di mana saja pada window ini"}
+            {isDragActive ? "Lepaskan file untuk dipilih" : "Drop file di sini"}
           </div>
           <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-            Orion membaca path file native dari Tauri desktop, lalu Rust menghitung MD5, SHA1,
-            dan SHA256 secara streaming agar file besar tetap aman diproses.
+            Orion akan membuat MD5, SHA1, dan SHA256 dari file lokal Anda.
           </div>
         </div>
 
@@ -55,7 +54,7 @@ export function HashFileDropZone({
           </div>
         ) : (
           <div className="rounded-[22px] border bg-black/10 px-4 py-4 text-sm leading-6 text-[var(--text-secondary)]">
-            Belum ada file yang dipilih. Anda bisa drag-and-drop langsung ke window ini atau gunakan file picker manual.
+            Belum ada file yang dipilih. Anda bisa drag and drop atau memilih file secara manual.
           </div>
         )}
 

@@ -20,19 +20,19 @@ import type {
 export const fallbackBootstrap: AppBootstrapPayload = {
   appName: "Orion Utility Suite",
   version: appVersion,
-  backendMode: "Rust bridge placeholder",
-  platformLabel: "Browser preview",
-  runtimeStatus: "Stage 10 settings, polish, and build-readiness preview loaded",
+  backendMode: "Limited mode",
+  platformLabel: "Browser mode",
+  runtimeStatus: "Orion is ready",
   offlineReady: true,
   modules: [
-    { id: "qr-generator", title: "QR Generator", area: "Data encoding", status: "Stage 3" },
-    { id: "image-converter", title: "Image Converter", area: "Media tools", status: "Stage 6" },
-    { id: "pdf-tools", title: "PDF Tools", area: "Document tools", status: "Stage 8" },
-    { id: "text-utilities", title: "Text Utilities", area: "String transforms", status: "Stage 4" },
-    { id: "hash-checker", title: "Hash Checker", area: "Integrity checks", status: "Stage 5" },
-    { id: "network-toolkit", title: "Network Toolkit", area: "Local diagnostics", status: "Stage 7" },
-    { id: "developer-tools", title: "Developer Tools", area: "Payload helpers", status: "Stage 9" },
-    { id: "settings", title: "Settings", area: "Preferences", status: "Stage 10" }
+    { id: "qr-generator", title: "QR Generator", area: "QR tools", status: "Ready" },
+    { id: "image-converter", title: "Image Converter", area: "Image tools", status: "Ready" },
+    { id: "pdf-tools", title: "PDF Tools", area: "PDF tools", status: "Ready" },
+    { id: "text-utilities", title: "Text Utilities", area: "Text tools", status: "Ready" },
+    { id: "hash-checker", title: "Hash Checker", area: "File checks", status: "Ready" },
+    { id: "network-toolkit", title: "Network Toolkit", area: "Network tools", status: "Ready" },
+    { id: "developer-tools", title: "Advanced Tools", area: "Advanced tools", status: "Ready" },
+    { id: "settings", title: "Settings", area: "Preferences", status: "Ready" }
   ]
 };
 

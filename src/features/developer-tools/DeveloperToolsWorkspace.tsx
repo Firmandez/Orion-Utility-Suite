@@ -17,7 +17,7 @@ const toolHighlights = [
 
 export function DeveloperToolsWorkspace() {
   const bootstrap = useOutletContext<AppBootstrapState>();
-  const runtimeMode = bootstrap.source === "rust" ? "Tauri Desktop" : "Browser Preview";
+  const appStatus = bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas";
 
   return (
     <div className="space-y-6">
@@ -27,15 +27,14 @@ export function DeveloperToolsWorkspace() {
           <div className="space-y-5">
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-soft)] bg-[var(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent-strong)]">
               <TerminalSquare className="size-3.5" />
-              Developer Playground
+              Advanced Tools
             </div>
             <div className="max-w-3xl">
               <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Developer Tools lokal untuk UUID, timestamp, regex, JWT, dan warna.
+                Alat cepat untuk UUID, timestamp, regex, JWT, dan warna.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                Modul ini sengaja berjalan penuh di frontend TypeScript agar ringan, instan, dan tetap
-                offline-first. Semua utility dipisah per subcomponent supaya mudah dirawat dan dikembangkan.
+                Gunakan untuk membuat ID, membaca waktu, menguji pola teks, melihat isi JWT, atau mengonversi warna.
               </p>
             </div>
 
@@ -55,19 +54,19 @@ export function DeveloperToolsWorkspace() {
             <WorkspaceStat
               label="Active tools"
               value="5"
-              caption="Utility inti untuk workflow developer sehari-hari."
+              caption="Alat lanjutan yang siap dipakai."
               icon={Sparkles}
             />
             <WorkspaceStat
-              label="Runtime"
-              value={runtimeMode}
-              caption="Semua transform Stage 9 berjalan lokal tanpa backend online."
+              label="Status aplikasi"
+              value={appStatus}
+              caption="Semua proses berjalan langsung di perangkat Anda."
               icon={ShieldAlert}
             />
             <WorkspaceStat
-              label="Stack"
-              value="Frontend only"
-              caption="Cocok untuk payload inspection, formatting, dan quick conversions."
+              label="Mode"
+              value="Local tools"
+              caption="Cocok untuk validasi cepat dan konversi kecil."
               icon={Binary}
             />
           </div>
@@ -91,7 +90,7 @@ export function DeveloperToolsWorkspace() {
         <MiniInfoCard
           icon={ShieldAlert}
           title="JWT safety"
-          description="Decoder hanya membaca header dan payload. Signature tidak diverifikasi oleh utility ini."
+          description="Decoder hanya membaca header dan isi token. Signature tidak diverifikasi oleh utility ini."
         />
         <MiniInfoCard
           icon={Palette}

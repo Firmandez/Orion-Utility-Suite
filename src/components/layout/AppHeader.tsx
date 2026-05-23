@@ -5,15 +5,14 @@ import { useShell } from "@/app/providers/ShellProvider";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { notify } from "@/components/ui/Toast";
-import type { AppBootstrapState } from "@/types/app";
 import type { RouteHandle } from "@/types/navigation";
 
 interface AppHeaderProps {
-  bootstrap: AppBootstrapState;
+  bootstrap: unknown;
   onOpenSidebar: () => void;
 }
 
-export function AppHeader({ bootstrap, onOpenSidebar }: AppHeaderProps) {
+export function AppHeader({ onOpenSidebar }: AppHeaderProps) {
   const matches = useMatches();
   const { searchQuery, setSearchQuery, resolvedTheme, themeMode, toggleTheme } = useShell();
 
@@ -31,13 +30,10 @@ export function AppHeader({ bootstrap, onOpenSidebar }: AppHeaderProps) {
           </Button>
           <div>
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-semibold text-[var(--text-primary)]">{currentHandle?.title ?? "Workspace"}</h1>
-              <span className="rounded-full border border-[var(--accent-soft)] bg-[var(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent-strong)]">
-                {bootstrap.source === "rust" ? "Rust Ready" : "Preview Mode"}
-              </span>
+              <h1 className="text-2xl font-semibold text-[var(--text-primary)]">{currentHandle?.title ?? "Orion"}</h1>
             </div>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
-              {currentHandle?.subtitle ?? "Scaffold modular untuk utilitas desktop lintas platform."}
+              {currentHandle?.subtitle ?? "Kumpulan utility desktop yang cepat dan praktis."}
             </p>
           </div>
         </div>
@@ -50,7 +46,7 @@ export function AppHeader({ bootstrap, onOpenSidebar }: AppHeaderProps) {
                 const value = event.target.value;
                 startTransition(() => setSearchQuery(value));
               }}
-              placeholder={currentHandle?.searchPlaceholder ?? "Search modules and scaffolds"}
+              placeholder={currentHandle?.searchPlaceholder ?? "Cari utility"}
               icon={Search}
               aria-label="Global search"
             />
@@ -62,8 +58,8 @@ export function AppHeader({ bootstrap, onOpenSidebar }: AppHeaderProps) {
               aria-label="Notifications"
               onClick={() =>
                 notify.info(
-                  "Notification center belum aktif",
-                  "Tahap 10 membersihkan tombol ini agar tidak lagi terasa mati. Notifikasi inbox bisa ditambahkan di tahap berikutnya.",
+                  "Notifikasi belum tersedia",
+                  "Pusat notifikasi akan hadir di versi berikutnya.",
                 )
               }
             >

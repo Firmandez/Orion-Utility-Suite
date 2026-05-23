@@ -18,7 +18,7 @@ export const qrPresetDefinitions: QRPresetDefinition[] = [
   {
     id: "text",
     label: "Text / Link",
-    description: "Payload bebas untuk teks, link, JSON kecil, atau token lokal.",
+    description: "Teks, link, JSON kecil, atau kode singkat.",
   },
   {
     id: "url",
@@ -268,7 +268,7 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
   }
 
   if (data.length > 900) {
-    warnings.push("Payload cukup panjang. Gunakan size lebih besar untuk menjaga hasil scan tetap stabil.");
+    warnings.push("Konten cukup panjang. Gunakan ukuran QR lebih besar agar hasil scan tetap stabil.");
   }
 
   return {

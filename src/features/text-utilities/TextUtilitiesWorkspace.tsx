@@ -105,11 +105,10 @@ export function TextUtilitiesWorkspace() {
             </div>
             <div className="max-w-3xl">
               <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Text Utilities yang cepat untuk format, encode, decode, dan transform payload.
+                Format, encode, decode, dan rapikan teks dengan cepat.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                Modul ini berjalan penuh di frontend TypeScript, cocok untuk JSON, Base64, URL tools,
-                text cleanup, serta counter cepat tanpa koneksi online.
+                Cocok untuk JSON, Base64, URL tools, text cleanup, slug, dan counter tanpa koneksi online.
               </p>
             </div>
 
@@ -125,9 +124,9 @@ export function TextUtilitiesWorkspace() {
                 caption={transformResult.errorMessage ? "Input perlu diperbaiki sebelum hasil bisa dipakai." : "Output sinkron secara realtime."}
               />
               <StatCard
-                label="Runtime"
-                value={bootstrap.source === "rust" ? "Tauri Desktop" : "Browser Preview"}
-                caption="Logic tahap ini diproses lokal tanpa backend online."
+                label="Status aplikasi"
+                value={bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas"}
+                caption="Perubahan teks diproses langsung di perangkat Anda."
               />
             </div>
           </div>
@@ -175,7 +174,7 @@ export function TextUtilitiesWorkspace() {
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Input Panel"
-          description="Tempel teks atau JSON, lalu pilih transform yang ingin dijalankan. Perubahan input akan memutakhirkan output secara realtime."
+          description="Tempel teks atau JSON, lalu pilih operasi yang ingin dijalankan."
           actions={
             <div className="w-full min-w-[220px] sm:w-[280px]">
               <Select
@@ -190,7 +189,7 @@ export function TextUtilitiesWorkspace() {
             <TextArea
               label="Source input"
               hint={activeOperation.description}
-              placeholder="Tempel teks, JSON, Base64, query string, atau kalimat yang ingin ditransformasi..."
+              placeholder="Tempel teks, JSON, Base64, query string, atau kalimat..."
               value={inputValue}
               onChange={(event) => setInputValue(event.target.value)}
               className="min-h-[420px]"
@@ -215,7 +214,7 @@ export function TextUtilitiesWorkspace() {
 
         <PageSection
           title="Output Panel"
-          description="Hasil transform ditampilkan di sini. Untuk operation validator atau counter, panel output akan menampilkan hasil tekstual yang siap disalin."
+          description="Hasil ditampilkan di sini dan siap disalin."
         >
           <div className="space-y-5">
             {transformResult.errorMessage ? (
@@ -260,7 +259,7 @@ export function TextUtilitiesWorkspace() {
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <ResultCard
           title="Transform Details"
-          description="Ringkasan hasil operation aktif untuk membantu inspeksi cepat sebelum hasil dipakai ke workflow lain."
+          description="Ringkasan operasi aktif dan hasilnya."
           rows={[
             { label: "Operation", value: activeOperation.label },
             { label: "Category", value: activeOperation.category },

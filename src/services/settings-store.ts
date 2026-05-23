@@ -31,7 +31,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "cyan",
     label: "Ion Cyan",
-    description: "Terang, teknikal, dan dekat dengan visual default Orion.",
+    description: "Segar, terang, dan mudah dibaca.",
     accent: "#4dd8f6",
     accentStrong: "#18b8da",
     accentSoft: "rgba(77, 216, 246, 0.34)",
@@ -40,7 +40,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "emerald",
     label: "Circuit Emerald",
-    description: "Nuansa hijau segar untuk workspace yang terasa produktif.",
+    description: "Hijau lembut untuk tampilan yang produktif.",
     accent: "#34d399",
     accentStrong: "#10b981",
     accentSoft: "rgba(52, 211, 153, 0.34)",
@@ -49,7 +49,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "amber",
     label: "Signal Amber",
-    description: "Lebih hangat untuk tool yang terasa operasional dan alert-friendly.",
+    description: "Hangat dan jelas untuk highlight penting.",
     accent: "#fbbf24",
     accentStrong: "#f59e0b",
     accentSoft: "rgba(251, 191, 36, 0.34)",
@@ -58,7 +58,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "violet",
     label: "Pulse Violet",
-    description: "Sedikit lebih ekspresif tanpa keluar dari karakter desktop utility.",
+    description: "Lebih ekspresif, tetap rapi untuk penggunaan harian.",
     accent: "#a78bfa",
     accentStrong: "#8b5cf6",
     accentSoft: "rgba(167, 139, 250, 0.34)",
@@ -67,7 +67,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "rose",
     label: "Radar Rose",
-    description: "Aksen kontras tinggi untuk pengguna yang suka UI lebih berani.",
+    description: "Kontras tinggi untuk tampilan yang lebih berani.",
     accent: "#fb7185",
     accentStrong: "#f43f5e",
     accentSoft: "rgba(251, 113, 133, 0.34)",
@@ -186,7 +186,7 @@ export async function loadSettings(): Promise<SettingsLoadResult> {
 
     return {
       settings: cachedSettings,
-      errorMessage: "File settings rusak atau tidak bisa dibaca. Orion memakai default aman dan menyiapkan ulang settings.json.",
+      errorMessage: "Pengaturan tidak bisa dibaca. Orion memakai pengaturan bawaan dan menyiapkannya ulang.",
     };
   }
 }

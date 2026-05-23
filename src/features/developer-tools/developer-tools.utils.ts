@@ -223,7 +223,7 @@ export function decodeJwtToken(token: string): JwtDecodeResult {
   if (segments.length < 2) {
     return {
       state: "error",
-      errorMessage: "JWT minimal harus memiliki header dan payload yang dipisahkan titik.",
+      errorMessage: "JWT minimal harus memiliki header dan isi token yang dipisahkan titik.",
     };
   }
 

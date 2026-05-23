@@ -1,15 +1,13 @@
 import {
   AlertTriangle,
-  Cpu,
+  AppWindow,
   HardDriveUpload,
-  LoaderCircle,
-  MonitorSmartphone,
   Network,
   RefreshCw,
   Search,
   ShieldCheck,
   Sparkles,
-  TerminalSquare,
+  Wrench,
 } from "lucide-react";
 import { startTransition, useDeferredValue, useState } from "react";
 import { Link } from "react-router-dom";
@@ -31,28 +29,39 @@ const dashboardFilters: DashboardFilter[] = [
   "PDF",
   "Text",
   "Network",
-  "Developer",
+  "Advanced",
   "File Tools",
 ];
 
+const filterLabels: Record<DashboardFilter, string> = {
+  All: "Semua",
+  Generator: "Generator",
+  Converter: "Converter",
+  PDF: "PDF",
+  Text: "Teks",
+  Network: "Jaringan",
+  Advanced: "Lanjutan",
+  "File Tools": "File",
+};
+
 const quickActions = [
   {
-    label: "Image pipeline",
+    label: "Image Converter",
     to: "/image-converter",
     icon: HardDriveUpload,
-    caption: "Resize, convert, and batch-ready workspace",
+    caption: "Ubah format dan ukuran banyak gambar",
   },
   {
-    label: "Network diagnostics",
+    label: "Network Toolkit",
     to: "/network-toolkit",
     icon: Network,
-    caption: "DNS, local IP, and connectivity checks",
+    caption: "Cek IP, DNS, ping, port, dan HTTP",
   },
   {
-    label: "Developer sandbox",
+    label: "Advanced Tools",
     to: "/developer-tools",
-    icon: TerminalSquare,
-    caption: "Payload tools and local command helpers",
+    icon: Wrench,
+    caption: "UUID, timestamp, regex, JWT, dan warna",
   },
 ];
 
@@ -88,45 +97,45 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
 
   const systemCards = [
     {
-      label: "OS",
+      label: "Platform Sistem",
       value: systemState.systemInfo?.os ?? "Loading...",
-      caption: "Runtime platform yang dipakai aplikasi desktop ini.",
+      caption: "Sistem operasi perangkat Anda.",
     },
     {
-      label: "Architecture",
-      value: systemState.systemInfo?.architecture ?? "Loading...",
-      caption: "Arsitektur mesin yang dibaca langsung dari backend Rust.",
-    },
-    {
-      label: "App version",
+      label: "Versi Aplikasi",
       value: systemState.systemInfo?.appVersion ?? bootstrap.data.version,
-      caption: "Versi aktif Orion Utility Suite yang sedang berjalan.",
+      caption: "Versi Orion yang sedang digunakan.",
     },
     {
-      label: "Local IP",
+      label: "IP Lokal",
       value: systemState.localIp?.localIp ?? "Unavailable",
-      caption: "Alamat IP lokal berguna untuk tool jaringan dan debug local services.",
+      caption: "Berguna saat memakai alat jaringan.",
+    },
+    {
+      label: "Status Aplikasi",
+      value: bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas",
+      caption: bootstrap.source === "rust" ? "Semua fitur desktop tersedia." : "Beberapa fitur file tersedia di aplikasi desktop.",
     },
   ];
 
   const overviewStats = [
     {
-      label: "Active utilities",
+      label: "Utilities tersedia",
       value: `${dashboardFeatures.length}`,
-      caption: "Semua utility inti sudah tersedia di dashboard.",
+      caption: "Alat utama siap dipakai.",
       icon: Sparkles,
     },
     {
-      label: "Category filters",
+      label: "Kategori",
       value: `${dashboardFilters.length - 1}`,
-      caption: "Generator sampai File Tools siap difilter cepat.",
+      caption: "Filter untuk menemukan alat lebih cepat.",
       icon: ShieldCheck,
     },
     {
-      label: "Backend bridge",
-      value: bootstrap.source === "rust" ? "Connected" : "Preview",
-      caption: "Dashboard ini siap memanggil command lokal Rust via Tauri.",
-      icon: Cpu,
+      label: "Status aplikasi",
+      value: bootstrap.source === "rust" ? "Aktif" : "Terbatas",
+      caption: bootstrap.source === "rust" ? "Orion siap digunakan." : "Gunakan aplikasi desktop untuk fitur lengkap.",
+      icon: AppWindow,
     },
   ];
 
@@ -138,15 +147,14 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
           <div className="space-y-6">
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-soft)] bg-[var(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent-strong)]">
-                <MonitorSmartphone className="size-3.5" />
-                Orion Control Center
+                <Sparkles className="size-3.5" />
+                Orion Utility Suite
               </div>
               <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Dashboard desktop utility yang ringan, lokal, dan siap berkembang.
+                Semua utility harian dalam satu aplikasi desktop.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                Tahap 2 membawa Orion Utility Suite ke dashboard yang lebih hidup: pencarian utility,
-                filter kategori, dan system info real-time dari command Rust tanpa backend online.
+                Buka alat yang Anda butuhkan, cari berdasarkan fungsi, dan lihat informasi aplikasi secara cepat.
               </p>
             </div>
 
@@ -172,13 +180,13 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
             <div className="surface-panel-alt p-5">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <div className="text-sm font-semibold text-[var(--text-primary)]">Find a utility</div>
+                  <div className="text-sm font-semibold text-[var(--text-primary)]">Cari Utility</div>
                   <div className="mt-1 text-xs text-[var(--text-muted)]">
-                    Cari berdasarkan nama, kategori, atau keyword utility.
+                    Cari berdasarkan nama, kategori, atau fungsi.
                   </div>
                 </div>
                 <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">
-                  {filteredFeatures.length} result{filteredFeatures.length === 1 ? "" : "s"}
+                  {filteredFeatures.length} hasil
                 </div>
               </div>
               <div className="mt-4">
@@ -189,7 +197,7 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
                     const value = event.target.value;
                     startTransition(() => setSearchQuery(value));
                   }}
-                  placeholder="Cari QR, PDF, hash, DNS, image convert, atau utility developer..."
+                  placeholder="Cari QR, PDF, hash, DNS, gambar..."
                   aria-label="Search utilities"
                 />
               </div>
@@ -209,7 +217,7 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
                         : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)] hover:border-[var(--accent-soft)] hover:text-[var(--text-primary)]",
                     )}
                   >
-                    {filter}
+                    {filterLabels[filter]}
                   </button>
                 ))}
               </div>
@@ -219,10 +227,10 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
           <div className="surface-panel-alt p-5 sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">System Info</div>
-                <h3 className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">Live runtime snapshot</h3>
+                <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Informasi Aplikasi</div>
+                <h3 className="mt-3 text-2xl font-semibold text-[var(--text-primary)]">Status perangkat</h3>
                 <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                  Data ini datang dari command Rust `get_system_info()` dan `get_local_ip()` saat Orion berjalan di runtime Tauri.
+                  Informasi sistem perangkat Anda.
                 </p>
               </div>
               <Button
@@ -241,7 +249,7 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-300" />
                   <div>
-                    <div className="font-semibold">Sebagian system info belum tersedia</div>
+                    <div className="font-semibold">Sebagian informasi belum tersedia</div>
                     <div className="mt-1 text-xs leading-6 text-amber-100/80">{systemState.errorMessage}</div>
                   </div>
                 </div>
@@ -274,11 +282,11 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
       </section>
 
       <PageSection
-        title="Utility Launchpad"
-        description="Semua utility utama tersedia di satu tempat, dengan pencarian dan filter kategori untuk mempercepat workflow desktop."
+        title="Utilities"
+        description="Pilih alat yang ingin digunakan. Pencarian dan filter membantu menemukan fungsi lebih cepat."
         actions={
           <div className="rounded-full border border-[var(--accent-soft)] bg-[var(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent-strong)]">
-            {activeFilter === "All" ? "All categories" : activeFilter}
+            {filterLabels[activeFilter]}
           </div>
         }
       >
@@ -301,7 +309,7 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
                     startTransition(() => setSearchQuery(""));
                   }}
                 >
-                  Reset search
+                  Reset pencarian
                 </Button>
                 <Button
                   variant="outline"
@@ -309,7 +317,7 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
                     startTransition(() => setActiveFilter("All"));
                   }}
                 >
-                  Show all categories
+                  Tampilkan semua
                 </Button>
               </div>
             }
@@ -317,75 +325,35 @@ export function DashboardOverview({ bootstrap }: { bootstrap: AppBootstrapState 
         )}
       </PageSection>
 
-      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-        <PageSection
-          title="Quick Actions"
-          description="Shortcut menuju modul yang sering dipakai saat mengolah file, mendiagnosis jaringan, atau menyiapkan workflow developer."
-        >
-          <div className="grid gap-3">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
+      <PageSection
+        title="Quick Access"
+        description="Shortcut untuk alat yang paling sering dipakai."
+      >
+        <div className="grid gap-3 md:grid-cols-3">
+          {quickActions.map((action) => {
+            const Icon = action.icon;
 
-              return (
-                <Link
-                  key={action.to}
-                  to={action.to}
-                  className="surface-panel-alt flex items-center justify-between gap-4 p-4 hover:border-[var(--accent-soft)]"
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]">
-                      <Icon className="size-4" />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold text-[var(--text-primary)]">{action.label}</div>
-                      <div className="mt-1 text-xs text-[var(--text-muted)]">{action.caption}</div>
-                    </div>
+            return (
+              <Link
+                key={action.to}
+                to={action.to}
+                className="surface-panel-alt flex items-center justify-between gap-4 p-4 hover:border-[var(--accent-soft)]"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]">
+                    <Icon className="size-4" />
                   </div>
-                  <span className="text-xs uppercase tracking-[0.16em] text-[var(--accent-strong)]">Open</span>
-                </Link>
-              );
-            })}
-          </div>
-        </PageSection>
-
-        <PageSection
-          title="Dashboard State"
-          description="Ringkasan status dashboard untuk memastikan shell, command Rust, dan utility catalog tetap sinkron."
-        >
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="surface-panel-alt p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Search query</div>
-              <div className="mt-3 text-lg font-semibold text-[var(--text-primary)]">
-                {searchQuery.trim() ? searchQuery : "Not applied"}
-              </div>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                Query aktif berlaku untuk nama utility, ringkasan, kategori, dan keyword internal.
-              </p>
-            </div>
-
-            <div className="surface-panel-alt p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Runtime mode</div>
-              <div className="mt-3 flex items-center gap-2 text-lg font-semibold text-[var(--text-primary)]">
-                {systemState.status === "loading" ? <LoaderCircle className="size-4 animate-spin text-[var(--accent-strong)]" /> : null}
-                {bootstrap.source === "rust" ? "Tauri Desktop" : "Browser Preview"}
-              </div>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                Mode ini menentukan apakah command system info dipanggil langsung dari backend Rust.
-              </p>
-            </div>
-
-            <div className="surface-panel-alt p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Error state</div>
-              <div className="mt-3 text-lg font-semibold text-[var(--text-primary)]">
-                {systemState.status === "error" ? "Attention needed" : "Healthy"}
-              </div>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                Dashboard menampilkan fallback yang aman bila command sistem tidak tersedia atau gagal dibaca.
-              </p>
-            </div>
-          </div>
-        </PageSection>
-      </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold text-[var(--text-primary)]">{action.label}</div>
+                    <div className="mt-1 text-xs text-[var(--text-muted)]">{action.caption}</div>
+                  </div>
+                </div>
+                <span className="text-xs uppercase tracking-[0.16em] text-[var(--accent-strong)]">Buka</span>
+              </Link>
+            );
+          })}
+        </div>
+      </PageSection>
     </div>
   );
 }

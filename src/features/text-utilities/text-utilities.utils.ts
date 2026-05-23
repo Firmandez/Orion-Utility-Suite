@@ -24,7 +24,7 @@ export const textUtilityOperations: TextUtilityOperationDefinition[] = [
   {
     id: "json-validate",
     label: "JSON Validator",
-    description: "Validasi apakah payload JSON bisa diparse dengan aman.",
+    description: "Validasi apakah teks JSON bisa dibaca dengan benar.",
     category: "JSON",
     outputLabel: "Validation Result",
   },
@@ -394,7 +394,7 @@ function decodeBase64Unicode(input: string) {
     const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
     return new TextDecoder().decode(bytes);
   } catch {
-    throw new Error("Base64 tidak valid atau bukan payload UTF-8 yang bisa dibaca.");
+    throw new Error("Base64 tidak valid atau bukan teks UTF-8 yang bisa dibaca.");
   }
 }
 

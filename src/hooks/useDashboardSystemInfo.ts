@@ -10,7 +10,7 @@ import type {
 function buildPreviewSystemInfo(bootstrap: AppBootstrapState): SystemInfoResponse {
   return {
     os: bootstrap.data.platformLabel,
-    architecture: "Available in Tauri runtime",
+    architecture: "Available in desktop app",
     appVersion: bootstrap.data.version,
   };
 }
@@ -44,7 +44,7 @@ export function useDashboardSystemInfo(bootstrap: AppBootstrapState) {
         setState({
           status: "error",
           systemInfo: buildPreviewSystemInfo(bootstrap),
-          errorMessage: "System commands tersedia saat Orion berjalan di runtime Tauri desktop.",
+          errorMessage: "Informasi perangkat lengkap tersedia saat Orion dibuka sebagai aplikasi desktop.",
         });
       });
       return;

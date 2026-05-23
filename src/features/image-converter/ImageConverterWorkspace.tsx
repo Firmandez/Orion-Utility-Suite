@@ -81,16 +81,14 @@ export function ImageConverterWorkspace() {
           <div className="space-y-5">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-emerald-300">
               <ImageUp className="size-3.5" />
-              Rust Batch Converter
+              Image Converter
             </div>
             <div className="max-w-3xl">
               <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Image Converter untuk batch format switch, resize, dan output folder lokal.
+                Ubah format dan ukuran banyak gambar sekaligus.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                PNG, JPG, JPEG, dan WEBP diproses lewat command Rust async berbasis crate `image`,
-                lengkap dengan queue multi-file, progress batch, validasi extension, dan hasil per-file
-                yang tidak gagal total saat satu item bermasalah.
+                Tambahkan gambar, pilih format output, atur kualitas atau ukuran, lalu simpan hasilnya ke folder pilihan Anda.
               </p>
             </div>
 
@@ -98,12 +96,12 @@ export function ImageConverterWorkspace() {
               <StatCard
                 label="Queue"
                 value={`${files.length} file`}
-                caption="Tambahkan banyak gambar dengan drag and drop native atau picker manual."
+                caption="Tambahkan gambar dengan drag and drop atau tombol pilih file."
               />
               <StatCard
                 label="Output"
                 value={outputFormat.toUpperCase()}
-                caption="Target format aktif untuk batch conversion saat ini."
+                caption="Format hasil yang akan dibuat."
               />
               <StatCard
                 label="Batch status"
@@ -114,18 +112,18 @@ export function ImageConverterWorkspace() {
           </div>
 
           <div className="surface-panel-alt p-5 sm:p-6">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Execution Notes</div>
+            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Tips</div>
             <div className="mt-4 space-y-3">
               <InfoItem
-                title="Native desktop paths"
-                description="Queue memakai path file asli dari Tauri, jadi backend Rust bisa membaca dan menulis file secara aman."
+                title="File lokal"
+                description="Semua gambar diproses dari perangkat Anda dan hasilnya disimpan ke folder yang dipilih."
               />
               <InfoItem
-                title="Per-file fault tolerance"
-                description="Satu file gagal tidak menghentikan batch. Orion tetap melanjutkan item berikutnya dan merangkum error di akhir."
+                title="Aman untuk batch"
+                description="Jika satu file gagal, Orion tetap melanjutkan file lain dan menampilkan ringkasan di akhir."
               />
               <InfoItem
-                title="Format-aware output"
+                title="Output sesuai format"
                 description={outputModeDescription}
               />
             </div>
@@ -135,8 +133,8 @@ export function ImageConverterWorkspace() {
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <PageSection
-          title="Image Queue"
-          description="Susun batch source image dari file lokal. Queue ini mendukung penambahan bertahap agar Anda bisa mencampur beberapa folder sekaligus."
+          title="Daftar Gambar"
+          description="Tambahkan gambar dari perangkat Anda. Anda bisa menambah file secara bertahap."
         >
           <ImageBatchDropZone
             files={files}
@@ -149,8 +147,8 @@ export function ImageConverterWorkspace() {
         </PageSection>
 
         <PageSection
-          title="Conversion Settings"
-          description="Atur output folder, target format, kualitas encode, resize opsional, dan compression sebelum menjalankan batch."
+          title="Pengaturan Konversi"
+          description="Atur folder output, format hasil, kualitas, resize, dan kompresi."
           actions={
             <Button variant="outline" leadingIcon={FolderSearch2} onClick={pickOutputFolder} disabled={!isDesktopRuntime || status === "loading"}>
               {outputFolderSource === "default" ? "Pick custom folder" : "Pick output folder"}
@@ -162,8 +160,8 @@ export function ImageConverterWorkspace() {
               label="Output folder"
               hint={
                 outputFolderSource === "default"
-                  ? "Saat ini Orion memakai default output folder dari Settings. Pilih folder baru jika ingin override khusus batch ini."
-                  : "Folder ini dipakai untuk menyimpan semua file hasil conversion tanpa hardcode path absolut di source code."
+                  ? "Saat ini Orion memakai folder output default dari Settings. Pilih folder lain jika ingin lokasi khusus."
+                  : "Folder ini dipakai untuk menyimpan semua file hasil konversi."
               }
               placeholder="Pilih output folder target..."
               value={outputFolderPath ?? ""}
@@ -173,7 +171,7 @@ export function ImageConverterWorkspace() {
             <div className="grid gap-4 sm:grid-cols-2">
               <Select
                 label="Target format"
-                hint="Saat ini fokus pada output PNG dan JPG agar sesuai cakupan Tahap 6."
+                hint="Pilih JPG untuk ukuran kecil atau PNG untuk kualitas tanpa kompresi lossy."
                 options={imageOutputFormatOptions}
                 value={outputFormat}
                 onChange={(event) => updateOutputFormat(event.target.value as "jpg" | "png")}
@@ -248,8 +246,8 @@ export function ImageConverterWorkspace() {
 
       <div className="grid gap-6 xl:grid-cols-[0.96fr_1.04fr]">
         <PageSection
-          title="Progress & Runtime"
-          description="Progress batch diambil dari event backend Rust. UI tetap responsif selama decode, resize, dan encode berjalan di thread blocking terpisah."
+          title="Progress"
+          description="Pantau proses konversi dan ringkasan hasil batch."
         >
           <div className="space-y-5">
             <ProgressBar
@@ -273,7 +271,7 @@ export function ImageConverterWorkspace() {
             {response ? (
               <ResultCard
                 title="Batch Summary"
-                description="Ringkasan hasil conversion terakhir. Semua path bersifat lokal dan diproduksi oleh backend Rust."
+                description="Ringkasan hasil konversi terakhir."
                 rows={summaryRows}
               />
             ) : (
@@ -288,9 +286,9 @@ export function ImageConverterWorkspace() {
 
         <ResultCard
           title="Current Configuration"
-          description="Snapshot cepat dari konfigurasi aktif sebelum batch dijalankan."
+          description="Ringkasan pengaturan yang sedang aktif."
           rows={[
-            { label: "Runtime", value: isDesktopRuntime ? "Tauri Desktop" : "Browser Preview" },
+            { label: "Status aplikasi", value: isDesktopRuntime ? "Siap digunakan" : "Mode terbatas" },
             { label: "Queue", value: `${files.length} file`, mono: true },
             { label: "Output", value: outputFormat.toUpperCase() },
             { label: "JPG quality", value: outputFormat === "jpg" ? qualityInput : "Not used", mono: outputFormat === "jpg" },
@@ -301,11 +299,11 @@ export function ImageConverterWorkspace() {
             <div className="grid gap-3 sm:grid-cols-2">
               <MiniInfoCard
                 title="Input support"
-                description="PNG, JPG, JPEG, dan WEBP diterima. File di luar daftar ini akan difilter sebelum dikirim ke backend."
+                description="PNG, JPG, JPEG, dan WEBP diterima. File lain akan diabaikan otomatis."
               />
               <MiniInfoCard
-                title="Async backend"
-                description="Batch conversion dijalankan lewat `spawn_blocking` agar webview tetap halus walau memproses banyak gambar."
+                title="Batch ringan"
+                description="Orion tetap responsif saat memproses banyak gambar."
               />
             </div>
           }

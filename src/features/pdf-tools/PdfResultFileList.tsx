@@ -54,10 +54,11 @@ export function PdfResultFileList({ result, onCopyPath }: PdfResultFileListProps
     return (
       <EmptyState
         icon={TriangleAlert}
-        title={result.data.status === "placeholder" ? "PDF to Image masih placeholder" : "Belum ada image output"}
+        title={result.data.status === "placeholder" ? "PDF to Image segera hadir" : "Belum ada hasil gambar"}
         description={
-          result.data.note ??
-          "Operasi belum menghasilkan image output. Cek status backend atau folder output yang dipilih."
+          result.data.status === "placeholder"
+            ? "Fitur ini sedang disiapkan dan belum membuat file gambar."
+            : result.data.note ?? "Operasi belum menghasilkan gambar. Cek folder output yang dipilih."
         }
       />
     );

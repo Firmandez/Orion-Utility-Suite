@@ -45,7 +45,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
     outputFileName: getDefaultOutputFileName("merge"),
     status: "idle",
     progressPercent: 0,
-    progressStatus: "Waiting for PDF operation setup",
+    progressStatus: "Menunggu pengaturan PDF",
     isWindowDragActive: false,
   });
 
@@ -56,8 +56,8 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
     progressPercent: 0,
     progressStatus:
       files.length > 0
-        ? `Queue ready with ${files.length} file${files.length === 1 ? "" : "s"}`
-        : "Waiting for PDF operation setup",
+        ? `${files.length} file siap diproses`
+        : "Menunggu pengaturan PDF",
     currentItemName: undefined,
     result: undefined,
     errorMessage: undefined,
@@ -144,7 +144,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
 
   const pickFiles = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "File picker native hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Pilih file tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -172,7 +172,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
 
   const pickOutputFolder = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "Folder picker native hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Pilih folder tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -189,7 +189,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
           outputFolderPath: selection,
         }));
       });
-      notify.success("Output folder selected", "Folder tujuan hasil PDF sudah diperbarui.");
+      notify.success("Folder output dipilih", "Folder tujuan hasil PDF sudah diperbarui.");
     }
   });
 
@@ -283,7 +283,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
 
   const runOperation = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "Operasi PDF backend Rust hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Operasi PDF tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -312,7 +312,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
         ...current,
         status: "loading",
         progressPercent: 0,
-        progressStatus: `Starting ${getOperationLabel(current.operation).toLowerCase()}`,
+        progressStatus: `Memulai ${getOperationLabel(current.operation).toLowerCase()}`,
         currentItemName: undefined,
         result: undefined,
         errorMessage: undefined,
@@ -335,8 +335,8 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
           progressPercent: 100,
           progressStatus:
             result.operation === "pdf-to-images" && result.data.status === "placeholder"
-              ? "PDF to Image placeholder prepared"
-              : `${getOperationLabel(result.operation)} completed`,
+              ? "PDF to Image belum tersedia"
+              : `${getOperationLabel(result.operation)} selesai`,
           currentItemName: undefined,
           result,
           errorMessage: undefined,
@@ -351,7 +351,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
         setState((current) => ({
           ...current,
           status: "error",
-          progressStatus: `${getOperationLabel(current.operation)} failed`,
+          progressStatus: `${getOperationLabel(current.operation)} gagal`,
           errorMessage: message,
         }));
       });

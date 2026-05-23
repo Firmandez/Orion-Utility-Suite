@@ -24,10 +24,8 @@ function withSuspense(node: ReactNode) {
       fallback={
         <div className="surface-panel p-6">
           <div className="text-sm uppercase tracking-[0.16em] text-[var(--text-muted)]">Loading module</div>
-          <div className="mt-3 text-xl font-semibold text-[var(--text-primary)]">Preparing Orion workspace...</div>
-          <div className="mt-2 text-sm text-[var(--text-secondary)]">
-            Route ini dipecah secara lazy agar shell aplikasi tetap ringan saat startup.
-          </div>
+          <div className="mt-3 text-xl font-semibold text-[var(--text-primary)]">Menyiapkan Orion...</div>
+          <div className="mt-2 text-sm text-[var(--text-secondary)]">Sebentar, modul sedang dibuka.</div>
         </div>
       }
     >
@@ -47,8 +45,8 @@ export const router = createHashRouter([
         element: withSuspense(<DashboardPage />),
         handle: handle(
           "Dashboard",
-          "Overview pondasi project, status runtime, dan modul utilitas yang siap dikembangkan.",
-          "Search modules, categories, or descriptions",
+          "Akses cepat ke utility utama dan informasi aplikasi.",
+          "Cari utility, kategori, atau fungsi",
         ),
       },
       {
@@ -56,8 +54,8 @@ export const router = createHashRouter([
         element: withSuspense(<QRGeneratorPage />),
         handle: handle(
           "QR Generator",
-          "Generator QR offline dengan preset siap pakai, live preview, logo tengah, dan export lokal.",
-          "Search QR presets or payload ideas",
+          "Buat QR untuk URL, teks, Wi-Fi, WhatsApp, email, dan kontak.",
+          "Cari preset QR",
         ),
       },
       {
@@ -65,8 +63,8 @@ export const router = createHashRouter([
         element: withSuspense(<ImageConverterPage />),
         handle: handle(
           "Image Converter",
-          "Batch image conversion berbasis Rust async dengan multi-file queue, resize opsional, output folder native, dan hasil per-file.",
-          "Search image workflows or format presets",
+          "Ubah banyak gambar sekaligus dengan pilihan resize, kualitas, dan folder output.",
+          "Cari format atau alur gambar",
         ),
       },
       {
@@ -74,8 +72,8 @@ export const router = createHashRouter([
         element: withSuspense(<PDFToolsPage />),
         handle: handle(
           "PDF Tools",
-          "Workspace PDF berbasis Rust untuk merge, split, image-to-PDF, dan placeholder rapi menuju PDF to Image.",
-          "Search PDF operations, merge queues, or document workflows",
+          "Gabungkan, pisahkan, dan buat PDF dari gambar lokal.",
+          "Cari operasi PDF",
         ),
       },
       {
@@ -83,8 +81,8 @@ export const router = createHashRouter([
         element: withSuspense(<TextUtilitiesPage />),
         handle: handle(
           "Text Utilities",
-          "Workspace teks dua panel untuk JSON, Base64, URL tools, slugify, dan counter lokal.",
-          "Search transforms, encoders, or payload text",
+          "Format, encode, decode, dan rapikan teks dengan panel input-output.",
+          "Cari alat teks",
         ),
       },
       {
@@ -92,8 +90,8 @@ export const router = createHashRouter([
         element: withSuspense(<HashCheckerPage />),
         handle: handle(
           "Hash Checker",
-          "Hash checker file berbasis Rust streaming dengan MD5, SHA1, SHA256, compare state, dan progress real-time.",
-          "Search hash modes or checksum workflows",
+          "Cek integritas file dengan MD5, SHA1, dan SHA256.",
+          "Cari hash atau checksum",
         ),
       },
       {
@@ -101,17 +99,17 @@ export const router = createHashRouter([
         element: withSuspense(<NetworkToolkitPage />),
         handle: handle(
           "Network Toolkit",
-          "Toolkit jaringan berbasis Rust untuk local IP, DNS lookup, ping host, port checker, dan HTTP status dengan hasil yang mudah dibaca.",
-          "Search hostnames, diagnostics, or network notes",
+          "Periksa IP lokal, DNS, ping, port, dan status HTTP.",
+          "Cari host atau catatan jaringan",
         ),
       },
       {
         path: "developer-tools",
         element: withSuspense(<DeveloperToolsPage />),
         handle: handle(
-          "Developer Tools",
-          "Workspace utilitas developer untuk formatter, payload helper, dan command scaffolds.",
-          "Search payload helpers or dev tools",
+          "Advanced Tools",
+          "Alat lanjutan untuk UUID, timestamp, regex, JWT, dan warna.",
+          "Cari alat lanjutan",
         ),
       },
       {
@@ -119,8 +117,8 @@ export const router = createHashRouter([
         element: withSuspense(<SettingsPage />),
         handle: handle(
           "Settings",
-          "Kelola settings persistent, accent color, output defaults, dan kesiapan build desktop Orion.",
-          "Search preferences and settings",
+          "Atur tampilan, folder output, aplikasi, dan informasi Orion.",
+          "Cari pengaturan",
         ),
       },
     ],

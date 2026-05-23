@@ -11,7 +11,7 @@ export type ToolCategory =
   | "PDF"
   | "Text"
   | "Network"
-  | "Developer"
+  | "Advanced"
   | "File Tools"
   | "System";
 export type DashboardFilter = "All" | Exclude<ToolCategory, "System">;
@@ -47,7 +47,7 @@ export interface ToolDefinition {
   description: string;
   summary: string;
   category: ToolCategory;
-  status: "Scaffolded" | "Stage 2" | "Stage 3" | "Stage 4" | "Stage 5" | "Stage 6" | "Stage 7" | "Stage 8" | "Stage 9" | "Stage 10";
+  status: string;
   accent: string;
   icon: LucideIcon;
   keywords: string[];

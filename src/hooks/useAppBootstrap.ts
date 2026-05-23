@@ -41,7 +41,7 @@ export function useAppBootstrap() {
             status: "ready",
             source: "mock",
             data: fallbackBootstrap,
-            errorMessage: "Rust bridge belum aktif di preview browser ini.",
+            errorMessage: "Beberapa fitur file tersedia saat Orion dibuka sebagai aplikasi desktop.",
           });
         });
       }

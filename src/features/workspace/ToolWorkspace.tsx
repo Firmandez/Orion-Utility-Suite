@@ -77,14 +77,14 @@ export function ToolWorkspace({
     setProgress(0);
     setIsRunning(false);
     setResult(null);
-    notify.info(`${feature.title} reset`, "Form scaffold kembali ke kondisi awal.");
+    notify.info(`${feature.title} reset`, "Form kembali ke kondisi awal.");
   };
 
   const handleRun = () => {
     setIsRunning(true);
     setProgress(10);
     setResult(null);
-    notify.info(`${feature.title} queued`, "Simulasi progress dimulai untuk memvalidasi UX tahap 1.");
+    notify.info(`${feature.title} queued`, "Progress dimulai.");
 
     [28, 52, 74, 93].forEach((value, index) => {
       queueTimer(() => setProgress(value), 280 * (index + 1));
@@ -99,20 +99,20 @@ export function ToolWorkspace({
           mode: selectedMode || "default",
           files: files.length,
           payloadLength: inputValue.trim().length,
-          state: bootstrap.source === "rust" ? "Ready for command wiring" : "Preview scaffold complete",
+          state: bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas",
         });
       });
-      notify.success(`${feature.title} scaffold complete`, "State, progress, toast, dan result card sudah tervalidasi.");
+      notify.success(`${feature.title} selesai`, "Progress dan hasil sudah diperbarui.");
     }, 1580);
   };
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-      <PageSection title={`${feature.title} Workspace`} description={note}>
+      <PageSection title={feature.title} description={note}>
         <div className="space-y-5">
           <TextArea
             label={inputLabel}
-            hint="Field ini sengaja fleksibel agar bisa dipakai untuk teks, path, payload, atau preset command di tahap berikutnya."
+            hint="Gunakan field ini untuk teks, lokasi file, atau input lain yang dibutuhkan."
             placeholder={inputPlaceholder}
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
@@ -120,7 +120,7 @@ export function ToolWorkspace({
           <div className="grid gap-4 lg:grid-cols-2">
             <Select
               label={selectLabel}
-              hint="Preset default dapat diikat ke command Rust, file processor, atau external binary."
+              hint="Pilih mode yang sesuai sebelum menjalankan proses."
               options={selectOptions}
               value={selectedMode}
               onChange={(event) => setSelectedMode(event.target.value)}
@@ -134,7 +134,7 @@ export function ToolWorkspace({
           </div>
           <FileDropZone
             label="File input"
-            hint="Drag and drop sudah siap untuk pipeline lokal seperti image, PDF, hashing, atau batch processing."
+            hint="Drag and drop file lokal untuk diproses."
             files={files}
             onFilesChange={setFiles}
           />
@@ -143,7 +143,7 @@ export function ToolWorkspace({
               {actionLabel}
             </Button>
             <Button variant="outline" onClick={handleReset} leadingIcon={RefreshCw}>
-              Reset scaffold
+              Reset
             </Button>
           </div>
         </div>
@@ -151,19 +151,19 @@ export function ToolWorkspace({
 
       <div className="space-y-6">
         <ResultCard
-          title="Module Readiness"
-          description="Informasi ini membantu memastikan setiap halaman punya fondasi yang konsisten sebelum logika Rust berat masuk."
+          title="Ringkasan"
+          description="Informasi singkat tentang alat yang sedang dibuka."
           rows={[
             { label: "Category", value: feature.category },
             { label: "Status", value: feature.status },
-            { label: "Runtime", value: bootstrap.source === "rust" ? "Tauri desktop runtime" : "Browser scaffold preview" },
-            { label: "Backend", value: bootstrap.data.backendMode },
+            { label: "Status aplikasi", value: bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas" },
+            { label: "Versi", value: bootstrap.data.version },
           ]}
         />
 
         <PageSection
-          title="Execution State"
-          description="Komponen progress dan result area ini bisa langsung dihubungkan ke async command Tauri agar UI tidak freeze."
+          title="Progress"
+          description="Pantau progress dan hasil terakhir."
         >
           <div className="space-y-4">
             <ProgressBar label="Workflow progress" value={progress} tone={advancedEnabled ? "cyan" : "amber"} />
@@ -174,7 +174,7 @@ export function ToolWorkspace({
                   { label: "Completed", value: result.generatedAt, mono: true },
                   { label: "Mode", value: result.mode },
                   { label: "Files", value: String(result.files) },
-                  { label: "Payload", value: `${result.payloadLength} chars` },
+                  { label: "Panjang input", value: `${result.payloadLength} chars` },
                   { label: "State", value: result.state },
                 ]}
               />
@@ -182,7 +182,7 @@ export function ToolWorkspace({
               <EmptyState
                 icon={CircleDashed}
                 title="Belum ada hasil proses"
-                description="Jalankan scaffold ini untuk melihat alur progress, toast, dan result card sebelum logic utilitas sebenarnya ditambahkan."
+                description="Jalankan proses untuk melihat progress dan hasil di sini."
               />
             )}
           </div>

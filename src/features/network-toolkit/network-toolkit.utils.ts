@@ -55,7 +55,7 @@ export function formatPingRows(result?: PingHostResponse): ResultRow[] {
     { label: "Host", value: result.host },
     { label: "Reachable", value: result.reachable ? "Yes" : "No" },
     { label: "Duration", value: `${result.durationMs} ms`, mono: true },
-    { label: "Exit code", value: result.exitCode === undefined ? "Unavailable" : String(result.exitCode), mono: true },
+    { label: "Detail code", value: result.exitCode === undefined ? "Unavailable" : String(result.exitCode), mono: true },
   ];
 }
 
@@ -102,7 +102,7 @@ export function formatPingCopy(result?: PingHostResponse) {
     `Host: ${result.host}`,
     `Reachable: ${result.reachable ? "Yes" : "No"}`,
     `Duration: ${result.durationMs} ms`,
-    `Exit code: ${result.exitCode ?? "Unavailable"}`,
+    `Detail code: ${result.exitCode ?? "Unavailable"}`,
     `Summary: ${result.summary}`,
     "",
     result.output,

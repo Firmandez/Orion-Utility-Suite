@@ -53,7 +53,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
     compress: true,
     status: "idle",
     progressPercent: 0,
-    progressStatus: "Waiting for image queue",
+    progressStatus: "Menunggu gambar",
     isWindowDragActive: false,
   });
 
@@ -76,7 +76,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
             progressStatus:
               current.status === "loading"
                 ? current.progressStatus
-                : `Queue ready with ${nextPaths.length} image${nextPaths.length === 1 ? "" : "s"}`,
+                : `${nextPaths.length} gambar siap diproses`,
             response: current.status === "loading" ? current.response : undefined,
             errorMessage: undefined,
           };
@@ -85,7 +85,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
 
       notify.success(
         source === "drop" ? "Images added from drop" : "Images selected",
-        `${validPaths.length} file masuk ke queue converter Orion.`,
+        `${validPaths.length} file masuk ke daftar konversi.`,
       );
     }
 
@@ -99,7 +99,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
 
   const pickImages = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "File picker native hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Pilih file tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -122,7 +122,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
 
   const pickOutputFolder = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "Folder picker native hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Pilih folder tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -140,7 +140,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
           errorMessage: undefined,
         }));
       });
-      notify.success("Output folder selected", "Folder tujuan conversion sudah diperbarui.");
+      notify.success("Folder output dipilih", "Folder tujuan konversi sudah diperbarui.");
     }
   });
 
@@ -156,8 +156,8 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
           progressPercent: 0,
           progressStatus:
             nextFiles.length > 0
-              ? `Queue ready with ${nextFiles.length} image${nextFiles.length === 1 ? "" : "s"}`
-              : "Waiting for image queue",
+              ? `${nextFiles.length} gambar siap diproses`
+              : "Menunggu gambar",
           response: undefined,
           errorMessage: undefined,
         };
@@ -172,13 +172,13 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
         files: [],
         status: "idle",
         progressPercent: 0,
-        progressStatus: "Waiting for image queue",
+        progressStatus: "Menunggu gambar",
         currentFileName: undefined,
         response: undefined,
         errorMessage: undefined,
       }));
     });
-    notify.info("Queue cleared", "Daftar gambar dan hasil conversion dibersihkan.");
+    notify.info("Daftar dibersihkan", "Daftar gambar dan hasil konversi dibersihkan.");
   });
 
   const updateOutputFormat = useEffectEvent((value: "jpg" | "png") => {
@@ -261,7 +261,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
 
   const runConversion = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "Image conversion Rust hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Konversi gambar tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -298,7 +298,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
         ...current,
         status: "loading",
         progressPercent: 0,
-        progressStatus: "Starting conversion batch",
+        progressStatus: "Memulai konversi",
         currentFileName: undefined,
         response: undefined,
         errorMessage: undefined,
@@ -316,8 +316,8 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
           progressPercent: 100,
           progressStatus:
             response.failedCount > 0
-              ? `Completed with ${response.failedCount} failure${response.failedCount === 1 ? "" : "s"}`
-              : "Batch conversion completed",
+              ? `Selesai dengan ${response.failedCount} file gagal`
+              : "Konversi selesai",
           response,
           errorMessage:
             response.failedCount > 0
@@ -339,11 +339,11 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
         setState((current) => ({
           ...current,
           status: "error",
-          progressStatus: "Batch conversion failed",
+          progressStatus: "Konversi gagal",
           errorMessage: message,
         }));
       });
-      notify.error("Batch conversion failed", message);
+      notify.error("Konversi gagal", message);
     }
   });
 

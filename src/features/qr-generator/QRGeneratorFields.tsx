@@ -17,7 +17,7 @@ export function DynamicPresetFields({
       return (
         <TextArea
           label="Text or link"
-          hint="Gunakan untuk teks bebas, URL, JSON kecil, kode internal, atau payload manual lain."
+          hint="Gunakan untuk teks bebas, URL, JSON kecil, atau kode singkat lain."
           placeholder="Masukkan teks atau link yang ingin dikodekan ke QR..."
           value={form.rawText}
           onChange={(event) => updateForm("rawText", event.target.value)}

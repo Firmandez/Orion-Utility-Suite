@@ -27,7 +27,7 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
     referenceHash: "",
     status: "idle",
     progressPercent: 0,
-    progressStatus: "Waiting for file selection",
+    progressStatus: "Menunggu file",
     isWindowDragActive: false,
   });
 
@@ -40,20 +40,20 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
         result: undefined,
         status: "idle",
         progressPercent: 0,
-        progressStatus: "Ready to generate hashes",
+        progressStatus: "Siap membuat hash",
         errorMessage: undefined,
       }));
     });
 
     notify.success(
       source === "drop" ? "File dropped" : "File selected",
-      `${getBaseName(filePath)} siap diproses oleh hash engine Rust.`,
+      `${getBaseName(filePath)} siap dicek.`,
     );
   });
 
   const pickFile = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "File picker native hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Pilih file tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -78,7 +78,7 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
         result: undefined,
         status: "idle",
         progressPercent: 0,
-        progressStatus: "Waiting for file selection",
+        progressStatus: "Menunggu file",
         errorMessage: undefined,
       }));
     });
@@ -98,7 +98,7 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "Hash streaming Rust hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Hash checker tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -109,7 +109,7 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
         status: "loading",
         result: undefined,
         progressPercent: 0,
-        progressStatus: "Preparing hash worker",
+        progressStatus: "Menyiapkan hash",
         errorMessage: undefined,
       }));
     });
@@ -122,7 +122,7 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
           result,
           status: "ready",
           progressPercent: 100,
-          progressStatus: "Hash generation completed",
+          progressStatus: "Hash selesai",
           errorMessage: undefined,
         }));
       });
@@ -133,11 +133,11 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
         setState((current) => ({
           ...current,
           status: "error",
-          progressStatus: "Hash generation failed",
+          progressStatus: "Hash gagal",
           errorMessage: message,
         }));
       });
-      notify.error("Hash generation failed", message);
+      notify.error("Hash gagal", message);
     }
   });
 

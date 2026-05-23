@@ -50,10 +50,10 @@ export function PdfQueueDropZone({
           <div>
             <div className="text-base font-semibold text-[var(--text-primary)]">
               {isDragActive
-                ? "Lepaskan file untuk menambahkannya ke queue PDF"
+                ? "Lepaskan file untuk menambahkannya"
                 : isSingle
                   ? "Drop satu file sumber ke area ini"
-                  : "Drop beberapa file sekaligus ke queue PDF"}
+                  : "Drop beberapa file sekaligus ke area ini"}
             </div>
             <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
               {getQueueDescription(operation)}
@@ -70,10 +70,10 @@ export function PdfQueueDropZone({
 
           <div className="flex flex-wrap justify-center gap-3">
             <Button variant="outline" leadingIcon={FolderPlus} onClick={onPick} disabled={disabled}>
-              Pick files
+              Pilih file
             </Button>
             <Button variant="ghost" leadingIcon={Trash2} onClick={onClear} disabled={disabled || files.length === 0}>
-              Clear queue
+              Bersihkan daftar
             </Button>
           </div>
         </div>

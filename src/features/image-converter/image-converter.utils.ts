@@ -92,14 +92,14 @@ export function validateImageConversion(snapshot: ImageConverterSnapshot): Image
   if (snapshot.files.length === 0) {
     return {
       valid: false,
-      message: "Tambahkan minimal satu gambar sebelum menjalankan conversion batch.",
+      message: "Tambahkan minimal satu gambar sebelum menjalankan konversi.",
     };
   }
 
   if (!snapshot.outputFolderPath?.trim()) {
     return {
       valid: false,
-      message: "Pilih output folder tujuan agar file hasil conversion punya lokasi simpan yang jelas.",
+      message: "Pilih folder output agar file hasil punya lokasi simpan yang jelas.",
     };
   }
 
@@ -139,22 +139,22 @@ export function summarizeConversionToast(successCount: number, failedCount: numb
 
   if (failedCount === 0) {
     return {
-      title: "Batch conversion selesai",
-      description: `${successCount} file berhasil dikonversi ke format target tanpa error.`,
+      title: "Konversi selesai",
+      description: `${successCount} file berhasil dikonversi ke format pilihan.`,
       tone: "success",
     };
   }
 
   if (successCount === 0) {
     return {
-      title: "Batch conversion gagal",
-      description: `Semua ${failedCount} file gagal diproses. Cek format, permission, atau output folder yang dipilih.`,
+      title: "Konversi gagal",
+      description: `Semua ${failedCount} file gagal diproses. Cek format file atau folder output yang dipilih.`,
       tone: "error",
     };
   }
 
   return {
-    title: "Batch conversion selesai dengan catatan",
+    title: "Konversi selesai dengan catatan",
     description: `${successCount} file sukses dan ${failedCount} file gagal dari total ${totalFiles} item.`,
     tone: "info",
   };
@@ -162,10 +162,10 @@ export function summarizeConversionToast(successCount: number, failedCount: numb
 
 export function describeOutputMode(outputFormat: string, compress: boolean) {
   if (outputFormat === "jpg") {
-    return "JPG output dengan kualitas lossy yang bisa diatur untuk menyeimbangkan ukuran dan detail.";
+    return "JPG cocok untuk ukuran file lebih kecil dengan kualitas yang bisa diatur.";
   }
 
   return compress
-    ? "PNG output dengan compression agresif agar ukuran file lebih hemat."
-    : "PNG output dengan compression ringan untuk proses encode yang lebih cepat.";
+    ? "PNG akan dikompresi lebih kuat agar ukuran file lebih hemat."
+    : "PNG memakai kompresi ringan agar proses lebih cepat.";
 }

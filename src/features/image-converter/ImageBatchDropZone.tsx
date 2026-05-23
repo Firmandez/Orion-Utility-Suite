@@ -35,18 +35,18 @@ export function ImageBatchDropZone({
           </div>
           <div>
             <div className="text-base font-semibold text-[var(--text-primary)]">
-              {isDragActive ? "Lepaskan gambar untuk menambahkannya ke queue" : "Drop banyak gambar sekaligus ke area ini"}
+              {isDragActive ? "Lepaskan gambar untuk menambahkannya" : "Drop banyak gambar sekaligus ke area ini"}
             </div>
             <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-              Mendukung `PNG`, `JPG`, `JPEG`, dan `WEBP` melalui drag and drop native Tauri atau file picker manual.
+              Mendukung PNG, JPG, JPEG, dan WEBP melalui drag and drop atau tombol pilih file.
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             <Button variant="outline" leadingIcon={FolderPlus} onClick={onPick} disabled={disabled}>
-              Pick images
+              Pilih gambar
             </Button>
             <Button variant="ghost" leadingIcon={Trash2} onClick={onClear} disabled={disabled || files.length === 0}>
-              Clear queue
+              Bersihkan daftar
             </Button>
           </div>
         </div>

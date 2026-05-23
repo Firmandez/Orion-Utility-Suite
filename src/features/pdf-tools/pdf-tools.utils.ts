@@ -58,7 +58,7 @@ export function getQueueDescription(operation: PdfToolOperation) {
     case "image-to-pdf":
       return "Tambahkan beberapa gambar untuk disusun menjadi PDF multi-page.";
     case "pdf-to-images":
-      return "Pilih satu PDF untuk mengecek kesiapan eksport halaman ke image.";
+      return "Pilih satu PDF untuk menyiapkan ekspor halaman ke gambar.";
   }
 }
 
@@ -71,7 +71,7 @@ export function getOperationHint(operation: PdfToolOperation) {
     case "image-to-pdf":
       return "Mendukung PNG, JPG, JPEG, dan WEBP.";
     case "pdf-to-images":
-      return "UI placeholder ini menyiapkan jalur integrasi pdfium-render berikutnya.";
+      return "Fitur ini sedang disiapkan untuk pembaruan berikutnya.";
   }
 }
 
@@ -201,7 +201,7 @@ export function buildResultRows(result?: PdfOperationResult): ResultRow[] {
     case "split":
       return [
         { label: "Operation", value: "Split PDF" },
-        { label: "Output dir", value: result.data.outputDir },
+        { label: "Output folder", value: result.data.outputDir },
         { label: "Generated files", value: String(result.data.generatedFiles.length), mono: true },
         { label: "Total pages", value: String(result.data.totalPages), mono: true },
       ];
@@ -215,8 +215,8 @@ export function buildResultRows(result?: PdfOperationResult): ResultRow[] {
     case "pdf-to-images":
       return [
         { label: "Operation", value: "PDF to Images" },
-        { label: "Output dir", value: result.data.outputDir },
-        { label: "Status", value: result.data.status },
+        { label: "Output folder", value: result.data.outputDir },
+        { label: "Status", value: result.data.status === "placeholder" ? "Coming soon" : result.data.status },
         { label: "Detected pages", value: String(result.data.totalPages), mono: true },
       ];
   }
@@ -238,7 +238,7 @@ export function buildCopyPayload(result?: PdfOperationResult) {
     case "split":
       return [
         "Operation: Split PDF",
-        `Output dir: ${result.data.outputDir}`,
+        `Output folder: ${result.data.outputDir}`,
         `Generated files: ${result.data.generatedFiles.length}`,
         `Total pages: ${result.data.totalPages}`,
         "",
@@ -254,8 +254,8 @@ export function buildCopyPayload(result?: PdfOperationResult) {
     case "pdf-to-images":
       return [
         "Operation: PDF to Images",
-        `Output dir: ${result.data.outputDir}`,
-        `Status: ${result.data.status}`,
+        `Output folder: ${result.data.outputDir}`,
+        `Status: ${result.data.status === "placeholder" ? "Coming soon" : result.data.status}`,
         `Detected pages: ${result.data.totalPages}`,
         result.data.note ?? "",
       ]
@@ -293,7 +293,9 @@ export function summarizePdfToast(result: PdfOperationResult): {
         tone: "info",
         title: result.data.status === "placeholder" ? "PDF to Image belum aktif" : "PDF to Image selesai",
         description:
-          result.data.note ??
+          result.data.status === "placeholder"
+            ? "Fitur PDF to Image sedang disiapkan dan belum membuat file gambar."
+            : result.data.note ??
           `${result.data.generatedFiles.length} gambar halaman dibuat di folder output yang dipilih.`,
       };
   }

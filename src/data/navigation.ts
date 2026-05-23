@@ -4,13 +4,13 @@ import type { NavGroup } from "@/types/navigation";
 
 export const navGroups: NavGroup[] = [
   {
-    label: "Workspace",
+    label: "Utilities",
     items: [
       {
         title: "Dashboard",
         to: "/",
         icon: LayoutDashboard,
-        description: "Overview pondasi aplikasi dan modul aktif.",
+        description: "Akses cepat ke semua alat.",
       },
       ...toolCatalog.map((tool) => ({
         title: tool.title,
@@ -21,7 +21,7 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
-    label: "System",
+    label: "App",
     items: [
       {
         title: settingsTool.title,

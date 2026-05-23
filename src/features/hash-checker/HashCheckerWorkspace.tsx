@@ -49,15 +49,14 @@ export function HashCheckerWorkspace() {
           <div className="space-y-5">
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-soft)] bg-[var(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent-strong)]">
               <ShieldCheck className="size-3.5" />
-              Stream Hash Engine
+              File Integrity
             </div>
             <div className="max-w-3xl">
               <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Hash Checker berbasis Rust dengan streaming digest untuk file besar.
+                Cek hash file dengan MD5, SHA1, dan SHA256.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                File diproses per chunk di backend Rust untuk menghasilkan MD5, SHA1, dan SHA256
-                tanpa memuat seluruh isi file ke memory, lengkap dengan progress event ke UI.
+                Pilih file, buat hash, lalu bandingkan dengan nilai referensi untuk memastikan file tidak berubah.
               </p>
             </div>
 
@@ -65,7 +64,7 @@ export function HashCheckerWorkspace() {
               <StatCard
                 label="Selected file"
                 value={selectedFileName ?? "No file"}
-                caption="Drop file ke window atau pilih manual lewat dialog native."
+                caption="Drop file ke jendela atau pilih manual."
               />
               <StatCard
                 label="Hash status"
@@ -81,19 +80,19 @@ export function HashCheckerWorkspace() {
           </div>
 
           <div className="surface-panel-alt p-5 sm:p-6">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Execution Notes</div>
+            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Tips</div>
             <div className="mt-4 space-y-3">
               <InfoItem
-                title="Rust streaming only"
-                description="Hashing berjalan di backend lokal dengan pembacaan chunked agar UI tidak freeze."
+                title="Aman untuk file besar"
+                description="Orion menampilkan progress saat menghitung hash file."
               />
               <InfoItem
-                title="Desktop-native path"
-                description="Drag-drop memakai path file native dari Tauri, bukan blob besar di frontend."
+                title="File lokal"
+                description="File dibaca dari perangkat Anda tanpa upload ke layanan online."
               />
               <InfoItem
-                title="Realtime progress"
-                description="Backend mengirim progress berkala selama pembacaan file dan finalisasi digest."
+                title="Pembanding hash"
+                description="Tempel hash referensi untuk melihat apakah hasilnya cocok."
               />
             </div>
           </div>
@@ -103,7 +102,7 @@ export function HashCheckerWorkspace() {
       <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
         <PageSection
           title="File Source"
-          description="Pilih target file dari sistem lokal, lalu jalankan generator hash untuk mendapatkan MD5, SHA1, dan SHA256."
+          description="Pilih file dari perangkat Anda, lalu buat hash MD5, SHA1, dan SHA256."
         >
           <div className="space-y-5">
             <HashFileDropZone
@@ -136,7 +135,7 @@ export function HashCheckerWorkspace() {
 
         <PageSection
           title="Progress & File Info"
-          description="Status proses backend Rust ditampilkan di sini, termasuk file target, progress chunk reading, dan ringkasan hasil akhir."
+          description="Pantau progress dan informasi file yang sedang dicek."
         >
           <div className="space-y-5">
             <ProgressBar

@@ -32,7 +32,7 @@ export function AppSidebar({ bootstrap, open, onClose }: AppSidebarProps) {
             </div>
           </div>
           <p className="mt-3 max-w-[230px] text-sm leading-6 text-[var(--text-secondary)]">
-            Modular offline-first workspace untuk utility desktop lintas platform.
+            Utility desktop untuk file, teks, QR, PDF, jaringan, dan pengaturan harian.
           </p>
         </div>
         <button
@@ -84,15 +84,12 @@ export function AppSidebar({ bootstrap, open, onClose }: AppSidebarProps) {
       </div>
 
       <div className="surface-panel-alt mt-6 p-4">
-        <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Runtime Status</div>
+        <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">App Status</div>
         <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">
-          {bootstrap.source === "rust" ? "Rust bridge connected" : "Browser preview fallback"}
+          {bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas"}
         </div>
         <div className="mt-1 text-xs leading-5 text-[var(--text-secondary)]">
           {bootstrap.data.platformLabel} . v{bootstrap.data.version}
-        </div>
-        <div className="mt-3 rounded-2xl border bg-black/10 px-3 py-2 text-xs text-[var(--text-muted)]">
-          {bootstrap.data.runtimeStatus}
         </div>
       </div>
     </aside>

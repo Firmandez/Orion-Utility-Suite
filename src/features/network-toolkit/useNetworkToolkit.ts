@@ -77,7 +77,7 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "DNS lookup Rust hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "DNS lookup tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -118,7 +118,7 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "Ping host Rust hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Ping host tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -165,7 +165,7 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "Port checker Rust hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "Port checker tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 
@@ -206,7 +206,7 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Desktop runtime required", "HTTP checker Rust hanya tersedia saat Orion berjalan lewat Tauri desktop.");
+      notify.error("Buka aplikasi desktop", "HTTP checker tersedia saat Orion dibuka sebagai aplikasi desktop.");
       return;
     }
 

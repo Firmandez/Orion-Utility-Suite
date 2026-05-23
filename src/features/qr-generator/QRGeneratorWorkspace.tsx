@@ -157,7 +157,7 @@ export function QRGeneratorWorkspace() {
       await exportQr(extension, qrBuild.fileStem);
       notify.success(
         `QR ${extension.toUpperCase()} exported`,
-        `Payload ${activePreset.label} berhasil disiapkan untuk disimpan secara lokal.`,
+        `QR ${activePreset.label} berhasil disiapkan untuk disimpan.`,
       );
     } catch (error) {
       const message = error instanceof Error ? error.message : "Export gagal diproses.";
@@ -168,7 +168,7 @@ export function QRGeneratorWorkspace() {
   const handleReset = () => {
     clearLogo(false);
     setForm(buildInitialQrFormState());
-    notify.info("QR Generator reset", "Preset, payload, warna, ukuran, dan logo kembali ke kondisi awal.");
+    notify.info("QR Generator reset", "Jenis QR, konten, warna, ukuran, dan logo kembali ke kondisi awal.");
   };
 
   return (
@@ -184,11 +184,10 @@ export function QRGeneratorWorkspace() {
                   Offline QR Studio
                 </div>
                 <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                  QR Generator modular dengan preset, logo-safe preview, dan export lokal.
+                  Buat QR yang siap dipakai dan mudah dipindai.
                 </h2>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                  Preview dirender real-time dengan `qr-code-styling`, seluruh workflow tetap offline,
-                  dan saat logo aktif level koreksi otomatis diamankan agar QR tetap mudah dipindai.
+                  Pilih jenis QR, isi konten, atur warna atau logo, lalu export ke PNG atau SVG.
                 </p>
               </div>
 
@@ -201,12 +200,12 @@ export function QRGeneratorWorkspace() {
                 <StatCard
                   label="Correction efektif"
                   value={qrBuild.effectiveCorrectionLevel}
-                  caption={hasLogo ? "Dinaikkan ke H untuk menjaga scanability logo overlay." : "Mengikuti pilihan pengguna."}
+                  caption={hasLogo ? "Disesuaikan agar QR tetap mudah dipindai dengan logo." : "Mengikuti pilihan Anda."}
                 />
                 <StatCard
-                  label="Runtime"
-                  value={bootstrap.source === "rust" ? "Tauri Desktop" : "Browser Preview"}
-                  caption="Export diproses lokal tanpa backend online atau cloud service."
+                  label="Status aplikasi"
+                  value={bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas"}
+                  caption="Export diproses langsung di perangkat Anda."
                 />
               </div>
             </div>
@@ -239,8 +238,8 @@ export function QRGeneratorWorkspace() {
         </section>
 
         <PageSection
-          title="Payload Builder"
-          description="Pilih preset yang sesuai lalu isi field yang diperlukan. Payload mentah akan dibentuk otomatis dan dipakai langsung untuk preview."
+          title="Konten QR"
+          description="Pilih jenis QR lalu isi field yang diperlukan. Preview akan diperbarui otomatis."
         >
           <div className="space-y-5">
             <DynamicPresetFields form={form} updateForm={updateForm} />
@@ -253,7 +252,7 @@ export function QRGeneratorWorkspace() {
           description="Atur warna, ukuran QR, koreksi error, dan logo tengah. Semua perubahan langsung terpantul di live preview."
           actions={
             <div className="rounded-full border border-[var(--accent-soft)] bg-[var(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent-strong)]">
-              PNG + SVG ready
+              PNG + SVG
             </div>
           }
         >
@@ -366,7 +365,7 @@ export function QRGeneratorWorkspace() {
       <div className="space-y-6">
         <PageSection
           title="Live QR Preview"
-          description="Preview dirender langsung dari payload final, warna, ukuran, dan opsi logo. Jika input belum valid, overlay akan menjelaskan perbaikannya."
+          description="Preview mengikuti konten, warna, ukuran, dan logo yang Anda pilih."
         >
           <div className="space-y-4">
             <div className="surface-panel-alt relative overflow-hidden p-5">
@@ -392,7 +391,7 @@ export function QRGeneratorWorkspace() {
                         </div>
                         <div className="mt-4 text-lg font-semibold text-[var(--text-primary)]">Preview menunggu input valid</div>
                         <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                          Perbaiki field yang ditandai agar payload final bisa dirender dan diexport dengan aman.
+                          Perbaiki field yang ditandai agar QR bisa dibuat dan diexport dengan aman.
                         </p>
                       </div>
                     </div>
@@ -405,7 +404,7 @@ export function QRGeneratorWorkspace() {
               <StatCard
                 label="Characters"
                 value={String(qrBuild.characterCount)}
-                caption="Payload lebih panjang akan lebih nyaman dipindai jika memakai ukuran QR yang lebih besar."
+                caption="Konten lebih panjang akan lebih nyaman dipindai jika memakai ukuran QR yang lebih besar."
               />
               <StatCard
                 label="Scan-safe profile"
@@ -417,8 +416,8 @@ export function QRGeneratorWorkspace() {
         </PageSection>
 
         <ResultCard
-          title="Encoded Payload"
-          description="String final inilah yang benar-benar dikodekan ke dalam QR. Sangat berguna untuk verifikasi manual sebelum export."
+          title="Konten Final"
+          description="Isi final yang akan dimasukkan ke dalam QR."
           rows={[
             { label: "Preset", value: activePreset.label },
             { label: "Foreground", value: form.foregroundColor, mono: true },
@@ -428,9 +427,9 @@ export function QRGeneratorWorkspace() {
           ]}
           footer={
             <TextArea
-              label="Payload result"
-              hint="Readonly preview dari string akhir yang dipakai oleh generator."
-              value={qrBuild.data || "Belum ada payload valid."}
+              label="Konten final"
+              hint="Preview teks akhir yang dipakai oleh generator."
+              value={qrBuild.data || "Belum ada konten valid."}
               readOnly
               className="min-h-[180px] font-mono text-[13px]"
             />
@@ -439,11 +438,11 @@ export function QRGeneratorWorkspace() {
 
         <ResultCard
           title="Readiness"
-          description="Ringkasan kesiapan modul QR terhadap scanability, export, dan runtime aplikasi saat ini."
+          description="Ringkasan kesiapan QR sebelum export."
           rows={[
             { label: "Status", value: canExport ? "Ready to export" : "Needs input fix" },
             { label: "Preset hint", value: activePreset.description },
-            { label: "Runtime", value: bootstrap.source === "rust" ? "Tauri desktop bridge ready" : "Browser preview mode" },
+            { label: "Status aplikasi", value: bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas" },
             { label: "WiFi mode", value: form.preset === "wifi" ? getWifiSecurityLabel(form.wifiSecurity) : "Not applicable" },
           ]}
           footer={
@@ -463,7 +462,7 @@ export function QRGeneratorWorkspace() {
               <ReadinessItem
                 icon={Palette}
                 title="Custom styling"
-                description="Foreground, background, ukuran, dan preset payload dapat diubah real-time untuk kebutuhan branding."
+                description="Warna, ukuran, dan jenis QR dapat diubah langsung untuk kebutuhan branding."
                 tone="amber"
               />
             </div>

@@ -70,12 +70,10 @@ export function NetworkToolkitWorkspace() {
             </div>
             <div className="max-w-3xl">
               <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Network Toolkit untuk lookup, reachability check, dan HTTP status secara lokal.
+                Cek koneksi, DNS, port, dan status website.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                Stage 7 fokus pada tool yang paling sering dipakai: local IP, DNS lookup, ping host,
-                port checker, dan HTTP status checker. Semua operasi backend berjalan di Rust dengan
-                validasi input, timeout, dan hasil yang mudah dibaca.
+                Gunakan alat jaringan yang sering dibutuhkan dalam satu tempat, dengan hasil ringkas dan mudah disalin.
               </p>
             </div>
 
@@ -83,35 +81,35 @@ export function NetworkToolkitWorkspace() {
               <StatCard
                 label="Local IP"
                 value={localIp.data?.localIp ?? (localIp.status === "loading" ? "Loading..." : "Unavailable")}
-                caption="Diambil dari backend Rust agar konsisten dengan runtime desktop."
+                caption="Alamat IP lokal perangkat Anda."
               />
               <StatCard
-                label="Runtime"
-                value={isDesktopRuntime ? "Tauri Desktop" : "Browser Preview"}
-                caption="Lookup aktif penuh saat Orion berjalan sebagai aplikasi desktop."
+                label="Status aplikasi"
+                value={isDesktopRuntime ? "Siap digunakan" : "Mode terbatas"}
+                caption="Fitur lengkap tersedia di aplikasi desktop."
               />
               <StatCard
                 label="Tool count"
                 value="5 checks"
-                caption="Local IP, DNS, ping, port, dan HTTP status tersedia di satu workspace."
+                caption="IP lokal, DNS, ping, port, dan HTTP status."
               />
             </div>
           </div>
 
           <div className="surface-panel-alt p-5 sm:p-6">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Execution Notes</div>
+            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Tips</div>
             <div className="mt-4 space-y-3">
               <InfoItem
-                title="Safe host validation"
-                description="Host dan URL divalidasi di backend sebelum dipakai untuk DNS, TCP connect, atau command ping sistem."
+                title="Input aman"
+                description="Host dan URL diperiksa terlebih dahulu sebelum proses dijalankan."
               />
               <InfoItem
-                title="Timeout aware"
-                description="Setiap check punya timeout eksplisit agar UI tidak terasa menggantung saat host lambat atau tidak tersedia."
+                title="Timeout jelas"
+                description="Pengecekan berhenti otomatis jika target terlalu lama merespons."
               />
               <InfoItem
-                title="Readable output"
-                description="Hasil dibuat ringkas untuk inspeksi cepat, lalu tetap bisa dicopy penuh ke clipboard bila diperlukan."
+                title="Mudah disalin"
+                description="Hasil dibuat ringkas dan bisa disalin ke clipboard."
               />
             </div>
           </div>
@@ -121,7 +119,7 @@ export function NetworkToolkitWorkspace() {
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Local IP"
-          description="Menampilkan alamat IP lokal yang terdeteksi oleh runtime desktop saat ini."
+          description="Menampilkan alamat IP lokal perangkat Anda."
           actions={
             <div className="flex gap-3">
               <Button
@@ -159,8 +157,8 @@ export function NetworkToolkitWorkspace() {
               title={localIp.status === "loading" ? "Mengambil local IP..." : "Local IP belum tersedia"}
               description={
                 localIp.status === "loading"
-                  ? "Orion sedang meminta local IP dari backend Rust."
-                  : "Jalankan Orion lewat Tauri desktop atau klik refresh untuk memuat ulang local IP."
+                  ? "Orion sedang membaca IP lokal perangkat Anda."
+                  : "Buka aplikasi desktop Orion atau klik refresh untuk mencoba lagi."
               }
             />
           )}
@@ -228,7 +226,7 @@ export function NetworkToolkitWorkspace() {
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Ping Host"
-          description="Reachability check lintas platform menggunakan command system `ping` dengan timeout aman."
+          description="Cek apakah host atau IP bisa dijangkau."
           actions={
             <Button
               variant="outline"
@@ -260,7 +258,7 @@ export function NetworkToolkitWorkspace() {
                 <TextArea
                   label="Ping output"
                   hint={ping.data.summary}
-                  value={ping.data.output || "No stdout returned by the system ping command."}
+                  value={ping.data.output || "Tidak ada detail tambahan dari proses ping."}
                   readOnly
                   className="min-h-[220px] font-mono text-[13px]"
                 />
@@ -269,13 +267,13 @@ export function NetworkToolkitWorkspace() {
               <EmptyState
                 icon={Activity}
                 title="Menjalankan ping..."
-                description="Orion sedang memanggil utilitas ping sistem untuk mengecek reachability target."
+                description="Orion sedang mengecek apakah target bisa dijangkau."
               />
             ) : (
               <EmptyState
                 icon={Activity}
                 title="Belum ada hasil ping"
-                description="Masukkan host lalu jalankan ping untuk melihat reachability dan output mentahnya."
+                description="Masukkan host lalu jalankan ping untuk melihat apakah target bisa dijangkau."
               />
             )}
           </div>
@@ -339,7 +337,7 @@ export function NetworkToolkitWorkspace() {
 
       <PageSection
         title="HTTP Status Checker"
-        description="Cek status HTTP/HTTPS dari URL tertentu menggunakan reqwest dengan connect timeout dan request timeout."
+        description="Cek status HTTP/HTTPS dari URL tertentu."
         actions={
           <Button
             variant="outline"
@@ -374,7 +372,7 @@ export function NetworkToolkitWorkspace() {
               <EmptyState
                 icon={ShieldAlert}
                 title="Mengirim request HTTP..."
-                description="Orion sedang meminta header/status dari URL target menggunakan reqwest."
+                description="Orion sedang membaca status dari URL target."
               />
             ) : (
               <EmptyState

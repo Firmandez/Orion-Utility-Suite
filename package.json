@@ -1,11 +1,11 @@
 {
   "name": "orion-utility-suite",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Firmandez",
   "license": "MIT",
   "homepage": "https://github.com/Firmandez",
-  "description": "Offline-first cross-platform desktop utility suite built with Tauri v2, React, TypeScript, Rust, Vite, and Tailwind CSS.",
+  "description": "Modern desktop utility suite for files, images, PDFs, QR codes, text, and network checks.",
   "type": "module",
   "scripts": {
     "sync:version": "node scripts/sync-version.mjs",
