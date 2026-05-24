@@ -3,7 +3,6 @@ import {
   ClipboardCopy,
   Globe2,
   LocateFixed,
-  Network,
   Radar,
   RefreshCw,
   Server,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
 import { EmptyState } from "@/components/common/EmptyState";
+import { ErrorBanner } from "@/components/common/ErrorBanner";
 import { PageSection } from "@/components/common/PageSection";
 import { ResultCard } from "@/components/common/ResultCard";
 import { Button } from "@/components/ui/Button";
@@ -22,6 +22,7 @@ import {
   formatDnsRows,
   formatHttpCopy,
   formatHttpRows,
+  formatLocalIpCopy,
   formatLocalIpRows,
   formatPingCopy,
   formatPingRows,
@@ -60,73 +61,17 @@ export function NetworkToolkitWorkspace() {
 
   return (
     <div className="space-y-6">
-      <section className="surface-panel relative overflow-hidden p-6 lg:p-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(34,211,238,0.12),transparent_24%)]" />
-        <div className="relative grid gap-6 xl:grid-cols-[1.16fr_0.84fr]">
-          <div className="space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-soft)] bg-[var(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent-strong)]">
-              <Network className="size-3.5" />
-              Local Diagnostics
-            </div>
-            <div className="max-w-3xl">
-              <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Cek koneksi, DNS, port, dan status website.
-              </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                Gunakan alat jaringan yang sering dibutuhkan dalam satu tempat, dengan hasil ringkas dan mudah disalin.
-              </p>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <StatCard
-                label="Local IP"
-                value={localIp.data?.localIp ?? (localIp.status === "loading" ? "Loading..." : "Unavailable")}
-                caption="Alamat IP lokal perangkat Anda."
-              />
-              <StatCard
-                label="Status aplikasi"
-                value={isDesktopRuntime ? "Siap digunakan" : "Mode terbatas"}
-                caption="Fitur lengkap tersedia di aplikasi desktop."
-              />
-              <StatCard
-                label="Tool count"
-                value="5 checks"
-                caption="IP lokal, DNS, ping, port, dan HTTP status."
-              />
-            </div>
-          </div>
-
-          <div className="surface-panel-alt p-5 sm:p-6">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Tips</div>
-            <div className="mt-4 space-y-3">
-              <InfoItem
-                title="Input aman"
-                description="Host dan URL diperiksa terlebih dahulu sebelum proses dijalankan."
-              />
-              <InfoItem
-                title="Timeout jelas"
-                description="Pengecekan berhenti otomatis jika target terlalu lama merespons."
-              />
-              <InfoItem
-                title="Mudah disalin"
-                description="Hasil dibuat ringkas dan bisa disalin ke clipboard."
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Local IP"
-          description="Menampilkan alamat IP lokal perangkat Anda."
+          description="Shows your device's local IP, subnet, gateway, DNS servers, and IP assignment mode."
           actions={
             <div className="flex gap-3">
               <Button
                 variant="outline"
                 size="sm"
                 leadingIcon={ClipboardCopy}
-                onClick={() => copyDiagnostic("local IP", localIp.data?.localIp ?? "")}
+                onClick={() => copyDiagnostic("local IP", formatLocalIpCopy(localIp.data))}
                 disabled={!localIp.data}
               >
                 Copy
@@ -145,7 +90,7 @@ export function NetworkToolkitWorkspace() {
           }
         >
           {localIp.errorMessage ? (
-            <ErrorBanner title="Local IP gagal diambil" message={localIp.errorMessage} />
+            <ErrorBanner title="Failed to fetch local IP" message={localIp.errorMessage} />
           ) : localIp.data ? (
             <ResultCard
               title="Network Interface Summary"
@@ -154,11 +99,11 @@ export function NetworkToolkitWorkspace() {
           ) : (
             <EmptyState
               icon={LocateFixed}
-              title={localIp.status === "loading" ? "Mengambil local IP..." : "Local IP belum tersedia"}
+              title={localIp.status === "loading" ? "Fetching local IP..." : "Local IP not available"}
               description={
                 localIp.status === "loading"
-                  ? "Orion sedang membaca IP lokal perangkat Anda."
-                  : "Buka aplikasi desktop Orion atau klik refresh untuk mencoba lagi."
+                  ? "Orion is reading your device's local IP."
+                  : "Open the Orion desktop app or click Refresh to try again."
               }
             />
           )}
@@ -166,7 +111,7 @@ export function NetworkToolkitWorkspace() {
 
         <PageSection
           title="DNS Lookup"
-          description="Lookup A/AAAA record untuk domain atau host tertentu menggunakan Hickory resolver."
+          description="Look up A/AAAA records for a domain or host."
           actions={
             <Button
               variant="outline"
@@ -182,7 +127,7 @@ export function NetworkToolkitWorkspace() {
           <div className="space-y-5">
             <Input
               label="Domain or host"
-              hint="Contoh: example.com, openai.com, localhost, atau IP address."
+              hint="Example: example.com, openai.com, localhost, or an IP address."
               value={dnsDomain}
               onChange={(event) => setDnsDomain(event.target.value)}
             />
@@ -190,11 +135,11 @@ export function NetworkToolkitWorkspace() {
               Run DNS lookup
             </Button>
 
-            {dns.errorMessage ? <ErrorBanner title="DNS lookup gagal" message={dns.errorMessage} /> : null}
+            {dns.errorMessage ? <ErrorBanner title="DNS lookup failed" message={dns.errorMessage} /> : null}
 
             {dns.data ? (
               <ResultCard
-                title="DNS Result"
+                title="DNS Results"
                 rows={formatDnsRows(dns.data)}
                 footer={
                   <div className="space-y-2">
@@ -209,14 +154,14 @@ export function NetworkToolkitWorkspace() {
             ) : dns.status === "loading" ? (
               <EmptyState
                 icon={Radar}
-                title="Menjalankan DNS lookup..."
-                description="Resolver sedang memeriksa alamat IP untuk domain yang Anda masukkan."
+                title="Running DNS lookup..."
+                description="Resolver is checking the IP address for the domain you entered."
               />
             ) : (
               <EmptyState
                 icon={Globe2}
-                title="Belum ada hasil DNS"
-                description="Masukkan domain lalu jalankan lookup untuk melihat alamat IP yang ditemukan."
+                title="No DNS results yet"
+                description="Enter a domain and run a lookup to see the resolved IP addresses."
               />
             )}
           </div>
@@ -226,7 +171,7 @@ export function NetworkToolkitWorkspace() {
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Ping Host"
-          description="Cek apakah host atau IP bisa dijangkau."
+          description="Check if a host or IP is reachable."
           actions={
             <Button
               variant="outline"
@@ -242,7 +187,7 @@ export function NetworkToolkitWorkspace() {
           <div className="space-y-5">
             <Input
               label="Host"
-              hint="Contoh: example.com, 1.1.1.1, localhost."
+              hint="Example: example.com, 1.1.1.1, localhost."
               value={pingHost}
               onChange={(event) => setPingHost(event.target.value)}
             />
@@ -250,7 +195,7 @@ export function NetworkToolkitWorkspace() {
               Run ping
             </Button>
 
-            {ping.errorMessage ? <ErrorBanner title="Ping gagal" message={ping.errorMessage} /> : null}
+            {ping.errorMessage ? <ErrorBanner title="Ping failed" message={ping.errorMessage} /> : null}
 
             {ping.data ? (
               <div className="space-y-4">
@@ -258,7 +203,7 @@ export function NetworkToolkitWorkspace() {
                 <TextArea
                   label="Ping output"
                   hint={ping.data.summary}
-                  value={ping.data.output || "Tidak ada detail tambahan dari proses ping."}
+                  value={ping.data.output || "No additional details from the ping process."}
                   readOnly
                   className="min-h-[220px] font-mono text-[13px]"
                 />
@@ -266,14 +211,14 @@ export function NetworkToolkitWorkspace() {
             ) : ping.status === "loading" ? (
               <EmptyState
                 icon={Activity}
-                title="Menjalankan ping..."
-                description="Orion sedang mengecek apakah target bisa dijangkau."
+                title="Running ping..."
+                description="Orion is checking if the target is reachable."
               />
             ) : (
               <EmptyState
                 icon={Activity}
-                title="Belum ada hasil ping"
-                description="Masukkan host lalu jalankan ping untuk melihat apakah target bisa dijangkau."
+                title="No ping results yet"
+                description="Enter a host and run a ping to check reachability."
               />
             )}
           </div>
@@ -281,7 +226,7 @@ export function NetworkToolkitWorkspace() {
 
         <PageSection
           title="Port Checker"
-          description="Cek apakah port TCP tertentu bisa diakses dengan connect timeout ringan."
+          description="Check if a specific TCP port is accessible."
           actions={
             <Button
               variant="outline"
@@ -298,7 +243,7 @@ export function NetworkToolkitWorkspace() {
             <div className="grid gap-4 sm:grid-cols-[1fr_140px]">
               <Input
                 label="Host"
-                hint="Contoh: example.com atau localhost."
+                hint="Example: example.com or localhost."
                 value={portHost}
                 onChange={(event) => setPortHost(event.target.value)}
               />
@@ -314,21 +259,21 @@ export function NetworkToolkitWorkspace() {
               Check port
             </Button>
 
-            {port.errorMessage ? <ErrorBanner title="Port check gagal" message={port.errorMessage} /> : null}
+            {port.errorMessage ? <ErrorBanner title="Port check failed" message={port.errorMessage} /> : null}
 
             {port.data ? (
               <ResultCard title="Port Check Result" rows={formatPortRows(port.data)} footer={<SummaryCard summary={port.data.summary} />} />
             ) : port.status === "loading" ? (
               <EmptyState
                 icon={Server}
-                title="Memeriksa port..."
-                description="Orion sedang mencoba membuka koneksi TCP ke host dan port yang Anda pilih."
+                title="Checking port..."
+                description="Orion is attempting a TCP connection to the specified host and port."
               />
             ) : (
               <EmptyState
                 icon={Server}
-                title="Belum ada hasil port check"
-                description="Masukkan host dan port, lalu jalankan check untuk melihat apakah port tersebut terbuka."
+                title="No port check results yet"
+                description="Enter a host and port, then run a check to see if the port is open."
               />
             )}
           </div>
@@ -337,7 +282,7 @@ export function NetworkToolkitWorkspace() {
 
       <PageSection
         title="HTTP Status Checker"
-        description="Cek status HTTP/HTTPS dari URL tertentu."
+        description="Check the HTTP/HTTPS status of a URL."
         actions={
           <Button
             variant="outline"
@@ -354,7 +299,7 @@ export function NetworkToolkitWorkspace() {
           <div className="space-y-5">
             <Input
               label="URL"
-              hint="Contoh: https://example.com atau cukup example.com untuk auto-https."
+              hint="Example: https://example.com or just example.com for auto-https."
               value={httpUrl}
               onChange={(event) => setHttpUrl(event.target.value)}
             />
@@ -362,7 +307,7 @@ export function NetworkToolkitWorkspace() {
               Check HTTP status
             </Button>
 
-            {http.errorMessage ? <ErrorBanner title="HTTP status gagal" message={http.errorMessage} /> : null}
+            {http.errorMessage ? <ErrorBanner title="HTTP status check failed" message={http.errorMessage} /> : null}
           </div>
 
           <div>
@@ -371,14 +316,14 @@ export function NetworkToolkitWorkspace() {
             ) : http.status === "loading" ? (
               <EmptyState
                 icon={ShieldAlert}
-                title="Mengirim request HTTP..."
-                description="Orion sedang membaca status dari URL target."
+                title="Sending HTTP request..."
+                description="Orion is reading the status from the target URL."
               />
             ) : (
               <EmptyState
                 icon={ShieldAlert}
-                title="Belum ada hasil HTTP"
-                description="Masukkan URL lalu jalankan check untuk melihat status code, final URL, dan ringkasannya."
+                title="No HTTP results yet"
+                description="Enter a URL and run a check to see the status code, final URL, and summary."
               />
             )}
           </div>
@@ -388,50 +333,9 @@ export function NetworkToolkitWorkspace() {
   );
 }
 
-function StatCard({
-  label,
-  value,
-  caption,
-}: {
-  label: string;
-  value: string;
-  caption: string;
-}) {
-  return (
-    <div className="surface-panel-alt p-4">
-      <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">{label}</div>
-      <div className="mt-3 text-lg font-semibold text-[var(--text-primary)]">{value}</div>
-      <div className="mt-2 text-xs leading-6 text-[var(--text-secondary)]">{caption}</div>
-    </div>
-  );
-}
-
-function InfoItem({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="rounded-[22px] border bg-black/10 p-4">
-      <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-      <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</div>
-    </div>
-  );
-}
-
-function ErrorBanner({ title, message }: { title: string; message: string }) {
-  return (
-    <div className="rounded-[24px] border border-rose-400/18 bg-rose-500/10 p-4">
-      <div className="flex items-start gap-3">
-        <ShieldAlert className="mt-0.5 size-5 shrink-0 text-rose-300" />
-        <div>
-          <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-          <div className="mt-1 text-sm leading-6 text-rose-100/90">{message}</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function SummaryCard({ summary }: { summary: string }) {
   return (
-    <div className="rounded-[22px] border bg-black/10 p-4 text-sm leading-6 text-[var(--text-secondary)]">
+    <div className="rounded-2xl border bg-black/10 p-4 text-sm leading-6 text-[var(--text-secondary)]">
       {summary}
     </div>
   );

@@ -10,7 +10,7 @@ export const navGroups: NavGroup[] = [
         title: "Dashboard",
         to: "/",
         icon: LayoutDashboard,
-        description: "Akses cepat ke semua alat.",
+        description: "Quick access to every tool.",
       },
       ...toolCatalog.map((tool) => ({
         title: tool.title,

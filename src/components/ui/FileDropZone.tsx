@@ -38,7 +38,7 @@ export function FileDropZone({
       <div
         {...getRootProps()}
         className={cn(
-          "group rounded-[24px] border border-dashed bg-[var(--surface-2)] p-5 text-center transition outline-none",
+          "group rounded-3xl border border-dashed bg-[var(--surface-2)] p-5 text-center transition outline-none",
           isDragActive ? "border-[var(--accent-soft)] bg-[var(--accent-surface)]" : "hover:border-[var(--accent-soft)] hover:bg-white/5",
         )}
       >
@@ -49,10 +49,10 @@ export function FileDropZone({
           </div>
           <div>
             <div className="text-sm font-semibold text-[var(--text-primary)]">
-              {isDragActive ? "Lepaskan file untuk menambahkannya" : "Drop file di sini atau klik untuk memilih"}
+              {isDragActive ? "Drop files to add them" : "Drop files here or click to choose"}
             </div>
             <div className="mt-1 text-xs text-[var(--text-muted)]">
-              Drag and drop, file picker, dan daftar file siap dipakai lintas utilitas.
+              Supports drag-and-drop and file picker workflows across utilities.
             </div>
           </div>
         </div>

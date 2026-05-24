@@ -18,32 +18,32 @@ export const qrPresetDefinitions: QRPresetDefinition[] = [
   {
     id: "text",
     label: "Text / Link",
-    description: "Teks, link, JSON kecil, atau kode singkat.",
+    description: "Text, links, small JSON snippets, or short codes.",
   },
   {
     id: "url",
     label: "URL",
-    description: "Landing page, deep link, atau alamat aplikasi internal.",
+    description: "Landing pages, deep links, or internal app addresses.",
   },
   {
     id: "wifi",
     label: "WiFi QR",
-    description: "SSID, password, dan mode keamanan untuk koneksi cepat.",
+    description: "SSID, password, and security mode for quick connection.",
   },
   {
     id: "whatsapp",
-    label: "WhatsApp Chat",
-    description: "Buka chat WhatsApp dengan nomor dan pesan awal opsional.",
+    label: "Chat WhatsApp",
+    description: "Open a WhatsApp chat with a number and optional starting message.",
   },
   {
     id: "email",
-    label: "Email QR",
-    description: "Prefill alamat email, subject, dan body untuk kampanye atau support.",
+    label: "Email",
+    description: "Prefill email address, subject, and body for campaigns or support.",
   },
   {
     id: "vcard",
     label: "vCard / Contact",
-    description: "Kontak digital dengan nama, jabatan, telepon, dan detail pendukung.",
+    description: "Digital contact with name, title, phone, and supporting details.",
   },
 ];
 
@@ -102,31 +102,31 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
   let fileStem = "orion-qr";
 
   if (!isValidHex(form.foregroundColor)) {
-    errors.push("Foreground color harus berupa hex 6 digit, misalnya #0F172A.");
+    errors.push("Foreground color must be a 6-digit hex value, for example #0F172A.");
   }
 
   if (!isValidHex(form.backgroundColor)) {
-    errors.push("Background color harus berupa hex 6 digit, misalnya #FFFFFF.");
+    errors.push("Background color must be a 6-digit hex value, for example #FFFFFF.");
   }
 
   if (form.foregroundColor.toLowerCase() === form.backgroundColor.toLowerCase()) {
-    errors.push("Foreground dan background color tidak boleh sama.");
+    errors.push("Foreground and background colors cannot be the same.");
   }
 
   if (form.size < MIN_QR_SIZE || form.size > MAX_QR_SIZE) {
-    errors.push(`Ukuran QR harus berada di antara ${MIN_QR_SIZE}px dan ${MAX_QR_SIZE}px.`);
+    errors.push(`QR size must be between ${MIN_QR_SIZE}px and ${MAX_QR_SIZE}px.`);
   }
 
   if (form.logoSizePercent < MIN_LOGO_SIZE_PERCENT || form.logoSizePercent > MAX_LOGO_SIZE_PERCENT) {
-    errors.push(`Ukuran logo harus berada di antara ${MIN_LOGO_SIZE_PERCENT}% dan ${MAX_LOGO_SIZE_PERCENT}%.`);
+    errors.push(`Logo size must be between ${MIN_LOGO_SIZE_PERCENT}% and ${MAX_LOGO_SIZE_PERCENT}%.`);
   }
 
   if (hasLogo && form.errorCorrectionLevel !== "H") {
-    warnings.push("Logo aktif: error correction efektif dinaikkan ke level H agar QR tetap mudah dipindai.");
+    warnings.push("Logo active: effective error correction was raised to level H to keep the QR easy to scan.");
   }
 
   if (hasLogo && form.logoSizePercent > 26) {
-    warnings.push("Ukuran logo di atas 26% berisiko menurunkan keterbacaan pada scanner tertentu.");
+    warnings.push("Logo sizes above 26% may reduce readability on some scanners.");
   }
 
   switch (form.preset) {
@@ -134,7 +134,7 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
       data = form.rawText.trim();
       fileStem = "orion-qr-text";
       if (!data) {
-        errors.push("Input text/link tidak boleh kosong.");
+        errors.push("Text/link input cannot be empty.");
       }
       break;
     }
@@ -142,7 +142,7 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
       const normalizedUrl = normalizeUrl(form.url);
       fileStem = "orion-qr-url";
       if (!normalizedUrl) {
-        errors.push("URL harus valid. Tambahkan domain yang lengkap atau protokol yang benar.");
+        errors.push("URL must be valid. Add a complete domain or the correct protocol.");
       } else {
         data = normalizedUrl;
       }
@@ -154,11 +154,11 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
       const password = form.wifiPassword.trim();
 
       if (!ssid) {
-        errors.push("SSID WiFi wajib diisi.");
+        errors.push("WiFi SSID is required.");
       }
 
       if (form.wifiSecurity !== "nopass" && !password) {
-        errors.push("Password WiFi wajib diisi untuk jaringan WPA atau WEP.");
+        errors.push("WiFi password is required for WPA or WEP networks.");
       }
 
       data = `WIFI:T:${escapeWifiValue(form.wifiSecurity)};S:${escapeWifiValue(ssid)};P:${escapeWifiValue(password)};H:${form.wifiHidden ? "true" : "false"};;`;
@@ -169,7 +169,7 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
       const normalizedPhone = normalizePhoneNumber(form.whatsappPhone);
 
       if (!normalizedPhone) {
-        errors.push("Nomor WhatsApp wajib diisi dengan format internasional atau angka lokal yang valid.");
+        errors.push("WhatsApp number is required in international format or as a valid local number.");
       }
 
       const params = new URLSearchParams();
@@ -185,7 +185,7 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
       const email = form.emailTo.trim();
 
       if (!isValidEmail(email)) {
-        errors.push("Alamat email tujuan tidak valid.");
+        errors.push("Recipient email address is not valid.");
       }
 
       const params = new URLSearchParams();
@@ -209,19 +209,19 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
       const website = form.contactWebsite.trim();
 
       if (!firstName && !lastName && !organization) {
-        errors.push("Isi minimal nama depan, nama belakang, atau nama organisasi untuk vCard.");
+        errors.push("Enter at least a first name, last name, or organization name for the vCard.");
       }
 
       if (!phone && !email) {
-        errors.push("Isi minimal satu detail kontak: nomor telepon atau email.");
+        errors.push("Enter at least one contact detail: phone number or email.");
       }
 
       if (email && !isValidEmail(email)) {
-        errors.push("Email kontak pada vCard tidak valid.");
+        errors.push("Contact email in the vCard is not valid.");
       }
 
       if (website && !normalizeUrl(website)) {
-        errors.push("Website kontak harus berupa URL yang valid.");
+        errors.push("Contact website must be a valid URL.");
       }
 
       const fullName = [firstName, lastName].filter(Boolean).join(" ").trim();
@@ -268,7 +268,7 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
   }
 
   if (data.length > 900) {
-    warnings.push("Konten cukup panjang. Gunakan ukuran QR lebih besar agar hasil scan tetap stabil.");
+    warnings.push("Content is fairly long. Use a larger QR size to keep scanning stable.");
   }
 
   return {

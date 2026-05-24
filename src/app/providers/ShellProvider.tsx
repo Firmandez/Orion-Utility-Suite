@@ -193,7 +193,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
         });
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Settings tidak bisa disimpan ke settings.json.";
+      const message = error instanceof Error ? error.message : "Settings could not be saved to settings.json.";
 
       startTransition(() => {
         setSettingsState((current) => ({
@@ -203,7 +203,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
         }));
       });
 
-      toast.error("Settings save failed", { description: message });
+      toast.error("Settings could not be saved", { description: message });
     }
   };
 

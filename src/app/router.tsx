@@ -14,7 +14,7 @@ const NetworkToolkitPage = lazy(() => import("@/pages/NetworkToolkitPage"));
 const DeveloperToolsPage = lazy(() => import("@/pages/DeveloperToolsPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 
-function handle(title: string, subtitle: string, searchPlaceholder: string): RouteHandle {
+function handle(title: string, searchPlaceholder: string, subtitle?: string): RouteHandle {
   return { title, subtitle, searchPlaceholder };
 }
 
@@ -23,9 +23,9 @@ function withSuspense(node: ReactNode) {
     <Suspense
       fallback={
         <div className="surface-panel p-6">
-          <div className="text-sm uppercase tracking-[0.16em] text-[var(--text-muted)]">Loading module</div>
-          <div className="mt-3 text-xl font-semibold text-[var(--text-primary)]">Menyiapkan Orion...</div>
-          <div className="mt-2 text-sm text-[var(--text-secondary)]">Sebentar, modul sedang dibuka.</div>
+          <div className="text-sm uppercase tracking-[0.1em] text-[var(--text-muted)]">Loading module</div>
+          <div className="mt-3 text-xl font-semibold text-[var(--text-primary)]">Preparing Orion...</div>
+          <div className="mt-2 text-sm text-[var(--text-secondary)]">Just a moment, the page is loading.</div>
         </div>
       }
     >
@@ -45,8 +45,8 @@ export const router = createHashRouter([
         element: withSuspense(<DashboardPage />),
         handle: handle(
           "Dashboard",
-          "Akses cepat ke utility utama dan informasi aplikasi.",
-          "Cari utility, kategori, atau fungsi",
+          "Search utilities",
+          "Quick access to every desktop utility.",
         ),
       },
       {
@@ -54,8 +54,8 @@ export const router = createHashRouter([
         element: withSuspense(<QRGeneratorPage />),
         handle: handle(
           "QR Generator",
-          "Buat QR untuk URL, teks, Wi-Fi, WhatsApp, email, dan kontak.",
-          "Cari preset QR",
+          "Search QR presets or options",
+          "Create QR codes for URLs, text, Wi-Fi, WhatsApp, email, and contacts.",
         ),
       },
       {
@@ -63,8 +63,8 @@ export const router = createHashRouter([
         element: withSuspense(<ImageConverterPage />),
         handle: handle(
           "Image Converter",
-          "Ubah banyak gambar sekaligus dengan pilihan resize, kualitas, dan folder output.",
-          "Cari format atau alur gambar",
+          "Search image formats or workflows",
+          "Convert images in batches with format, quality, and output folder controls.",
         ),
       },
       {
@@ -72,8 +72,8 @@ export const router = createHashRouter([
         element: withSuspense(<PDFToolsPage />),
         handle: handle(
           "PDF Tools",
-          "Gabungkan, pisahkan, dan buat PDF dari gambar lokal.",
-          "Cari operasi PDF",
+          "Search PDF operations",
+          "Merge, split, and create PDFs from local images.",
         ),
       },
       {
@@ -81,8 +81,8 @@ export const router = createHashRouter([
         element: withSuspense(<TextUtilitiesPage />),
         handle: handle(
           "Text Utilities",
-          "Format, encode, decode, dan rapikan teks dengan panel input-output.",
-          "Cari alat teks",
+          "Search text tools",
+          "Format, encode, decode, and clean up text with input-output panels.",
         ),
       },
       {
@@ -90,8 +90,8 @@ export const router = createHashRouter([
         element: withSuspense(<HashCheckerPage />),
         handle: handle(
           "Hash Checker",
-          "Cek integritas file dengan MD5, SHA1, dan SHA256.",
-          "Cari hash atau checksum",
+          "Search hashes or checksums",
+          "Verify file integrity with MD5, SHA1, and SHA256.",
         ),
       },
       {
@@ -99,8 +99,8 @@ export const router = createHashRouter([
         element: withSuspense(<NetworkToolkitPage />),
         handle: handle(
           "Network Toolkit",
-          "Periksa IP lokal, DNS, ping, port, dan status HTTP.",
-          "Cari host atau catatan jaringan",
+          "Search hosts or network tools",
+          "Check local IP, DNS, ping, ports, and HTTP status.",
         ),
       },
       {
@@ -108,8 +108,8 @@ export const router = createHashRouter([
         element: withSuspense(<DeveloperToolsPage />),
         handle: handle(
           "Advanced Tools",
-          "Alat lanjutan untuk UUID, timestamp, regex, JWT, dan warna.",
-          "Cari alat lanjutan",
+          "Search advanced tools",
+          "Tools for UUIDs, timestamps, regex, JWTs, and color conversion.",
         ),
       },
       {
@@ -117,8 +117,8 @@ export const router = createHashRouter([
         element: withSuspense(<SettingsPage />),
         handle: handle(
           "Settings",
-          "Atur tampilan, folder output, aplikasi, dan informasi Orion.",
-          "Cari pengaturan",
+          "Search settings",
+          "Customize appearance, output folders, and app preferences.",
         ),
       },
     ],

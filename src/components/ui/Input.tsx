@@ -29,7 +29,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           id={inputId}
           ref={ref}
           className={cn(
-            "h-12 w-full rounded-2xl border bg-[var(--surface-2)] px-4 text-sm text-[var(--text-primary)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--accent-soft)] focus:ring-4 focus:ring-[var(--accent-surface)]",
+            "h-11 w-full rounded-xl border bg-[var(--surface-2)] px-4 text-sm text-[var(--text-primary)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--accent-soft)] focus:ring-4 focus:ring-[var(--accent-surface)]",
             Icon && "pl-11",
             className,
           )}

@@ -24,7 +24,7 @@ export function ImageBatchDropZone({
     <div className="space-y-4">
       <div
         className={cn(
-          "rounded-[28px] border border-dashed bg-[var(--surface-2)] p-6 transition",
+          "rounded-3xl border border-dashed bg-[var(--surface-2)] p-6 transition",
           isDragActive ? "border-emerald-400/55 bg-emerald-500/10" : "hover:border-emerald-400/30 hover:bg-white/5",
           disabled && "pointer-events-none opacity-70",
         )}
@@ -35,18 +35,18 @@ export function ImageBatchDropZone({
           </div>
           <div>
             <div className="text-base font-semibold text-[var(--text-primary)]">
-              {isDragActive ? "Lepaskan gambar untuk menambahkannya" : "Drop banyak gambar sekaligus ke area ini"}
+              {isDragActive ? "Drop images to add them" : "Drop multiple images into this area"}
             </div>
             <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-              Mendukung PNG, JPG, JPEG, dan WEBP melalui drag and drop atau tombol pilih file.
+              Supports PNG, JPG, JPEG, and WEBP through drag-and-drop or the file picker.
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             <Button variant="outline" leadingIcon={FolderPlus} onClick={onPick} disabled={disabled}>
-              Pilih gambar
+              Choose images
             </Button>
             <Button variant="ghost" leadingIcon={Trash2} onClick={onClear} disabled={disabled || files.length === 0}>
-              Bersihkan daftar
+              Clear queue
             </Button>
           </div>
         </div>
@@ -57,14 +57,14 @@ export function ImageBatchDropZone({
           {files.map((file) => (
             <div
               key={file.path}
-              className="flex items-start justify-between gap-4 rounded-[24px] border bg-[var(--surface-2)] px-4 py-4"
+              className="flex items-start justify-between gap-4 rounded-3xl border bg-[var(--surface-2)] px-4 py-4"
             >
               <div className="min-w-0">
                 <div className="text-sm font-semibold text-[var(--text-primary)]">{truncateMiddle(file.fileName, 26, 14)}</div>
                 <div className="mt-1 break-all font-mono text-[12px] leading-6 text-[var(--text-muted)]">
                   {truncateMiddle(file.path, 36, 18)}
                 </div>
-                <div className="mt-2 inline-flex rounded-full border border-emerald-400/18 bg-emerald-500/10 px-3 py-1 text-[11px] uppercase tracking-[0.16em] text-emerald-200">
+                <div className="mt-2 inline-flex rounded-full border border-emerald-400/18 bg-emerald-500/10 px-3 py-1 text-[11px] uppercase tracking-[0.1em] text-emerald-200">
                   {file.extension.toUpperCase()}
                 </div>
               </div>

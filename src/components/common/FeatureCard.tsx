@@ -22,24 +22,17 @@ export function FeatureCard({ feature }: FeatureCardProps) {
             backgroundImage: "linear-gradient(145deg, var(--accent-surface) 0%, transparent 78%)",
           }}
         />
-        <div className="relative flex items-start justify-between gap-4">
+        <div className="relative flex items-start gap-4">
           <div className="flex size-12 items-center justify-center rounded-2xl border border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]">
             <Icon className="size-5" />
           </div>
-          <span className="rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--text-muted)]">
-            {feature.status}
-          </span>
         </div>
         <div className="relative mt-5">
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">{feature.title}</h3>
           <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{feature.description}</p>
         </div>
-        <div className="relative mt-5 flex items-center justify-between gap-3">
-          <span className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">{feature.category}</span>
-          <span className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent-strong)]">
-            Open
-            <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
-          </span>
+        <div className="relative mt-auto pt-4 flex items-center gap-2 text-sm font-medium text-[var(--accent-strong)] opacity-0 transition group-hover:opacity-100">
+          Open <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
         </div>
       </Link>
     </motion.div>

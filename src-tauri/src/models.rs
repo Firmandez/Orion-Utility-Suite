@@ -33,6 +33,11 @@ pub struct SystemInfoPayload {
 #[serde(rename_all = "camelCase")]
 pub struct LocalIpPayload {
     pub local_ip: String,
+    pub subnet_mask: Option<String>,
+    pub default_gateway: Option<String>,
+    pub preferred_dns_server: Option<String>,
+    pub alternate_dns_server: Option<String>,
+    pub address_mode: String,
 }
 
 #[derive(Debug, Clone, Serialize)]

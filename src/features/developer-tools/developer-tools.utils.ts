@@ -9,7 +9,7 @@ import type {
   UuidGenerationResult,
 } from "./developer-tools.types";
 
-const localTimeFormatter = new Intl.DateTimeFormat("id-ID", {
+const localTimeFormatter = new Intl.DateTimeFormat("en-US", {
   dateStyle: "full",
   timeStyle: "long",
 });
@@ -40,7 +40,7 @@ export function generateUuidValue(): UuidGenerationResult {
     };
   }
 
-  throw new Error("Secure crypto API tidak tersedia di runtime ini.");
+  throw new Error("Secure crypto API is not available in this runtime.");
 }
 
 export function convertTimestampInput(input: string): TimestampConversionResult {
@@ -60,7 +60,7 @@ export function convertTimestampInput(input: string): TimestampConversionResult 
     if (!Number.isFinite(numericValue)) {
       return {
         state: "error",
-        errorMessage: "Timestamp numerik tidak valid.",
+        errorMessage: "Numeric timestamp is not valid.",
       };
     }
 
@@ -75,7 +75,7 @@ export function convertTimestampInput(input: string): TimestampConversionResult 
     if (Number.isNaN(parsed)) {
       return {
         state: "error",
-        errorMessage: "Masukkan Unix timestamp atau date string yang valid.",
+        errorMessage: "Enter a valid Unix timestamp or date string.",
       };
     }
 
@@ -86,7 +86,7 @@ export function convertTimestampInput(input: string): TimestampConversionResult 
   if (Number.isNaN(date.getTime())) {
     return {
       state: "error",
-      errorMessage: "Tanggal hasil parsing tidak valid.",
+      errorMessage: "The parsed date is not valid.",
     };
   }
 
@@ -137,7 +137,7 @@ export function testRegexPattern(pattern: string, flags: string, sourceText: str
     return {
       state: "error",
       matches: [],
-      errorMessage: "Isi regex pattern terlebih dulu.",
+      errorMessage: "Enter a regex pattern first.",
     };
   }
 
@@ -187,7 +187,7 @@ export function testRegexPattern(pattern: string, flags: string, sourceText: str
       state: "ready",
       usedFlags: normalizedFlagsResult.flags || "(none)",
       searchMode: multiMatchMode ? "Multi-match scan" : "Single-match scan",
-      summary: matches.length > 0 ? `${matches.length} match ditemukan.` : "Tidak ada match yang ditemukan.",
+      summary: matches.length > 0 ? `${matches.length} matches found.` : "No matches found.",
       matches,
       copyValue: JSON.stringify(
         {
@@ -201,7 +201,7 @@ export function testRegexPattern(pattern: string, flags: string, sourceText: str
       ),
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Regex pattern tidak valid.";
+    const message = error instanceof Error ? error.message : "Regex pattern is not valid.";
 
     return {
       state: "error",
@@ -223,7 +223,7 @@ export function decodeJwtToken(token: string): JwtDecodeResult {
   if (segments.length < 2) {
     return {
       state: "error",
-      errorMessage: "JWT minimal harus memiliki header dan isi token yang dipisahkan titik.",
+      errorMessage: "JWT must have at least a header and payload separated by dots.",
     };
   }
 
@@ -253,7 +253,7 @@ export function decodeJwtToken(token: string): JwtDecodeResult {
       ),
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "JWT tidak bisa di-decode.";
+    const message = error instanceof Error ? error.message : "JWT could not be decoded.";
 
     return {
       state: "error",
@@ -327,7 +327,7 @@ export function convertColorValue(input: string): ColorConversionResult {
 
   return {
     state: "error",
-    errorMessage: "Gunakan format warna yang valid seperti #0ea5e9, rgb(14, 165, 233), atau hsl(199, 89%, 48%).",
+    errorMessage: "Use a valid color format such as #0ea5e9, rgb(14, 165, 233), or hsl(199, 89%, 48%).",
   };
 }
 
@@ -347,13 +347,13 @@ function normalizeRegexFlags(flags: string): { flags: string } | { errorMessage:
   for (const character of cleaned) {
     if (!allowedRegexFlags.has(character)) {
       return {
-        errorMessage: `Flag regex "${character}" tidak dikenali.`,
+        errorMessage: `Regex flag "${character}" is not recognized.`,
       };
     }
 
     if (uniqueFlags.has(character)) {
       return {
-        errorMessage: `Flag regex "${character}" ditulis lebih dari sekali.`,
+        errorMessage: `Regex flag "${character}" is written more than once.`,
       };
     }
 
@@ -367,7 +367,7 @@ function normalizeRegexFlags(flags: string): { flags: string } | { errorMessage:
 
 function decodeBase64UrlSegment(segment: string) {
   if (!segment) {
-    throw new Error("JWT segment kosong.");
+    throw new Error("JWT segment is empty.");
   }
 
   const normalized = segment.replace(/-/g, "+").replace(/_/g, "/");

@@ -45,7 +45,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
     outputFileName: getDefaultOutputFileName("merge"),
     status: "idle",
     progressPercent: 0,
-    progressStatus: "Menunggu pengaturan PDF",
+    progressStatus: "Waiting for PDF settings",
     isWindowDragActive: false,
   });
 
@@ -56,8 +56,8 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
     progressPercent: 0,
     progressStatus:
       files.length > 0
-        ? `${files.length} file siap diproses`
-        : "Menunggu pengaturan PDF",
+        ? `${files.length} files ready to process`
+        : "Waiting for PDF settings",
     currentItemName: undefined,
     result: undefined,
     errorMessage: undefined,
@@ -70,7 +70,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
       if (invalidPaths.length > 0) {
         notify.info(
           "Unsupported files skipped",
-          `File diabaikan karena tidak cocok dengan operasi ${getOperationLabel(state.operation)}.`,
+          `Files were ignored because they do not match the ${getOperationLabel(state.operation)} operation.`,
         );
       }
       return;
@@ -89,21 +89,21 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
     });
 
     notify.success(
-      source === "drop" ? "Files added from drop" : "Files selected",
-      `${nextPaths.length} file siap dipakai untuk ${getOperationLabel(state.operation).toLowerCase()}.`,
+      source === "drop" ? "Dropped files added" : "Files selected",
+      `${nextPaths.length} files ready for ${getOperationLabel(state.operation).toLowerCase()}.`,
     );
 
     if (invalidPaths.length > 0) {
       notify.info(
         "Unsupported files skipped",
-        `${invalidPaths.length} file diabaikan karena extension-nya tidak sesuai operasi aktif.`,
+        `${invalidPaths.length} files were ignored because their extensions do not match the active operation.`,
       );
     }
 
     if (isPdfOperationSingleFile(state.operation) && validPaths.length > 1) {
       notify.info(
         "Single-file mode active",
-        "Operasi ini hanya memakai file valid pertama dari daftar yang Anda tambahkan.",
+        "This operation only uses the first valid file from the list you added.",
       );
     }
   });
@@ -130,26 +130,26 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
     if (invalidPaths.length > 0) {
       notify.info(
         "Queue adjusted",
-        `${invalidPaths.length} file dikeluarkan dari queue karena tidak cocok dengan operasi baru.`,
+        `${invalidPaths.length} files were removed from the queue because they do not match the new operation.`,
       );
     }
 
     if (isPdfOperationSingleFile(operation) && validPaths.length > 1) {
       notify.info(
-        "Queue reduced",
-        "Operasi ini hanya menyimpan satu file sumber, jadi Orion mempertahankan file pertama yang valid.",
+        "Queue trimmed",
+        "This operation only keeps one source file, so Orion kept the first valid file.",
       );
     }
   });
 
   const pickFiles = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Pilih file tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "File selection is available when Orion is opened as a desktop app.");
       return;
     }
 
     const selection = await open({
-      title: `Select files for ${getOperationLabel(state.operation)}`,
+      title: `Choose files for ${getOperationLabel(state.operation)}`,
       multiple: !isPdfOperationSingleFile(state.operation),
       directory: false,
       filters: [
@@ -172,12 +172,12 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
 
   const pickOutputFolder = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Pilih folder tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "Folder selection is available when Orion is opened as a desktop app.");
       return;
     }
 
     const selection = await open({
-      title: "Select output folder",
+      title: "Choose output folder",
       multiple: false,
       directory: true,
     });
@@ -189,7 +189,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
           outputFolderPath: selection,
         }));
       });
-      notify.success("Folder output dipilih", "Folder tujuan hasil PDF sudah diperbarui.");
+      notify.success("Output folder selected", "The PDF result destination folder has been updated.");
     }
   });
 
@@ -235,7 +235,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
     startTransition(() => {
       setState((current) => resetForEdit(current, []));
     });
-    notify.info("Queue cleared", "Daftar file dan hasil operasi PDF dibersihkan.");
+    notify.info("Queue cleared", "File list and PDF operation results have been cleared.");
   });
 
   const setOutputFileName = useEffectEvent((value: string) => {
@@ -259,31 +259,31 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
   const copyPath = useEffectEvent(async (path: string, label: string) => {
     try {
       await copyText(path);
-      notify.success("Path copied", `${label} berhasil disalin ke clipboard.`);
+      notify.success("Path copied", `${label} copied to the clipboard.`);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
       notify.error("Copy failed", message);
     }
   });
 
   const copyResultSummary = useEffectEvent(async () => {
     if (!state.result) {
-      notify.error("Result not available", "Jalankan operasi PDF terlebih dahulu sebelum menyalin ringkasannya.");
+      notify.error("Result not available", "Run a PDF operation before copying the summary.");
       return;
     }
 
     try {
       await copyText(buildCopyPayload(state.result));
-      notify.success("Summary copied", "Ringkasan hasil PDF berhasil disalin ke clipboard.");
+      notify.success("Summary copied", "PDF result summary copied to the clipboard.");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
       notify.error("Copy failed", message);
     }
   });
 
   const runOperation = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Operasi PDF tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "PDF operations are available when Orion is opened as a desktop app.");
       return;
     }
 
@@ -302,7 +302,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
           errorMessage: validation,
         }));
       });
-      notify.error("Konfigurasi belum valid", validation);
+      notify.error("Configuration is not valid", validation);
       return;
     }
 
@@ -312,7 +312,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
         ...current,
         status: "loading",
         progressPercent: 0,
-        progressStatus: `Memulai ${getOperationLabel(current.operation).toLowerCase()}`,
+        progressStatus: `Starting ${getOperationLabel(current.operation).toLowerCase()}`,
         currentItemName: undefined,
         result: undefined,
         errorMessage: undefined,
@@ -335,8 +335,8 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
           progressPercent: 100,
           progressStatus:
             result.operation === "pdf-to-images" && result.data.status === "placeholder"
-              ? "PDF to Image belum tersedia"
-              : `${getOperationLabel(result.operation)} selesai`,
+              ? "PDF to Images is not available yet"
+              : `${getOperationLabel(result.operation)} finished`,
           currentItemName: undefined,
           result,
           errorMessage: undefined,
@@ -346,16 +346,16 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
       const pushToast = toastSummary.tone === "success" ? notify.success : notify.info;
       pushToast(toastSummary.title, toastSummary.description);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Operasi PDF gagal diproses.";
+      const message = error instanceof Error ? error.message : "PDF operation could not be processed.";
       startTransition(() => {
         setState((current) => ({
           ...current,
           status: "error",
-          progressStatus: `${getOperationLabel(current.operation)} gagal`,
+          progressStatus: `${getOperationLabel(current.operation)} failed`,
           errorMessage: message,
         }));
       });
-      notify.error("Operasi PDF gagal", message);
+      notify.error("PDF operation failed", message);
     } finally {
       activeOperationRef.current = undefined;
     }
@@ -467,7 +467,7 @@ async function executePdfOperation(
     }
     case "split": {
       if (!firstFile) {
-        throw new Error("PDF sumber untuk split tidak ditemukan.");
+        throw new Error("Source PDF for split was not found.");
       }
 
       const data = await splitPdf(firstFile.path, outputFolderPath);
@@ -482,7 +482,7 @@ async function executePdfOperation(
     }
     case "pdf-to-images": {
       if (!firstFile) {
-        throw new Error("PDF sumber untuk PDF to Image tidak ditemukan.");
+        throw new Error("Source PDF for PDF to Images was not found.");
       }
 
       const data = await pdfToImages(firstFile.path, outputFolderPath);

@@ -4,13 +4,13 @@ import { cn } from "@/lib/utils";
 export function ValidationPanel({ errors, warnings }: { errors: string[]; warnings: string[] }) {
   if (errors.length === 0 && warnings.length === 0) {
     return (
-      <div className="rounded-[24px] border border-emerald-400/18 bg-emerald-500/10 p-4">
+      <div className="rounded-3xl border border-emerald-400/18 bg-emerald-500/10 p-4">
         <div className="flex items-start gap-3">
           <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-300" />
           <div>
-            <div className="text-sm font-semibold text-[var(--text-primary)]">Konten QR siap</div>
+            <div className="text-sm font-semibold text-[var(--text-primary)]">QR content ready</div>
             <div className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
-              QR siap dipreview dan diexport. Ubah jenis atau tampilan kapan saja, hasil akan diperbarui otomatis.
+              QR is ready to preview and export. Change type or styling anytime and the result updates automatically.
             </div>
           </div>
         </div>
@@ -21,7 +21,7 @@ export function ValidationPanel({ errors, warnings }: { errors: string[]; warnin
   return (
     <div className="grid gap-3">
       {errors.map((error) => (
-        <div key={error} className="rounded-[22px] border border-rose-400/18 bg-rose-500/10 p-4 text-sm text-rose-100">
+        <div key={error} className="rounded-2xl border border-rose-400/18 bg-rose-500/10 p-4 text-sm text-rose-100">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 size-4 shrink-0 text-rose-300" />
             <span className="leading-6">{error}</span>
@@ -29,7 +29,7 @@ export function ValidationPanel({ errors, warnings }: { errors: string[]; warnin
         </div>
       ))}
       {warnings.map((warning) => (
-        <div key={warning} className="rounded-[22px] border border-amber-400/18 bg-amber-500/10 p-4 text-sm text-amber-100">
+        <div key={warning} className="rounded-2xl border border-amber-400/18 bg-amber-500/10 p-4 text-sm text-amber-100">
           <div className="flex items-start gap-3">
             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-amber-300" />
             <span className="leading-6">{warning}</span>
@@ -68,7 +68,7 @@ export function ColorSwatchCard({
           <input type="color" value={value} onChange={(event) => onChange(event.target.value.toUpperCase())} className="sr-only" />
           <span className="sr-only">{label}</span>
         </label>
-        <div className="text-sm text-[var(--text-secondary)]">Klik swatch untuk memilih warna yang paling sesuai.</div>
+        <div className="text-sm text-[var(--text-secondary)]">Click the swatch to choose the best color.</div>
       </div>
     </div>
   );
@@ -118,7 +118,7 @@ export function RangeField({
         className="mt-5 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 disabled:cursor-not-allowed"
         style={{ accentColor: "var(--accent-strong)" }}
       />
-      <div className="mt-3 flex items-center justify-between text-[11px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
+      <div className="mt-3 flex items-center justify-between text-[11px] uppercase tracking-[0.1em] text-[var(--text-muted)]">
         <span>
           {min}
           {suffix}
@@ -150,7 +150,7 @@ export function ReadinessItem({
   };
 
   return (
-    <div className="rounded-[22px] border bg-black/10 p-4">
+    <div className="rounded-2xl border bg-black/10 p-4">
       <div className="flex items-start gap-3">
         <div className={cn("flex size-10 items-center justify-center rounded-2xl", toneClassMap[tone])}>
           <Icon className="size-5" />

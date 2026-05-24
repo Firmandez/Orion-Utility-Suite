@@ -1,19 +1,17 @@
 use crate::error::AppError;
 use crate::models::{
-    AppBootstrapPayload, ConvertImagesOptionsPayload, DnsLookupPayload,
-    HashResultPayload, HttpStatusPayload, ImageConversionResponsePayload,
-    ImageToPdfResponsePayload, LocalIpPayload, PdfMergeResponsePayload,
-    PdfSplitResponsePayload, PdfToImagesResponsePayload, PingHostPayload,
+    AppBootstrapPayload, ConvertImagesOptionsPayload, DnsLookupPayload, HashResultPayload,
+    HttpStatusPayload, ImageConversionResponsePayload, ImageToPdfResponsePayload, LocalIpPayload,
+    PdfMergeResponsePayload, PdfSplitResponsePayload, PdfToImagesResponsePayload, PingHostPayload,
     PortCheckPayload, SystemInfoPayload,
 };
 use crate::pdf_tools::{
-    image_to_pdf_payload, merge_pdfs_payload, pdf_to_images_payload,
-    split_pdf_payload,
+    image_to_pdf_payload, merge_pdfs_payload, pdf_to_images_payload, split_pdf_payload,
 };
 use crate::services::{
     build_bootstrap_payload, build_local_ip_payload, build_system_info_payload,
-    check_http_status_payload, check_port_payload, convert_images_payload,
-    dns_lookup_payload, generate_hash_payload, ping_host_payload,
+    check_http_status_payload, check_port_payload, convert_images_payload, dns_lookup_payload,
+    generate_hash_payload, ping_host_payload,
 };
 
 #[tauri::command]
@@ -100,7 +98,9 @@ pub async fn generate_hash(
     window: tauri::Window,
     file_path: String,
 ) -> Result<HashResultPayload, AppError> {
-    generate_hash_payload(window, file_path).await.map_err(Into::into)
+    generate_hash_payload(window, file_path)
+        .await
+        .map_err(Into::into)
 }
 
 #[tauri::command]

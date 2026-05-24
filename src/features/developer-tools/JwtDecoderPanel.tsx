@@ -17,28 +17,28 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
 
   const handleCopy = async () => {
     if (result.state !== "ready" || !result.copyValue) {
-      notify.error("Tidak ada hasil", "Paste JWT valid terlebih dulu sebelum menyalin hasil decode.");
+      notify.error("No result", "Paste a valid JWT before copying decoded results.");
       return;
     }
 
     try {
       await copyText(result.copyValue);
-      notify.success("JWT copied", "Header dan isi token berhasil disalin ke clipboard.");
+      notify.success("JWT copied", "Header and token payload copied to the clipboard.");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
-      notify.error("Copy gagal", message);
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
+      notify.error("Copy failed", message);
     }
   };
 
   const handleClear = () => {
     setToken("");
-    notify.info("JWT cleared", "Input token dan hasil decode dibersihkan.");
+    notify.info("JWT cleared", "Token input and decoded results have been cleared.");
   };
 
   return (
     <DeveloperToolCard
       title="JWT Decoder"
-      description="Baca header dan isi JWT secara lokal tanpa verifikasi signature."
+      description="Read JWT headers and payloads locally without signature verification."
       icon={ShieldAlert}
       className={className}
       actions={
@@ -55,21 +55,21 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
       <div className="space-y-5">
         <TextArea
           label="JWT token"
-          hint="Token hanya di-decode lokal. Signature tidak diverifikasi oleh tool ini."
-          placeholder="Paste JWT di sini..."
+          hint="Tokens are decoded locally only. Signatures are not verified by this tool."
+          placeholder="Paste JWT here..."
           value={token}
           onChange={(event) => setToken(event.target.value)}
           className="min-h-[150px] font-mono text-[13px]"
         />
 
         {result.state === "error" ? (
-          <JwtNotice tone="error" title="JWT tidak valid" description={result.errorMessage ?? "Token tidak bisa di-decode."} />
+          <JwtNotice tone="error" title="Invalid JWT" description={result.errorMessage ?? "Token could not be decoded."} />
         ) : result.state === "ready" ? (
           <>
             <JwtNotice
               tone="success"
               title="JWT decoded"
-              description={`Header dan isi token berhasil dibaca. Token memiliki ${result.segments} segmen dan signature ${result.signaturePresent ? "tersedia" : "tidak ada"}.`}
+              description={`Header and payload were read successfully. Token has ${result.segments} segments and signature is ${result.signaturePresent ? "present" : "missing"}.`}
             />
             <div className="grid gap-3 md:grid-cols-2">
               <StatPill label="Segments" value={String(result.segments ?? 0)} />
@@ -77,14 +77,14 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
             </div>
             <div className="grid gap-4 xl:grid-cols-2">
               <TextArea label="Header" value={result.headerPretty ?? ""} readOnly className="min-h-[260px] font-mono text-[13px]" />
-              <TextArea label="Isi token" value={result.payloadPretty ?? ""} readOnly className="min-h-[260px] font-mono text-[13px]" />
+              <TextArea label="Payload" value={result.payloadPretty ?? ""} readOnly className="min-h-[260px] font-mono text-[13px]" />
             </div>
           </>
         ) : (
           <JwtNotice
             tone="idle"
-            title="Menunggu token"
-            description="Paste JWT untuk melihat header dan isi token. Tool ini tidak melakukan signature verification."
+            title="Waiting for token"
+            description="Paste a JWT to inspect its header and payload. This tool does not verify signatures."
           />
         )}
       </div>
@@ -95,7 +95,7 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
 function StatPill({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-[20px] border bg-white/5 p-4">
-      <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">{label}</div>
+      <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</div>
       <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">{value}</div>
     </div>
   );
@@ -119,7 +119,7 @@ function JwtNotice({
         : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)]";
 
   return (
-    <div className={`rounded-[22px] border p-4 ${toneClassName}`}>
+    <div className={`rounded-2xl border p-4 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-[var(--accent-strong)]"}`}

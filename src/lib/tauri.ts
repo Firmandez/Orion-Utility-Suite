@@ -22,16 +22,16 @@ export const fallbackBootstrap: AppBootstrapPayload = {
   version: appVersion,
   backendMode: "Limited mode",
   platformLabel: "Browser mode",
-  runtimeStatus: "Orion is ready",
+  runtimeStatus: "Orion ready",
   offlineReady: true,
   modules: [
-    { id: "qr-generator", title: "QR Generator", area: "QR tools", status: "Ready" },
-    { id: "image-converter", title: "Image Converter", area: "Image tools", status: "Ready" },
-    { id: "pdf-tools", title: "PDF Tools", area: "PDF tools", status: "Ready" },
-    { id: "text-utilities", title: "Text Utilities", area: "Text tools", status: "Ready" },
-    { id: "hash-checker", title: "Hash Checker", area: "File checks", status: "Ready" },
-    { id: "network-toolkit", title: "Network Toolkit", area: "Network tools", status: "Ready" },
-    { id: "developer-tools", title: "Advanced Tools", area: "Advanced tools", status: "Ready" },
+    { id: "qr-generator", title: "QR Generator", area: "QR Tools", status: "Ready" },
+    { id: "image-converter", title: "Image Converter", area: "Image Tools", status: "Ready" },
+    { id: "pdf-tools", title: "PDF Tools", area: "PDF Tools", status: "Ready" },
+    { id: "text-utilities", title: "Text Utilities", area: "Text Tools", status: "Ready" },
+    { id: "hash-checker", title: "Hash Checker", area: "File Checks", status: "Ready" },
+    { id: "network-toolkit", title: "Network Toolkit", area: "Network Tools", status: "Ready" },
+    { id: "developer-tools", title: "Advanced Tools", area: "Advanced Tools", status: "Ready" },
     { id: "settings", title: "Settings", area: "Preferences", status: "Ready" }
   ]
 };

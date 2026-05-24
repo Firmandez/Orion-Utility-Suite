@@ -27,7 +27,7 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
     referenceHash: "",
     status: "idle",
     progressPercent: 0,
-    progressStatus: "Menunggu file",
+    progressStatus: "Waiting for file",
     isWindowDragActive: false,
   });
 
@@ -40,25 +40,25 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
         result: undefined,
         status: "idle",
         progressPercent: 0,
-        progressStatus: "Siap membuat hash",
+        progressStatus: "Ready to generate hashes",
         errorMessage: undefined,
       }));
     });
 
     notify.success(
-      source === "drop" ? "File dropped" : "File selected",
-      `${getBaseName(filePath)} siap dicek.`,
+      source === "drop" ? "Dropped file selected" : "File selected",
+      `${getBaseName(filePath)} is ready to check.`,
     );
   });
 
   const pickFile = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Pilih file tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "File selection is available when Orion is opened as a desktop app.");
       return;
     }
 
     const selection = await open({
-      title: "Select a file for hash generation",
+      title: "Choose file for hashing",
       multiple: false,
       directory: false,
     });
@@ -78,11 +78,11 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
         result: undefined,
         status: "idle",
         progressPercent: 0,
-        progressStatus: "Menunggu file",
+        progressStatus: "Waiting for file",
         errorMessage: undefined,
       }));
     });
-    notify.info("Selection cleared", "File target dan hasil digest dibersihkan.");
+    notify.info("Selection cleared", "Target file and digest results have been cleared.");
   });
 
   const setReferenceHash = useEffectEvent((value: string) => {
@@ -93,12 +93,12 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
 
   const runHash = useEffectEvent(async () => {
     if (!state.selectedFilePath) {
-      notify.error("No file selected", "Pilih atau drop file lebih dulu sebelum menjalankan hash checker.");
+      notify.error("No file selected", "Choose or drop a file before running the hash checker.");
       return;
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Hash checker tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "Hash Checker is available when Orion is opened as a desktop app.");
       return;
     }
 
@@ -109,7 +109,7 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
         status: "loading",
         result: undefined,
         progressPercent: 0,
-        progressStatus: "Menyiapkan hash",
+        progressStatus: "Preparing hashes",
         errorMessage: undefined,
       }));
     });
@@ -122,36 +122,36 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
           result,
           status: "ready",
           progressPercent: 100,
-          progressStatus: "Hash selesai",
+          progressStatus: "Hashing finished",
           errorMessage: undefined,
         }));
       });
-      notify.success("Hashes generated", `${result.fileName} selesai diproses dengan MD5, SHA1, dan SHA256.`);
+      notify.success("Hashes generated", `${result.fileName} was processed with MD5, SHA1, and SHA256.`);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Hash generation gagal diproses.";
+      const message = error instanceof Error ? error.message : "Hash generation could not be processed.";
       startTransition(() => {
         setState((current) => ({
           ...current,
           status: "error",
-          progressStatus: "Hash gagal",
+          progressStatus: "Hashing failed",
           errorMessage: message,
         }));
       });
-      notify.error("Hash gagal", message);
+      notify.error("Hashing failed", message);
     }
   });
 
   const copyHashValue = useEffectEvent(async (label: string, value?: string) => {
     if (!value) {
-      notify.error("Hash not available", "Jalankan hashing file lebih dulu sebelum menyalin digest.");
+      notify.error("Hash not available", "Run file hashing before copying a digest.");
       return;
     }
 
     try {
       await copyText(value);
-      notify.success(`${label} copied`, "Digest berhasil disalin ke clipboard.");
+      notify.success(`${label} copied`, "Digest copied to the clipboard.");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
       notify.error("Copy failed", message);
     }
   });

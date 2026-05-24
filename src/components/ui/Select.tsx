@@ -29,7 +29,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           id={selectId}
           ref={ref}
           className={cn(
-            "h-12 w-full appearance-none rounded-2xl border bg-[var(--surface-2)] px-4 pr-10 text-sm text-[var(--text-primary)] outline-none transition focus:border-[var(--accent-soft)] focus:ring-4 focus:ring-[var(--accent-surface)]",
+            "h-11 w-full appearance-none rounded-xl border bg-[var(--surface-2)] px-4 pr-10 text-sm text-[var(--text-primary)] outline-none transition focus:border-[var(--accent-soft)] focus:ring-4 focus:ring-[var(--accent-surface)]",
             className,
           )}
           {...props}

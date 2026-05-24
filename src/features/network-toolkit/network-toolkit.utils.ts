@@ -32,7 +32,14 @@ export function formatLocalIpRows(result?: LocalIpResponse): ResultRow[] {
     return [];
   }
 
-  return [{ label: "Local IP", value: result.localIp, mono: true }];
+  return [
+    { label: "Local IP", value: result.localIp, mono: true },
+    { label: "Subnet Mask", value: formatOptionalNetworkValue(result.subnetMask), mono: true },
+    { label: "Default Gateway", value: formatOptionalNetworkValue(result.defaultGateway), mono: true },
+    { label: "Preferred DNS Server", value: formatOptionalNetworkValue(result.preferredDnsServer), mono: true },
+    { label: "Alternate DNS Server", value: formatOptionalNetworkValue(result.alternateDnsServer), mono: true },
+    { label: "DHCP / Static", value: result.addressMode || "Unknown" },
+  ];
 }
 
 export function formatDnsRows(result?: DnsLookupResponse): ResultRow[] {
@@ -79,7 +86,7 @@ export function formatHttpRows(result?: HttpStatusResponse): ResultRow[] {
 
   return [
     { label: "Status", value: String(result.statusCode), mono: true },
-    { label: "Success", value: result.ok ? "Yes" : "No" },
+    { label: "Successful", value: result.ok ? "Yes" : "No" },
     { label: "URL", value: result.url },
     { label: "Final URL", value: result.finalUrl },
   ];
@@ -91,6 +98,16 @@ export function formatDnsCopy(result?: DnsLookupResponse) {
   }
 
   return [`Domain: ${result.domain}`, "Addresses:", ...result.addresses.map((address) => `- ${address}`)].join("\n");
+}
+
+export function formatLocalIpCopy(result?: LocalIpResponse) {
+  if (!result) {
+    return "";
+  }
+
+  return formatLocalIpRows(result)
+    .map((row) => `${row.label}: ${row.value}`)
+    .join("\n");
 }
 
 export function formatPingCopy(result?: PingHostResponse) {
@@ -134,7 +151,11 @@ export function formatHttpCopy(result?: HttpStatusResponse) {
     `URL: ${result.url}`,
     `Final URL: ${result.finalUrl}`,
     `Status code: ${result.statusCode}`,
-    `Success: ${result.ok ? "Yes" : "No"}`,
+    `Successful: ${result.ok ? "Yes" : "No"}`,
     `Summary: ${result.summary}`,
   ].join("\n");
+}
+
+function formatOptionalNetworkValue(value?: string) {
+  return value?.trim() || "Unavailable";
 }

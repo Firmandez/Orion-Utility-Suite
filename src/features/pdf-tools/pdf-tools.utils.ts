@@ -52,26 +52,26 @@ export function getDefaultOutputFileName(operation: PdfToolOperation) {
 export function getQueueDescription(operation: PdfToolOperation) {
   switch (operation) {
     case "merge":
-      return "Tambahkan dua PDF atau lebih untuk digabungkan menjadi satu dokumen baru.";
+      return "Add two or more PDFs to merge them into one new document.";
     case "split":
-      return "Pilih satu PDF sumber, lalu Orion akan memecahnya menjadi file per halaman.";
+      return "Choose one source PDF, then Orion will split it into one file per page.";
     case "image-to-pdf":
-      return "Tambahkan beberapa gambar untuk disusun menjadi PDF multi-page.";
+      return "Add multiple images to compose a multi-page PDF.";
     case "pdf-to-images":
-      return "Pilih satu PDF untuk menyiapkan ekspor halaman ke gambar.";
+      return "Choose one PDF to prepare page export to images.";
   }
 }
 
 export function getOperationHint(operation: PdfToolOperation) {
   switch (operation) {
     case "merge":
-      return "Mendukung drag and drop banyak PDF sekaligus.";
+      return "Supports drag-and-drop for multiple PDFs at once.";
     case "split":
-      return "Hanya satu PDF dipakai untuk operasi split.";
+      return "Only one PDF is used for split operations.";
     case "image-to-pdf":
-      return "Mendukung PNG, JPG, JPEG, dan WEBP.";
+      return "Supports PNG, JPG, JPEG, and WEBP.";
     case "pdf-to-images":
-      return "Fitur ini sedang disiapkan untuk pembaruan berikutnya.";
+      return "This feature is being prepared for a future update.";
   }
 }
 
@@ -159,27 +159,27 @@ export function validatePdfOperation(
   outputFileName?: string,
 ) {
   if (operation === "merge" && files.length < 2) {
-    return "Tambahkan minimal dua PDF untuk menjalankan merge.";
+    return "Add at least two PDFs to run merge.";
   }
 
   if ((operation === "split" || operation === "pdf-to-images") && files.length !== 1) {
-    return "Operasi ini membutuhkan tepat satu file PDF sumber.";
+    return "This operation needs exactly one source PDF file.";
   }
 
   if (operation === "image-to-pdf" && files.length === 0) {
-    return "Tambahkan minimal satu gambar sebelum membuat PDF.";
+    return "Add at least one image before creating a PDF.";
   }
 
   if (!outputFolderPath?.trim()) {
-    return "Pilih output folder terlebih dahulu.";
+    return "Choose an output folder first.";
   }
 
   if ((operation === "merge" || operation === "image-to-pdf") && !outputFileName?.trim()) {
-    return "Isi nama file output PDF terlebih dahulu.";
+    return "Enter the output PDF filename first.";
   }
 
   if ((operation === "merge" || operation === "image-to-pdf") && !outputFileName?.toLowerCase().endsWith(".pdf")) {
-    return "Nama file output harus menggunakan ekstensi .pdf.";
+    return "The output filename must use the .pdf extension.";
   }
 
   return undefined;
@@ -202,7 +202,7 @@ export function buildResultRows(result?: PdfOperationResult): ResultRow[] {
       return [
         { label: "Operation", value: "Split PDF" },
         { label: "Output folder", value: result.data.outputDir },
-        { label: "Generated files", value: String(result.data.generatedFiles.length), mono: true },
+        { label: "Files created", value: String(result.data.generatedFiles.length), mono: true },
         { label: "Total pages", value: String(result.data.totalPages), mono: true },
       ];
     case "image-to-pdf":
@@ -239,7 +239,7 @@ export function buildCopyPayload(result?: PdfOperationResult) {
       return [
         "Operation: Split PDF",
         `Output folder: ${result.data.outputDir}`,
-        `Generated files: ${result.data.generatedFiles.length}`,
+        `Files created: ${result.data.generatedFiles.length}`,
         `Total pages: ${result.data.totalPages}`,
         "",
         ...result.data.generatedFiles,
@@ -273,30 +273,30 @@ export function summarizePdfToast(result: PdfOperationResult): {
     case "merge":
       return {
         tone: "success",
-        title: "Merge selesai",
-        description: `${result.data.mergedFiles} PDF digabungkan menjadi ${getBaseName(result.data.outputPath)}.`,
+        title: "Merge finished",
+        description: `${result.data.mergedFiles} PDFs merged into ${getBaseName(result.data.outputPath)}.`,
       };
     case "split":
       return {
         tone: "success",
-        title: "Split selesai",
-        description: `${result.data.generatedFiles.length} file halaman dibuat di folder output yang dipilih.`,
+        title: "Split finished",
+        description: `${result.data.generatedFiles.length} page files created in the selected output folder.`,
       };
     case "image-to-pdf":
       return {
         tone: "success",
-        title: "Image to PDF selesai",
-        description: `${result.data.sourceFiles} gambar disusun menjadi ${getBaseName(result.data.outputPath)}.`,
+        title: "Image to PDF finished",
+        description: `${result.data.sourceFiles} images composed into ${getBaseName(result.data.outputPath)}.`,
       };
     case "pdf-to-images":
       return {
         tone: "info",
-        title: result.data.status === "placeholder" ? "PDF to Image belum aktif" : "PDF to Image selesai",
+        title: result.data.status === "placeholder" ? "PDF to Images is not active yet" : "PDF to Images finished",
         description:
           result.data.status === "placeholder"
-            ? "Fitur PDF to Image sedang disiapkan dan belum membuat file gambar."
+            ? "PDF to Images is being prepared and has not generated image files yet."
             : result.data.note ??
-          `${result.data.generatedFiles.length} gambar halaman dibuat di folder output yang dipilih.`,
+          `${result.data.generatedFiles.length} page images created in the selected output folder.`,
       };
   }
 }

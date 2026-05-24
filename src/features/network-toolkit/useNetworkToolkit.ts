@@ -23,15 +23,15 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
 
   const copyDiagnostic = useEffectEvent(async (label: string, content: string) => {
     if (!content.trim()) {
-      notify.error("Tidak ada hasil", `Belum ada hasil ${label} yang bisa disalin.`);
+      notify.error("No result", `No ${label} result is available to copy yet.`);
       return;
     }
 
     try {
       await copyText(content);
-      notify.success("Result copied", `Hasil ${label} berhasil disalin ke clipboard.`);
+      notify.success("Result copied", `${label} result copied to the clipboard.`);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
       notify.error("Copy failed", message);
     }
   });
@@ -57,14 +57,14 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
         }));
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Gagal mengambil local IP.";
+      const message = error instanceof Error ? error.message : "Failed to fetch local IP.";
       startTransition(() => {
         setState((current) => ({
           ...current,
           localIp: { status: "error", errorMessage: message },
         }));
       });
-      notify.error("Local IP failed", message);
+      notify.error("Failed to fetch local IP", message);
     }
   }
 
@@ -72,12 +72,12 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     const domain = state.dnsDomain.trim();
 
     if (!domain) {
-      notify.error("Domain required", "Masukkan domain atau host untuk DNS lookup.");
+      notify.error("Domain is required", "Enter a domain or host for DNS lookup.");
       return;
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "DNS lookup tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "DNS lookup is available when Orion is opened as a desktop app.");
       return;
     }
 
@@ -96,9 +96,9 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
           dns: { status: "ready", data: result },
         }));
       });
-      notify.success("DNS lookup completed", `${result.addresses.length} alamat ditemukan untuk ${result.domain}.`);
+      notify.success("DNS lookup finished", `${result.addresses.length} addresses found for ${result.domain}.`);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "DNS lookup gagal diproses.";
+      const message = error instanceof Error ? error.message : "DNS lookup could not be processed.";
       startTransition(() => {
         setState((current) => ({
           ...current,
@@ -113,12 +113,12 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     const host = state.pingHost.trim();
 
     if (!host) {
-      notify.error("Host required", "Masukkan host atau IP untuk ping.");
+      notify.error("Host is required", "Enter a host or IP for ping.");
       return;
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Ping host tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "Ping is available when Orion is opened as a desktop app.");
       return;
     }
 
@@ -137,9 +137,9 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
           ping: { status: "ready", data: result },
         }));
       });
-      notify.success("Ping completed", result.summary);
+      notify.success("Ping finished", result.summary);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Ping gagal diproses.";
+      const message = error instanceof Error ? error.message : "Ping could not be processed.";
       startTransition(() => {
         setState((current) => ({
           ...current,
@@ -155,17 +155,17 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     const parsedPort = parsePortInput(state.portValue);
 
     if (!host) {
-      notify.error("Host required", "Masukkan host untuk port checker.");
+      notify.error("Host is required", "Enter a host for the port checker.");
       return;
     }
 
     if (!parsedPort) {
-      notify.error("Port invalid", "Port harus berupa angka 1 sampai 65535.");
+      notify.error("Invalid port", "Port must be a number from 1 to 65535.");
       return;
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Port checker tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "Port Checker is available when Orion is opened as a desktop app.");
       return;
     }
 
@@ -184,9 +184,9 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
           port: { status: "ready", data: result },
         }));
       });
-      notify.success("Port check completed", result.summary);
+      notify.success("Port check finished", result.summary);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Port checker gagal diproses.";
+      const message = error instanceof Error ? error.message : "Port Checker could not be processed.";
       startTransition(() => {
         setState((current) => ({
           ...current,
@@ -201,12 +201,12 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     const url = state.httpUrl.trim();
 
     if (!url) {
-      notify.error("URL required", "Masukkan URL untuk HTTP status checker.");
+      notify.error("URL is required", "Enter a URL for the HTTP status checker.");
       return;
     }
 
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "HTTP checker tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "HTTP Checker is available when Orion is opened as a desktop app.");
       return;
     }
 
@@ -225,9 +225,9 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
           http: { status: "ready", data: result },
         }));
       });
-      notify.success("HTTP status completed", result.summary);
+      notify.success("HTTP status finished", result.summary);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "HTTP status checker gagal diproses.";
+      const message = error instanceof Error ? error.message : "HTTP status checker could not be processed.";
       startTransition(() => {
         setState((current) => ({
           ...current,

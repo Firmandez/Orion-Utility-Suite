@@ -77,14 +77,14 @@ export function ToolWorkspace({
     setProgress(0);
     setIsRunning(false);
     setResult(null);
-    notify.info(`${feature.title} reset`, "Form kembali ke kondisi awal.");
+    notify.info(`${feature.title} reset`, "The form has been restored to its initial state.");
   };
 
   const handleRun = () => {
     setIsRunning(true);
     setProgress(10);
     setResult(null);
-    notify.info(`${feature.title} queued`, "Progress dimulai.");
+    notify.info(`${feature.title} queued`, "Progress has started.");
 
     [28, 52, 74, 93].forEach((value, index) => {
       queueTimer(() => setProgress(value), 280 * (index + 1));
@@ -95,14 +95,14 @@ export function ToolWorkspace({
       setIsRunning(false);
       startTransition(() => {
         setResult({
-          generatedAt: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+          generatedAt: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
           mode: selectedMode || "default",
           files: files.length,
           payloadLength: inputValue.trim().length,
-          state: bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas",
+          state: bootstrap.source === "rust" ? "Ready" : "Limited mode",
         });
       });
-      notify.success(`${feature.title} selesai`, "Progress dan hasil sudah diperbarui.");
+      notify.success(`${feature.title} finished`, "Progress and results have been updated.");
     }, 1580);
   };
 
@@ -112,7 +112,7 @@ export function ToolWorkspace({
         <div className="space-y-5">
           <TextArea
             label={inputLabel}
-            hint="Gunakan field ini untuk teks, lokasi file, atau input lain yang dibutuhkan."
+            hint="Use this field for text, file locations, or any input this tool needs."
             placeholder={inputPlaceholder}
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
@@ -120,7 +120,7 @@ export function ToolWorkspace({
           <div className="grid gap-4 lg:grid-cols-2">
             <Select
               label={selectLabel}
-              hint="Pilih mode yang sesuai sebelum menjalankan proses."
+              hint="Choose the right mode before running the process."
               options={selectOptions}
               value={selectedMode}
               onChange={(event) => setSelectedMode(event.target.value)}
@@ -133,8 +133,8 @@ export function ToolWorkspace({
             />
           </div>
           <FileDropZone
-            label="File input"
-            hint="Drag and drop file lokal untuk diproses."
+            label="Input files"
+            hint="Drag and drop local files to process."
             files={files}
             onFilesChange={setFiles}
           />
@@ -151,22 +151,21 @@ export function ToolWorkspace({
 
       <div className="space-y-6">
         <ResultCard
-          title="Ringkasan"
-          description="Informasi singkat tentang alat yang sedang dibuka."
+          title="Summary"
+          description="Quick information about the current tool."
           rows={[
             { label: "Category", value: feature.category },
             { label: "Status", value: feature.status },
-            { label: "Status aplikasi", value: bootstrap.source === "rust" ? "Siap digunakan" : "Mode terbatas" },
-            { label: "Versi", value: bootstrap.data.version },
+            { label: "Version", value: bootstrap.data.version },
           ]}
         />
 
         <PageSection
           title="Progress"
-          description="Pantau progress dan hasil terakhir."
+          description="Track progress and the latest result."
         >
           <div className="space-y-4">
-            <ProgressBar label="Workflow progress" value={progress} tone={advancedEnabled ? "cyan" : "amber"} />
+            <ProgressBar label="Progress workflow" value={progress} tone={advancedEnabled ? "cyan" : "amber"} />
             {result ? (
               <ResultCard
                 title="Latest Result"
@@ -174,15 +173,15 @@ export function ToolWorkspace({
                   { label: "Completed", value: result.generatedAt, mono: true },
                   { label: "Mode", value: result.mode },
                   { label: "Files", value: String(result.files) },
-                  { label: "Panjang input", value: `${result.payloadLength} chars` },
-                  { label: "State", value: result.state },
+                  { label: "Input length", value: `${result.payloadLength} characters` },
+                  { label: "Status", value: result.state },
                 ]}
               />
             ) : (
               <EmptyState
                 icon={CircleDashed}
-                title="Belum ada hasil proses"
-                description="Jalankan proses untuk melihat progress dan hasil di sini."
+                title="No process results yet"
+                description="Run the process to see progress and results here."
               />
             )}
           </div>

@@ -17,28 +17,28 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
 
   const handleCopy = async () => {
     if (result.state !== "ready" || !result.copyValue) {
-      notify.error("Tidak ada hasil", "Masukkan warna valid sebelum menyalin hasil konversi.");
+      notify.error("No result", "Enter a valid color before copying conversion results.");
       return;
     }
 
     try {
       await copyText(result.copyValue);
-      notify.success("Color copied", "Hasil konversi HEX, RGB, dan HSL berhasil disalin.");
+      notify.success("Color copied", "HEX, RGB, and HSL conversion results copied.");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
-      notify.error("Copy gagal", message);
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
+      notify.error("Copy failed", message);
     }
   };
 
   const handleClear = () => {
     setInputValue("");
-    notify.info("Color input cleared", "Input warna dan hasil konversinya dibersihkan.");
+    notify.info("Color input cleared", "Color input and conversion results have been cleared.");
   };
 
   return (
     <DeveloperToolCard
       title="Color Converter"
-      description="Konversi warna antara HEX, RGB, dan HSL dengan validasi input yang ketat dan swatch preview."
+      description="Convert colors between HEX, RGB, and HSL with strict input validation and swatch preview."
       icon={Palette}
       className={className}
       actions={
@@ -55,24 +55,24 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
       <div className="space-y-5">
         <Input
           label="Color input"
-          hint="Contoh: #0ea5e9, rgb(14, 165, 233), atau hsl(199, 89%, 48%)"
+          hint="Example: #0ea5e9, rgb(14, 165, 233), or hsl(199, 89%, 48%)"
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
-          placeholder="Masukkan HEX, RGB, atau HSL..."
+          placeholder="Enter HEX, RGB, or HSL..."
         />
 
         {result.state === "error" ? (
-          <ColorNotice tone="error" title="Format warna tidak valid" description={result.errorMessage ?? "Color input tidak dikenali."} />
+          <ColorNotice tone="error" title="Invalid color format" description={result.errorMessage ?? "Color input was not recognized."} />
         ) : result.state === "ready" ? (
           <>
             <ColorNotice
               tone="success"
               title="Color ready"
-              description={`Input dikenali sebagai ${result.inputFormat} dan sudah dikonversi ke format lain.`}
+              description={`Input recognized as ${result.inputFormat} and converted to the other formats.`}
             />
             <div className="grid gap-4 xl:grid-cols-[220px_1fr]">
               <div
-                className="min-h-[220px] rounded-[28px] border shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                className="min-h-[220px] rounded-3xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                 style={{
                   background: `linear-gradient(160deg, ${result.swatch} 0%, rgba(255,255,255,0.12) 100%)`,
                 }}
@@ -86,7 +86,7 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
             </div>
           </>
         ) : (
-          <ColorNotice tone="idle" title="Menunggu warna" description="Masukkan warna dalam format HEX, RGB, atau HSL untuk melihat hasil konversi." />
+          <ColorNotice tone="idle" title="Waiting for color" description="Enter a color in HEX, RGB, or HSL format to see conversion results." />
         )}
       </div>
     </DeveloperToolCard>
@@ -96,7 +96,7 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
 function ColorMetric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-[20px] border bg-black/10 p-4">
-      <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">{label}</div>
+      <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</div>
       <div className="mt-3 break-words font-mono text-sm text-[var(--text-primary)]">{value}</div>
     </div>
   );
@@ -120,7 +120,7 @@ function ColorNotice({
         : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)]";
 
   return (
-    <div className={`rounded-[22px] border p-4 ${toneClassName}`}>
+    <div className={`rounded-2xl border p-4 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-[var(--accent-strong)]"}`}

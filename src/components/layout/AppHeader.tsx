@@ -1,10 +1,9 @@
-import { BellRing, Menu, MoonStar, Search, SunMedium } from "lucide-react";
+import { Menu, MoonStar, Search, SunMedium } from "lucide-react";
 import { startTransition } from "react";
 import { useMatches } from "react-router-dom";
 import { useShell } from "@/app/providers/ShellProvider";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { notify } from "@/components/ui/Toast";
 import type { RouteHandle } from "@/types/navigation";
 
 interface AppHeaderProps {
@@ -28,14 +27,7 @@ export function AppHeader({ onOpenSidebar }: AppHeaderProps) {
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={onOpenSidebar} aria-label="Open sidebar">
             <Menu className="size-4" />
           </Button>
-          <div>
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-semibold text-[var(--text-primary)]">{currentHandle?.title ?? "Orion"}</h1>
-            </div>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
-              {currentHandle?.subtitle ?? "Kumpulan utility desktop yang cepat dan praktis."}
-            </p>
-          </div>
+          <h1 className="text-2xl font-semibold text-[var(--text-primary)]">{currentHandle?.title ?? "Orion Utility Suite"}</h1>
         </div>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -46,25 +38,12 @@ export function AppHeader({ onOpenSidebar }: AppHeaderProps) {
                 const value = event.target.value;
                 startTransition(() => setSearchQuery(value));
               }}
-              placeholder={currentHandle?.searchPlaceholder ?? "Cari utility"}
+              placeholder={currentHandle?.searchPlaceholder ?? "Search utilities"}
               icon={Search}
               aria-label="Global search"
             />
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Notifications"
-              onClick={() =>
-                notify.info(
-                  "Notifikasi belum tersedia",
-                  "Pusat notifikasi akan hadir di versi berikutnya.",
-                )
-              }
-            >
-              <BellRing className="size-4" />
-            </Button>
             <Button
               variant="outline"
               size="icon"

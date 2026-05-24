@@ -2,13 +2,12 @@ import {
   FolderOutput,
   FolderSearch2,
   Gauge,
-  ImageUp,
   Sparkles,
-  TriangleAlert,
 } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
 import { useShell } from "@/app/providers/ShellProvider";
 import { EmptyState } from "@/components/common/EmptyState";
+import { ErrorBanner } from "@/components/common/ErrorBanner";
 import { PageSection } from "@/components/common/PageSection";
 import { ResultCard } from "@/components/common/ResultCard";
 import { Button } from "@/components/ui/Button";
@@ -43,7 +42,6 @@ export function ImageConverterWorkspace() {
     response,
     errorMessage,
     isDesktopRuntime,
-    outputModeDescription,
     pickImages,
     pickOutputFolder,
     removeFile,
@@ -63,78 +61,22 @@ export function ImageConverterWorkspace() {
     ? [
         { label: "Output folder", value: outputFolderPath ?? response.outputFolderPath },
         { label: "Total files", value: String(response.totalFiles), mono: true },
-        { label: "Success", value: String(response.successCount), mono: true },
+        { label: "Succeeded", value: String(response.successCount), mono: true },
         { label: "Failed", value: String(response.failedCount), mono: true },
       ]
     : [
         { label: "Queue size", value: String(files.length), mono: true },
         { label: "Target format", value: outputFormat.toUpperCase() },
         { label: "Resize", value: resizeEnabled ? "Enabled" : "Disabled" },
-        { label: "Compress", value: compress ? "Enabled" : "Disabled" },
+        { label: "Compression", value: compress ? "Enabled" : "Disabled" },
       ];
 
   return (
     <div className="space-y-6">
-      <section className="surface-panel relative overflow-hidden p-6 lg:p-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(52,211,153,0.18),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(34,197,94,0.12),transparent_22%)]" />
-        <div className="relative grid gap-6 xl:grid-cols-[1.14fr_0.86fr]">
-          <div className="space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-emerald-300">
-              <ImageUp className="size-3.5" />
-              Image Converter
-            </div>
-            <div className="max-w-3xl">
-              <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Ubah format dan ukuran banyak gambar sekaligus.
-              </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                Tambahkan gambar, pilih format output, atur kualitas atau ukuran, lalu simpan hasilnya ke folder pilihan Anda.
-              </p>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <StatCard
-                label="Queue"
-                value={`${files.length} file`}
-                caption="Tambahkan gambar dengan drag and drop atau tombol pilih file."
-              />
-              <StatCard
-                label="Output"
-                value={outputFormat.toUpperCase()}
-                caption="Format hasil yang akan dibuat."
-              />
-              <StatCard
-                label="Batch status"
-                value={status === "loading" ? "Running" : status === "ready" ? "Ready" : status === "error" ? "Needs review" : "Idle"}
-                caption={progressStatus}
-              />
-            </div>
-          </div>
-
-          <div className="surface-panel-alt p-5 sm:p-6">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Tips</div>
-            <div className="mt-4 space-y-3">
-              <InfoItem
-                title="File lokal"
-                description="Semua gambar diproses dari perangkat Anda dan hasilnya disimpan ke folder yang dipilih."
-              />
-              <InfoItem
-                title="Aman untuk batch"
-                description="Jika satu file gagal, Orion tetap melanjutkan file lain dan menampilkan ringkasan di akhir."
-              />
-              <InfoItem
-                title="Output sesuai format"
-                description={outputModeDescription}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <PageSection
-          title="Daftar Gambar"
-          description="Tambahkan gambar dari perangkat Anda. Anda bisa menambah file secara bertahap."
+          title="Image Queue"
+          description="Add images from your device. You can add files incrementally."
         >
           <ImageBatchDropZone
             files={files}
@@ -147,11 +89,11 @@ export function ImageConverterWorkspace() {
         </PageSection>
 
         <PageSection
-          title="Pengaturan Konversi"
-          description="Atur folder output, format hasil, kualitas, resize, dan kompresi."
+          title="Conversion Settings"
+          description="Configure output folder, format, quality, resize, and compression."
           actions={
             <Button variant="outline" leadingIcon={FolderSearch2} onClick={pickOutputFolder} disabled={!isDesktopRuntime || status === "loading"}>
-              {outputFolderSource === "default" ? "Pick custom folder" : "Pick output folder"}
+              {outputFolderSource === "default" ? "Choose custom folder" : "Choose output folder"}
             </Button>
           }
         >
@@ -160,10 +102,10 @@ export function ImageConverterWorkspace() {
               label="Output folder"
               hint={
                 outputFolderSource === "default"
-                  ? "Saat ini Orion memakai folder output default dari Settings. Pilih folder lain jika ingin lokasi khusus."
-                  : "Folder ini dipakai untuk menyimpan semua file hasil konversi."
+                  ? "Currently using the default output folder from Settings. Choose a different folder for a custom location."
+                  : "This folder is used to save all converted files."
               }
-              placeholder="Pilih output folder target..."
+              placeholder="Choose output folder..."
               value={outputFolderPath ?? ""}
               readOnly
             />
@@ -171,14 +113,14 @@ export function ImageConverterWorkspace() {
             <div className="grid gap-4 sm:grid-cols-2">
               <Select
                 label="Target format"
-                hint="Pilih JPG untuk ukuran kecil atau PNG untuk kualitas tanpa kompresi lossy."
+                hint="Choose JPG for smaller size or PNG for lossless quality."
                 options={imageOutputFormatOptions}
                 value={outputFormat}
                 onChange={(event) => updateOutputFormat(event.target.value as "jpg" | "png")}
               />
               <Input
                 label="JPG quality"
-                hint="Angka 1-100. Hanya dipakai saat target format adalah JPG."
+                hint="Value 1-100. Only used when target format is JPG."
                 inputMode="numeric"
                 value={qualityInput}
                 onChange={(event) => updateQualityInput(event.target.value)}
@@ -189,7 +131,7 @@ export function ImageConverterWorkspace() {
 
             <Toggle
               label="Enable resize"
-              hint="Aktifkan jika Anda ingin membatasi width atau height hasil output sambil menjaga rasio gambar."
+              hint="Enable to limit output width or height while preserving aspect ratio."
               checked={resizeEnabled}
               onCheckedChange={updateResizeEnabled}
             />
@@ -197,18 +139,18 @@ export function ImageConverterWorkspace() {
             <div className="grid gap-4 sm:grid-cols-2">
               <Input
                 label="Resize width"
-                hint="Kosongkan jika hanya ingin mengontrol tinggi."
+                hint="Leave empty to control only height."
                 inputMode="numeric"
-                placeholder="Contoh: 1600"
+                placeholder="e.g. 1600"
                 value={resizeWidth}
                 onChange={(event) => updateResizeWidth(event.target.value)}
                 disabled={!resizeEnabled}
               />
               <Input
                 label="Resize height"
-                hint="Kosongkan jika hanya ingin mengontrol lebar."
+                hint="Leave empty to control only width."
                 inputMode="numeric"
-                placeholder="Contoh: 1200"
+                placeholder="e.g. 1200"
                 value={resizeHeight}
                 onChange={(event) => updateResizeHeight(event.target.value)}
                 disabled={!resizeEnabled}
@@ -217,7 +159,7 @@ export function ImageConverterWorkspace() {
 
             <Toggle
               label="Enable compression"
-              hint="Untuk PNG, toggle ini memilih compression yang lebih agresif. Untuk JPG, ukuran file lebih banyak dipengaruhi quality."
+              hint="For PNG, this uses stronger compression. For JPG, file size is mainly controlled by quality."
               checked={compress}
               onCheckedChange={updateCompress}
             />
@@ -229,7 +171,7 @@ export function ImageConverterWorkspace() {
                 loading={status === "loading"}
                 disabled={!isDesktopRuntime}
               >
-                Run batch conversion
+                Run conversion
               </Button>
               <Button
                 variant="secondary"
@@ -244,117 +186,46 @@ export function ImageConverterWorkspace() {
         </PageSection>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[0.96fr_1.04fr]">
-        <PageSection
-          title="Progress"
-          description="Pantau proses konversi dan ringkasan hasil batch."
-        >
-          <div className="space-y-5">
-            <ProgressBar
-              label={currentFileName ? `${progressStatus} - ${currentFileName}` : progressStatus}
-              value={progressPercent}
-              tone={status === "error" ? "amber" : "teal"}
+      <PageSection
+        title="Progress"
+        description="Monitor conversion progress and batch results."
+      >
+        <div className="space-y-5">
+          <ProgressBar
+            label={currentFileName ? `${progressStatus} - ${currentFileName}` : progressStatus}
+            value={progressPercent}
+            tone={status === "error" ? "amber" : "teal"}
+          />
+
+          {errorMessage ? (
+            <ErrorBanner title="Conversion needs review" message={errorMessage} />
+          ) : null}
+
+          {response ? (
+            <ResultCard
+              title="Batch Summary"
+              description="Summary of the last conversion run."
+              rows={summaryRows}
             />
-
-            {errorMessage ? (
-              <div className="rounded-[24px] border border-rose-400/18 bg-rose-500/10 p-4">
-                <div className="flex items-start gap-3">
-                  <TriangleAlert className="mt-0.5 size-5 shrink-0 text-rose-300" />
-                  <div>
-                    <div className="text-sm font-semibold text-[var(--text-primary)]">Conversion needs review</div>
-                    <div className="mt-1 text-sm leading-6 text-rose-100/90">{errorMessage}</div>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-
-            {response ? (
-              <ResultCard
-                title="Batch Summary"
-                description="Ringkasan hasil konversi terakhir."
-                rows={summaryRows}
-              />
-            ) : (
-              <EmptyState
-                icon={Gauge}
-                title="Belum ada batch yang dijalankan"
-                description="Atur queue dan output folder lebih dulu, lalu jalankan conversion untuk melihat progress dan ringkasan hasil."
-              />
-            )}
-          </div>
-        </PageSection>
-
-        <ResultCard
-          title="Current Configuration"
-          description="Ringkasan pengaturan yang sedang aktif."
-          rows={[
-            { label: "Status aplikasi", value: isDesktopRuntime ? "Siap digunakan" : "Mode terbatas" },
-            { label: "Queue", value: `${files.length} file`, mono: true },
-            { label: "Output", value: outputFormat.toUpperCase() },
-            { label: "JPG quality", value: outputFormat === "jpg" ? qualityInput : "Not used", mono: outputFormat === "jpg" },
-            { label: "Resize", value: resizeEnabled ? `${resizeWidth || "auto"} x ${resizeHeight || "auto"}` : "Disabled" },
-            { label: "Compression", value: compress ? "Enabled" : "Disabled" },
-          ]}
-          footer={
-            <div className="grid gap-3 sm:grid-cols-2">
-              <MiniInfoCard
-                title="Input support"
-                description="PNG, JPG, JPEG, dan WEBP diterima. File lain akan diabaikan otomatis."
-              />
-              <MiniInfoCard
-                title="Batch ringan"
-                description="Orion tetap responsif saat memproses banyak gambar."
-              />
-            </div>
-          }
-        />
-      </div>
+          ) : (
+            <EmptyState
+              icon={Gauge}
+              title="No batch has been run yet"
+              description="Set up the queue and output folder first, then run conversion to see progress and results."
+            />
+          )}
+        </div>
+      </PageSection>
 
       <PageSection
         title="Per-file Results"
-        description="Setiap item menampilkan status sukses atau gagal secara terpisah, jadi Anda bisa meninjau file bermasalah tanpa kehilangan hasil file lain."
+        description="Each item shows success or failure separately, so you can review problem files without losing other results."
       >
         <ImageConversionResultList
           results={response?.results ?? []}
           onCopyOutputPath={copyOutputPath}
         />
       </PageSection>
-    </div>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  caption,
-}: {
-  label: string;
-  value: string;
-  caption: string;
-}) {
-  return (
-    <div className="surface-panel-alt p-4">
-      <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">{label}</div>
-      <div className="mt-3 text-lg font-semibold text-[var(--text-primary)]">{value}</div>
-      <div className="mt-2 text-xs leading-6 text-[var(--text-secondary)]">{caption}</div>
-    </div>
-  );
-}
-
-function InfoItem({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="rounded-[22px] border bg-black/10 p-4">
-      <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-      <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</div>
-    </div>
-  );
-}
-
-function MiniInfoCard({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="rounded-[22px] border bg-black/10 p-4">
-      <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-      <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</div>
     </div>
   );
 }

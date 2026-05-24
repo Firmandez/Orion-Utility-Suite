@@ -92,14 +92,14 @@ export function validateImageConversion(snapshot: ImageConverterSnapshot): Image
   if (snapshot.files.length === 0) {
     return {
       valid: false,
-      message: "Tambahkan minimal satu gambar sebelum menjalankan konversi.",
+      message: "Add at least one image before running conversion.",
     };
   }
 
   if (!snapshot.outputFolderPath?.trim()) {
     return {
       valid: false,
-      message: "Pilih folder output agar file hasil punya lokasi simpan yang jelas.",
+      message: "Choose an output folder so result files have a clear destination.",
     };
   }
 
@@ -109,7 +109,7 @@ export function validateImageConversion(snapshot: ImageConverterSnapshot): Image
     if (!quality || quality < 1 || quality > 100) {
       return {
         valid: false,
-        message: "JPG quality harus berupa angka 1 sampai 100.",
+        message: "JPG quality must be a number from 1 to 100.",
       };
     }
   }
@@ -120,7 +120,7 @@ export function validateImageConversion(snapshot: ImageConverterSnapshot): Image
     if (!resize.width && !resize.height) {
       return {
         valid: false,
-        message: "Isi minimal width atau height saat resize diaktifkan.",
+        message: "Enter at least a width or height when resize is enabled.",
       };
     }
   }
@@ -131,41 +131,41 @@ export function validateImageConversion(snapshot: ImageConverterSnapshot): Image
 export function summarizeConversionToast(successCount: number, failedCount: number, totalFiles: number): ImageConversionToastSummary {
   if (totalFiles === 0) {
     return {
-      title: "Tidak ada file diproses",
-      description: "Queue conversion kosong, jadi tidak ada output yang dibuat.",
+      title: "No files processed",
+      description: "The conversion queue is empty, so no output was created.",
       tone: "info",
     };
   }
 
   if (failedCount === 0) {
     return {
-      title: "Konversi selesai",
-      description: `${successCount} file berhasil dikonversi ke format pilihan.`,
+      title: "Conversion finished",
+      description: `${successCount} files converted to the selected format.`,
       tone: "success",
     };
   }
 
   if (successCount === 0) {
     return {
-      title: "Konversi gagal",
-      description: `Semua ${failedCount} file gagal diproses. Cek format file atau folder output yang dipilih.`,
+      title: "Conversion failed",
+      description: `All ${failedCount} files failed. Check the file format or selected output folder.`,
       tone: "error",
     };
   }
 
   return {
-    title: "Konversi selesai dengan catatan",
-    description: `${successCount} file sukses dan ${failedCount} file gagal dari total ${totalFiles} item.`,
+    title: "Conversion finished with notes",
+    description: `${successCount} files succeeded and ${failedCount} failed out of ${totalFiles} items.`,
     tone: "info",
   };
 }
 
 export function describeOutputMode(outputFormat: string, compress: boolean) {
   if (outputFormat === "jpg") {
-    return "JPG cocok untuk ukuran file lebih kecil dengan kualitas yang bisa diatur.";
+    return "JPG is useful for smaller files with adjustable quality.";
   }
 
   return compress
-    ? "PNG akan dikompresi lebih kuat agar ukuran file lebih hemat."
-    : "PNG memakai kompresi ringan agar proses lebih cepat.";
+    ? "PNG will use stronger compression to reduce file size."
+    : "PNG will use lighter compression for faster processing.";
 }

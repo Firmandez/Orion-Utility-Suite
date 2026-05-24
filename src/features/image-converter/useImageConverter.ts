@@ -53,7 +53,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
     compress: true,
     status: "idle",
     progressPercent: 0,
-    progressStatus: "Menunggu gambar",
+    progressStatus: "Waiting for images",
     isWindowDragActive: false,
   });
 
@@ -76,7 +76,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
             progressStatus:
               current.status === "loading"
                 ? current.progressStatus
-                : `${nextPaths.length} gambar siap diproses`,
+                : `${nextPaths.length} images ready to process`,
             response: current.status === "loading" ? current.response : undefined,
             errorMessage: undefined,
           };
@@ -84,27 +84,27 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
       });
 
       notify.success(
-        source === "drop" ? "Images added from drop" : "Images selected",
-        `${validPaths.length} file masuk ke daftar konversi.`,
+        source === "drop" ? "Dropped images added" : "Images selected",
+        `${validPaths.length} files added to the conversion queue.`,
       );
     }
 
     if (invalidPaths.length > 0) {
       notify.info(
         "Unsupported files skipped",
-        `${invalidPaths.length} file diabaikan karena bukan PNG, JPG, JPEG, atau WEBP.`,
+        `${invalidPaths.length} files were ignored because they are not PNG, JPG, JPEG, or WEBP.`,
       );
     }
   });
 
   const pickImages = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Pilih file tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "File selection is available when Orion is opened as a desktop app.");
       return;
     }
 
     const selection = await open({
-      title: "Select images for batch conversion",
+      title: "Choose images for batch conversion",
       multiple: true,
       directory: false,
       filters: [
@@ -122,12 +122,12 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
 
   const pickOutputFolder = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Pilih folder tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "Folder selection is available when Orion is opened as a desktop app.");
       return;
     }
 
     const selection = await open({
-      title: "Select output folder",
+      title: "Choose output folder",
       multiple: false,
       directory: true,
     });
@@ -140,7 +140,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
           errorMessage: undefined,
         }));
       });
-      notify.success("Folder output dipilih", "Folder tujuan konversi sudah diperbarui.");
+      notify.success("Output folder selected", "The conversion destination folder has been updated.");
     }
   });
 
@@ -156,8 +156,8 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
           progressPercent: 0,
           progressStatus:
             nextFiles.length > 0
-              ? `${nextFiles.length} gambar siap diproses`
-              : "Menunggu gambar",
+              ? `${nextFiles.length} images ready to process`
+              : "Waiting for images",
           response: undefined,
           errorMessage: undefined,
         };
@@ -172,13 +172,13 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
         files: [],
         status: "idle",
         progressPercent: 0,
-        progressStatus: "Menunggu gambar",
+        progressStatus: "Waiting for images",
         currentFileName: undefined,
         response: undefined,
         errorMessage: undefined,
       }));
     });
-    notify.info("Daftar dibersihkan", "Daftar gambar dan hasil konversi dibersihkan.");
+    notify.info("Queue cleared", "Image queue and conversion results have been cleared.");
   });
 
   const updateOutputFormat = useEffectEvent((value: "jpg" | "png") => {
@@ -246,22 +246,22 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
 
   const copyOutputPath = useEffectEvent(async (path?: string) => {
     if (!path) {
-      notify.error("Output path unavailable", "File ini belum punya output path yang bisa disalin.");
+      notify.error("Output path not available", "This file does not have an output path to copy yet.");
       return;
     }
 
     try {
       await copyText(path);
-      notify.success("Output path copied", "Lokasi file hasil berhasil disalin ke clipboard.");
+      notify.success("Output path copied", "The result file location was copied to the clipboard.");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
       notify.error("Copy failed", message);
     }
   });
 
   const runConversion = useEffectEvent(async () => {
     if (!isDesktopRuntime) {
-      notify.error("Buka aplikasi desktop", "Konversi gambar tersedia saat Orion dibuka sebagai aplikasi desktop.");
+      notify.error("Open the desktop app", "Image conversion is available when Orion is opened as a desktop app.");
       return;
     }
 
@@ -273,7 +273,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
     const validation = validateImageConversion(snapshot);
 
     if (!validation.valid) {
-      notify.error("Konfigurasi belum valid", validation.message);
+      notify.error("Configuration is not valid", validation.message);
       startTransition(() => {
         setState((current) => ({
           ...current,
@@ -298,7 +298,7 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
         ...current,
         status: "loading",
         progressPercent: 0,
-        progressStatus: "Memulai konversi",
+        progressStatus: "Starting conversion",
         currentFileName: undefined,
         response: undefined,
         errorMessage: undefined,
@@ -316,12 +316,12 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
           progressPercent: 100,
           progressStatus:
             response.failedCount > 0
-              ? `Selesai dengan ${response.failedCount} file gagal`
-              : "Konversi selesai",
+              ? `Finished with ${response.failedCount} failed files`
+              : "Conversion finished",
           response,
           errorMessage:
             response.failedCount > 0
-              ? `${response.failedCount} file gagal diproses. Periksa daftar hasil di bawah untuk detailnya.`
+              ? `${response.failedCount} files could not be processed. Check the result list below for details.`
               : undefined,
         }));
       });
@@ -334,16 +334,16 @@ export function useImageConverter(bootstrap: AppBootstrapState, defaultOutputFol
 
       pushToast(toastSummary.title, toastSummary.description);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Image conversion gagal diproses.";
+      const message = error instanceof Error ? error.message : "Image conversion could not be processed.";
       startTransition(() => {
         setState((current) => ({
           ...current,
           status: "error",
-          progressStatus: "Konversi gagal",
+          progressStatus: "Conversion failed",
           errorMessage: message,
         }));
       });
-      notify.error("Konversi gagal", message);
+      notify.error("Conversion failed", message);
     }
   });
 

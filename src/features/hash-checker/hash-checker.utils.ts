@@ -44,12 +44,12 @@ export function compareReferenceHash(referenceHash: string, result?: HashResultR
 
 export function describeComparison(compareState: HashCompareState) {
   if (compareState.status === "idle") {
-    return "Masukkan hash pembanding untuk mengecek match.";
+    return "Enter a reference hash to check for a match.";
   }
 
   if (compareState.status === "match" && compareState.matchedAlgorithm) {
-    return `Reference hash cocok dengan ${compareState.matchedAlgorithm.toUpperCase()}.`;
+    return `Reference hash matches ${compareState.matchedAlgorithm.toUpperCase()}.`;
   }
 
-  return "Reference hash tidak cocok dengan MD5, SHA1, maupun SHA256 hasil file ini.";
+  return "Reference hash does not match this file's MD5, SHA1, or SHA256 digest.";
 }

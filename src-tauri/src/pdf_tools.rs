@@ -3,11 +3,10 @@ use std::fs::{self, File};
 use std::io::BufWriter;
 use std::path::{Path, PathBuf};
 
-use anyhow::{Context, anyhow, bail};
+use anyhow::{anyhow, bail, Context};
 use lopdf::{Document, Object, ObjectId};
 use printpdf::{
-    Mm, Op, PdfDocument, PdfPage, PdfSaveOptions, PdfWarnMsg, Px, RawImage,
-    XObjectTransform,
+    Mm, Op, PdfDocument, PdfPage, PdfSaveOptions, PdfWarnMsg, Px, RawImage, XObjectTransform,
 };
 use tauri::{Emitter, Manager};
 
@@ -157,9 +156,12 @@ pub async fn merge_pdfs_payload(
 
         let output_path_buf = PathBuf::from(&output_path);
         ensure_parent_directory(&output_path_buf)?;
-        merged_document
-            .save(&output_path_buf)
-            .with_context(|| format!("Failed to save merged PDF to {}.", output_path_buf.display()))?;
+        merged_document.save(&output_path_buf).with_context(|| {
+            format!(
+                "Failed to save merged PDF to {}.",
+                output_path_buf.display()
+            )
+        })?;
 
         Ok(PdfMergeResponsePayload {
             output_path,
@@ -219,16 +221,12 @@ pub async fn split_pdf_payload(
             split_document.prune_objects();
             split_document.renumber_objects();
 
-            let output_path = build_split_output_path(
-                &output_dir_path,
-                &source_stem,
-                page_number,
-                digits,
-            );
+            let output_path =
+                build_split_output_path(&output_dir_path, &source_stem, page_number, digits);
 
-            split_document
-                .save(&output_path)
-                .with_context(|| format!("Failed to save split page to {}.", output_path.display()))?;
+            split_document.save(&output_path).with_context(|| {
+                format!("Failed to save split page to {}.", output_path.display())
+            })?;
 
             generated_files.push(output_path.to_string_lossy().into_owned());
 
@@ -378,7 +376,7 @@ pub async fn pdf_to_images_payload(
             total_pages,
             status: "placeholder".into(),
             note: Some(
-                "PDF page to image belum diaktifkan. pdfium-render membutuhkan binary PDFium native per platform dan wiring tambahan sebelum stabil dipakai lintas OS."
+                "PDF page-to-image export is not active yet. pdfium-render needs native PDFium binaries per platform plus additional wiring before it is stable across operating systems."
                     .into(),
             ),
         })
@@ -407,7 +405,10 @@ fn validate_pdf_input_file(file: &str) -> anyhow::Result<()> {
     let path = Path::new(file);
 
     if normalize_extension(path).as_deref() != Some("pdf") {
-        bail!("Unsupported PDF file: {}. Only .pdf files are allowed.", path.display());
+        bail!(
+            "Unsupported PDF file: {}. Only .pdf files are allowed.",
+            path.display()
+        );
     }
 
     if !path.is_file() {
@@ -474,8 +475,7 @@ fn ensure_directory(path: &Path) -> anyhow::Result<()> {
         return Ok(());
     }
 
-    fs::create_dir_all(path)
-        .map_err(|error| map_file_io_error(error, path, "create directory"))?;
+    fs::create_dir_all(path).map_err(|error| map_file_io_error(error, path, "create directory"))?;
     Ok(())
 }
 
@@ -555,7 +555,10 @@ fn map_file_io_error(error: std::io::Error, path: &Path, action: &str) -> anyhow
     match error.kind() {
         std::io::ErrorKind::NotFound => anyhow!("File not found: {}", path.display()),
         std::io::ErrorKind::PermissionDenied => {
-            anyhow!("Permission denied while trying to {action} {}.", path.display())
+            anyhow!(
+                "Permission denied while trying to {action} {}.",
+                path.display()
+            )
         }
         _ => anyhow!("Failed to {action} {}: {error}", path.display()),
     }
@@ -622,7 +625,8 @@ mod tests {
 
         document.with_pages(vec![page]);
 
-        let mut writer = BufWriter::new(File::create(&output_path).expect("pdf file should be created"));
+        let mut writer =
+            BufWriter::new(File::create(&output_path).expect("pdf file should be created"));
         document.save_writer(&mut writer, &PdfSaveOptions::default(), &mut warnings);
         writer.flush().expect("writer should flush to disk");
 

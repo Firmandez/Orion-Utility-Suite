@@ -38,7 +38,7 @@ export function PdfQueueDropZone({
     <div className="space-y-4">
       <div
         className={cn(
-          "rounded-[28px] border border-dashed bg-[var(--surface-2)] p-6 transition",
+          "rounded-3xl border border-dashed bg-[var(--surface-2)] p-6 transition",
           isDragActive ? "border-amber-400/55 bg-amber-500/10" : "hover:border-amber-400/28 hover:bg-white/5",
           disabled && "pointer-events-none opacity-70",
         )}
@@ -50,30 +50,30 @@ export function PdfQueueDropZone({
           <div>
             <div className="text-base font-semibold text-[var(--text-primary)]">
               {isDragActive
-                ? "Lepaskan file untuk menambahkannya"
+                ? "Drop files to add them"
                 : isSingle
-                  ? "Drop satu file sumber ke area ini"
-                  : "Drop beberapa file sekaligus ke area ini"}
+                  ? "Drop one source file into this area"
+                  : "Drop multiple files into this area"}
             </div>
             <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
               {getQueueDescription(operation)}
             </div>
-            <div className="mt-2 text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">
+            <div className="mt-2 text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">
               {getOperationHint(operation)}
             </div>
             {!isSingle ? (
               <div className="mt-2 text-xs text-[var(--text-muted)]">
-                Gunakan panah di tiap item untuk mengatur urutan proses.
+                Use the arrows on each item to adjust processing order.
               </div>
             ) : null}
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">
             <Button variant="outline" leadingIcon={FolderPlus} onClick={onPick} disabled={disabled}>
-              Pilih file
+              Choose files
             </Button>
             <Button variant="ghost" leadingIcon={Trash2} onClick={onClear} disabled={disabled || files.length === 0}>
-              Bersihkan daftar
+              Clear queue
             </Button>
           </div>
         </div>
@@ -84,12 +84,12 @@ export function PdfQueueDropZone({
           {files.map((file, index) => (
             <div
               key={file.path}
-              className="flex items-start justify-between gap-4 rounded-[24px] border bg-[var(--surface-2)] px-4 py-4"
+              className="flex items-start justify-between gap-4 rounded-3xl border bg-[var(--surface-2)] px-4 py-4"
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   {!isSingle ? (
-                    <span className="inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-200">
+                    <span className="inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-amber-200">
                       #{index + 1}
                     </span>
                   ) : null}
@@ -98,7 +98,7 @@ export function PdfQueueDropZone({
                 <div className="mt-1 break-all font-mono text-[12px] leading-6 text-[var(--text-muted)]">
                   {truncateMiddle(file.path, 36, 18)}
                 </div>
-                <div className="mt-2 inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-3 py-1 text-[11px] uppercase tracking-[0.16em] text-amber-200">
+                <div className="mt-2 inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-3 py-1 text-[11px] uppercase tracking-[0.1em] text-amber-200">
                   {file.extension.toUpperCase()}
                 </div>
               </div>
@@ -108,7 +108,7 @@ export function PdfQueueDropZone({
                   <div className="flex flex-col gap-2">
                     <button
                       type="button"
-                      aria-label={`Move ${file.fileName} up`}
+                    aria-label={`Move ${file.fileName} up`}
                       onClick={() => onMoveUp(file.path)}
                       disabled={disabled || index === 0}
                       className="inline-flex size-10 items-center justify-center rounded-2xl border bg-black/10 text-[var(--text-secondary)] transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
@@ -117,7 +117,7 @@ export function PdfQueueDropZone({
                     </button>
                     <button
                       type="button"
-                      aria-label={`Move ${file.fileName} down`}
+                    aria-label={`Move ${file.fileName} down`}
                       onClick={() => onMoveDown(file.path)}
                       disabled={disabled || index === files.length - 1}
                       className="inline-flex size-10 items-center justify-center rounded-2xl border bg-black/10 text-[var(--text-secondary)] transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"

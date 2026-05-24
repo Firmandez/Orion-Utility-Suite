@@ -93,13 +93,13 @@ export function useQrCodeStyling({
     const qrCode = qrCodeRef.current;
 
     if (!qrCode) {
-      throw new Error("QR preview belum siap untuk diexport.");
+      throw new Error("QR preview is not ready to export.");
     }
 
     const rawData = await qrCode.getRawData(extension);
 
     if (!rawData) {
-      throw new Error("Library QR tidak mengembalikan data export.");
+      throw new Error("QR library did not return export data.");
     }
 
     const blob = rawData instanceof Blob ? rawData : new Blob([rawData], { type: buildMimeType(extension) });

@@ -23,16 +23,16 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
 
   const handleCopy = async () => {
     if (result.state !== "ready" || !result.copyValue) {
-      notify.error("Tidak ada hasil", "Regex harus valid sebelum hasilnya bisa disalin.");
+      notify.error("No result", "Regex must be valid before results can be copied.");
       return;
     }
 
     try {
       await copyText(result.copyValue);
-      notify.success("Regex result copied", "Detail matches berhasil disalin ke clipboard.");
+      notify.success("Regex results copied", "Match details copied to the clipboard.");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
-      notify.error("Copy gagal", message);
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
+      notify.error("Copy failed", message);
     }
   };
 
@@ -40,13 +40,13 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
     setPattern("");
     setFlags("");
     setSampleText("");
-    notify.info("Regex cleared", "Pattern, flags, dan sample text dibersihkan.");
+    notify.info("Regex cleared", "Pattern, flags, and sample text have been cleared.");
   };
 
   return (
     <DeveloperToolCard
       title="Regex Tester"
-      description="Uji pattern JavaScript regex, flags, dan sample text untuk melihat match yang ditemukan secara lokal."
+      description="Test JavaScript regex patterns, flags, and sample text locally."
       icon={Braces}
       className={className}
       actions={
@@ -64,10 +64,10 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
         <div className="grid gap-4 lg:grid-cols-[1fr_180px]">
           <Input
             label="Regex pattern"
-            hint="Tulis pattern tanpa pembungkus slash. Contoh: \\b(?:TODO|FIXME)\\b"
+            hint="Write the pattern without wrapping slashes. Example: \\b(?:TODO|FIXME)\\b"
             value={pattern}
             onChange={(event) => setPattern(event.target.value)}
-            placeholder="Masukkan regex pattern..."
+            placeholder="Enter a regex pattern..."
           />
           <Input
             label="Flags"
@@ -80,40 +80,40 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
 
         <TextArea
           label="Sample text"
-          hint="Paste log, source code, atau text bebas untuk diuji terhadap regex aktif."
+          hint="Paste logs, source code, or free-form text to test against the active regex."
           value={sampleText}
           onChange={(event) => setSampleText(event.target.value)}
           className="min-h-[220px] font-mono text-[13px]"
         />
 
         {result.state === "error" ? (
-          <ToolNotice tone="error" title="Regex tidak valid" description={result.errorMessage ?? "Regex tidak bisa diproses."} />
+          <ToolNotice tone="error" title="Invalid regex" description={result.errorMessage ?? "Regex could not be processed."} />
         ) : result.state === "ready" ? (
           <>
             <ToolNotice
               tone="success"
               title="Regex ready"
-              description={`${result.summary} Mode: ${result.searchMode}. Flags aktif: ${result.usedFlags}.`}
+              description={`${result.summary} Mode: ${result.searchMode}. Active flags: ${result.usedFlags}.`}
             />
             <div className="grid gap-3 md:grid-cols-3">
-              <MatchStat label="Matches" value={String(result.matches.length)} />
+              <MatchStat label="Match" value={String(result.matches.length)} />
               <MatchStat label="Flags" value={result.usedFlags ?? "(none)"} />
               <MatchStat label="Mode" value={result.searchMode ?? "-"} />
             </div>
             <div className="space-y-3">
               {result.matches.length > 0 ? (
                 result.matches.map((match) => (
-                  <div key={`${match.matchNumber}-${match.index}-${match.value}`} className="rounded-[22px] border bg-black/10 p-4">
+                  <div key={`${match.matchNumber}-${match.index}-${match.value}`} className="rounded-2xl border bg-black/10 p-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="text-sm font-semibold text-[var(--text-primary)]">Match #{match.matchNumber}</div>
-                      <div className="rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                      <div className="rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.1em] text-[var(--text-muted)]">
                         Index {match.index}
                       </div>
                     </div>
                     <div className="mt-3 break-all rounded-2xl border bg-white/5 px-4 py-3 font-mono text-sm text-[var(--text-primary)]">
                       {match.value}
                     </div>
-                    <div className="mt-3 text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">Capture groups</div>
+                    <div className="mt-3 text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Capture groups</div>
                     <div className="mt-2 space-y-2">
                       {match.captureGroups.length > 0 ? (
                         match.captureGroups.map((group, index) => (
@@ -123,21 +123,21 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
                         ))
                       ) : (
                         <div className="rounded-2xl border bg-white/5 px-4 py-3 text-sm text-[var(--text-secondary)]">
-                          Tidak ada capture group pada match ini.
+                          No capture groups in this match.
                         </div>
                       )}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="rounded-[22px] border bg-white/5 p-4 text-sm leading-6 text-[var(--text-secondary)]">
-                  Regex valid, tetapi belum menemukan match pada sample text aktif.
+                <div className="rounded-2xl border bg-white/5 p-4 text-sm leading-6 text-[var(--text-secondary)]">
+                  Regex is valid, but no matches were found in the active sample text.
                 </div>
               )}
             </div>
           </>
         ) : (
-          <ToolNotice tone="idle" title="Menunggu pattern" description="Isi pattern dan sample text untuk mulai menguji regex." />
+          <ToolNotice tone="idle" title="Waiting for pattern" description="Fill in the pattern and sample text to start testing regex." />
         )}
       </div>
     </DeveloperToolCard>
@@ -147,7 +147,7 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
 function MatchStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-[20px] border bg-white/5 p-4">
-      <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">{label}</div>
+      <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</div>
       <div className="mt-3 break-words text-sm font-semibold text-[var(--text-primary)]">{value}</div>
     </div>
   );
@@ -171,7 +171,7 @@ function ToolNotice({
         : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)]";
 
   return (
-    <div className={`rounded-[22px] border p-4 ${toneClassName}`}>
+    <div className={`rounded-2xl border p-4 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-[var(--accent-strong)]"}`}

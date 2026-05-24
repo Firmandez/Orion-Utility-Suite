@@ -99,6 +99,11 @@ export interface SystemInfoResponse {
 
 export interface LocalIpResponse {
   localIp: string;
+  subnetMask?: string;
+  defaultGateway?: string;
+  preferredDnsServer?: string;
+  alternateDnsServer?: string;
+  addressMode: string;
 }
 
 export interface DashboardSystemState {

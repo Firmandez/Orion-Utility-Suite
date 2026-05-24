@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/Button";
 function getErrorDetails(error: unknown) {
   if (isRouteErrorResponse(error)) {
     return {
-      title: `${error.status} ${error.statusText || "Route error"}`,
+        title: `${error.status} ${error.statusText || "Page error"}`,
       description:
         typeof error.data === "string"
           ? error.data
-          : "Terjadi masalah saat memuat halaman yang diminta.",
+          : "The requested page could not be loaded.",
     };
   }
 
@@ -21,8 +21,8 @@ function getErrorDetails(error: unknown) {
   }
 
   return {
-    title: "Unexpected application error",
-    description: "Orion menemukan masalah saat merender halaman ini.",
+    title: "Something went wrong",
+    description: "Orion ran into a problem while rendering this page.",
   };
 }
 
@@ -37,7 +37,7 @@ export function RouteErrorState() {
           <AlertTriangle className="size-7" />
         </div>
         <div className="mt-6">
-          <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Route error</div>
+          <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Page Error</div>
           <h1 className="mt-3 text-3xl font-semibold text-[var(--text-primary)]">{details.title}</h1>
           <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--text-secondary)]">{details.description}</p>
         </div>

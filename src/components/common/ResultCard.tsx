@@ -23,7 +23,7 @@ export function ResultCard({ title, description, rows, footer, className }: Resu
             key={`${row.label}-${row.value}`}
             className="flex items-start justify-between gap-4 rounded-2xl border bg-black/10 px-4 py-3"
           >
-            <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">{row.label}</div>
+            <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{row.label}</div>
             <div className={cn("text-right text-sm text-[var(--text-primary)]", row.mono && "font-mono")}>{row.value}</div>
           </div>
         ))}

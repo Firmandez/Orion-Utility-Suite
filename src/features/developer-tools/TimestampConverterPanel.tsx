@@ -17,39 +17,39 @@ export function TimestampConverterPanel({ className }: TimestampConverterPanelPr
 
   const handleUseNow = () => {
     setInputValue(getCurrentTimestampPreset());
-    notify.success("Timestamp updated", "Input diisi dengan waktu saat ini dalam Unix milliseconds.");
+      notify.success("Timestamp updated", "Input filled with the current time in Unix milliseconds.");
   };
 
   const handleCopy = async () => {
     if (result.state !== "ready" || !result.copyValue) {
-      notify.error("Tidak ada hasil", "Masukkan timestamp valid dulu sebelum menyalin hasil.");
+      notify.error("No result", "Enter a valid timestamp before copying the result.");
       return;
     }
 
     try {
       await copyText(result.copyValue);
-      notify.success("Timestamp copied", "Semua format waktu berhasil disalin ke clipboard.");
+      notify.success("Timestamp copied", "All time formats were copied to the clipboard.");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
-      notify.error("Copy gagal", message);
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
+      notify.error("Copy failed", message);
     }
   };
 
   const handleClear = () => {
     setInputValue("");
-    notify.info("Timestamp cleared", "Input timestamp dan hasil konversi dibersihkan.");
+    notify.info("Timestamp cleared", "Timestamp input and conversion results have been cleared.");
   };
 
   return (
     <DeveloperToolCard
       title="Timestamp Converter"
-      description="Ubah Unix timestamp atau date string menjadi format lokal, UTC, ISO, detik, dan milidetik."
+      description="Convert Unix timestamps or date strings into local time, UTC, ISO, seconds, and milliseconds."
       icon={Clock3}
       className={className}
       actions={
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" leadingIcon={RefreshCcw} onClick={handleUseNow}>
-            Use now
+            Use current time
           </Button>
           <Button variant="secondary" size="sm" leadingIcon={ClipboardCopy} onClick={handleCopy} disabled={result.state !== "ready"}>
             Copy result
@@ -63,8 +63,8 @@ export function TimestampConverterPanel({ className }: TimestampConverterPanelPr
       <div className="space-y-5">
         <Input
           label="Timestamp or date string"
-          hint="Contoh: 1716449923000, 1716449923, atau 2026-05-23T08:00:00Z"
-          placeholder="Masukkan Unix seconds, milliseconds, atau ISO date string..."
+          hint="Example: 1716449923000, 1716449923, or 2026-05-23T08:00:00Z"
+          placeholder="Enter Unix seconds, milliseconds, or an ISO date string..."
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
         />
@@ -72,15 +72,15 @@ export function TimestampConverterPanel({ className }: TimestampConverterPanelPr
         {result.state === "error" ? (
           <StatusNotice
             tone="error"
-            title="Format timestamp tidak valid"
-            description={result.errorMessage ?? "Timestamp tidak bisa diproses."}
+            title="Invalid timestamp format"
+            description={result.errorMessage ?? "Timestamp could not be processed."}
           />
         ) : result.state === "ready" ? (
           <>
             <StatusNotice
               tone="success"
-              title="Timestamp siap dipakai"
-              description={`Input terdeteksi sebagai ${result.sourceLabel} dan sudah dikonversi ke beberapa format waktu.`}
+              title="Timestamp ready"
+              description={`Input detected as ${result.sourceLabel} and converted into multiple time formats.`}
             />
             <div className="grid gap-3 sm:grid-cols-2">
               <MetricCard label="Detected input" value={result.sourceLabel ?? "-"} mono={false} />
@@ -94,8 +94,8 @@ export function TimestampConverterPanel({ className }: TimestampConverterPanelPr
         ) : (
           <StatusNotice
             tone="idle"
-            title="Menunggu input"
-            description="Tempel timestamp atau date string untuk melihat hasil konversi secara instan."
+            title="Waiting for input"
+            description="Paste a timestamp or date string to see instant conversion results."
           />
         )}
       </div>
@@ -114,7 +114,7 @@ function MetricCard({
 }) {
   return (
     <div className="rounded-[20px] border bg-black/10 p-4">
-      <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">{label}</div>
+      <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</div>
       <div className={`mt-3 break-words text-sm text-[var(--text-primary)] ${mono ? "font-mono" : ""}`}>{value}</div>
     </div>
   );
@@ -138,7 +138,7 @@ function StatusNotice({
         : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)]";
 
   return (
-    <div className={`rounded-[22px] border p-4 ${toneClassName}`}>
+    <div className={`rounded-2xl border p-4 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-[var(--accent-strong)]"}`}

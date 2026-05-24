@@ -25,7 +25,7 @@ function buildInitialState(): UuidGeneratorState {
   } catch (error) {
     return {
       value: null,
-      errorMessage: error instanceof Error ? error.message : "UUID generator belum tersedia di runtime ini.",
+      errorMessage: error instanceof Error ? error.message : "UUID generator is not available in this runtime.",
     };
   }
 }
@@ -40,29 +40,29 @@ export function UuidGeneratorPanel({ className }: UuidGeneratorPanelProps) {
         value: nextValue,
         errorMessage: undefined,
       });
-      notify.success("UUID generated", "Identifier baru siap dipakai.");
+      notify.success("UUID generated", "A new identifier is ready to use.");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "UUID generator gagal dijalankan.";
+      const message = error instanceof Error ? error.message : "UUID generator could not run.";
       setUuidResult({
         value: null,
         errorMessage: message,
       });
-      notify.error("Generate gagal", message);
+      notify.error("Generation failed", message);
     }
   };
 
   const handleCopy = async () => {
     if (!uuidResult.value) {
-      notify.error("Tidak ada UUID", "Generate UUID terlebih dulu sebelum menyalin hasil.");
+      notify.error("No UUID", "Generate a UUID before copying the result.");
       return;
     }
 
     try {
       await copyText(uuidResult.value.value);
-      notify.success("UUID copied", "UUID aktif berhasil disalin ke clipboard.");
+      notify.success("UUID copied", "The active UUID was copied to the clipboard.");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Clipboard tidak tersedia.";
-      notify.error("Copy gagal", message);
+      const message = error instanceof Error ? error.message : "Clipboard is not available.";
+      notify.error("Copy failed", message);
     }
   };
 
@@ -71,13 +71,13 @@ export function UuidGeneratorPanel({ className }: UuidGeneratorPanelProps) {
       value: null,
       errorMessage: undefined,
     });
-    notify.info("UUID cleared", "Hasil generator dibersihkan dari panel ini.");
+    notify.info("UUID cleared", "Generator output cleared from this panel.");
   };
 
   return (
     <DeveloperToolCard
       title="UUID Generator"
-      description="Buat UUID v4 lokal untuk kebutuhan seed, identifier internal, atau data uji tanpa koneksi online."
+      description="Create local UUID v4 values for seeds, internal identifiers, or test data without an online connection."
       icon={Binary}
       className={className}
       actions={
@@ -95,24 +95,24 @@ export function UuidGeneratorPanel({ className }: UuidGeneratorPanelProps) {
       }
     >
       {uuidResult.errorMessage ? (
-        <div className="rounded-[22px] border border-rose-400/18 bg-rose-500/10 p-4 text-sm leading-6 text-rose-100/90">
+        <div className="rounded-2xl border border-rose-400/18 bg-rose-500/10 p-4 text-sm leading-6 text-rose-100/90">
           {uuidResult.errorMessage}
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="rounded-[22px] border bg-black/10 p-4">
-            <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">Current UUID</div>
+          <div className="rounded-2xl border bg-black/10 p-4">
+            <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Active UUID</div>
             <div className="mt-4 break-all font-mono text-lg text-[var(--text-primary)]">
-              {uuidResult.value?.value ?? "Belum ada UUID yang dihasilkan."}
+              {uuidResult.value?.value ?? "No UUID has been generated yet."}
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-[20px] border bg-white/5 p-4">
-              <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">Version</div>
+              <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Version</div>
               <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">UUID v4</div>
             </div>
             <div className="rounded-[20px] border bg-white/5 p-4">
-              <div className="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">Source</div>
+              <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Source</div>
               <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">
                 {uuidResult.value?.source === "randomUUID" ? "crypto.randomUUID()" : uuidResult.value?.source === "getRandomValues" ? "crypto.getRandomValues()" : "Unavailable"}
               </div>

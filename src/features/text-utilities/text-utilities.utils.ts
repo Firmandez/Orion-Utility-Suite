@@ -9,53 +9,53 @@ import type {
 export const textUtilityOperations: TextUtilityOperationDefinition[] = [
   {
     id: "json-format",
-    label: "JSON Formatter",
-    description: "Indent JSON agar lebih rapi dibaca atau diinspeksi.",
+    label: "Format JSON",
+    description: "Indent JSON so it is easier to read or inspect.",
     category: "JSON",
     outputLabel: "Formatted JSON",
   },
   {
     id: "json-minify",
-    label: "JSON Minifier",
-    description: "Hapus whitespace JSON yang tidak diperlukan.",
+    label: "Minify JSON",
+    description: "Remove unnecessary JSON whitespace.",
     category: "JSON",
     outputLabel: "Minified JSON",
   },
   {
     id: "json-validate",
-    label: "JSON Validator",
-    description: "Validasi apakah teks JSON bisa dibaca dengan benar.",
+    label: "Validate JSON",
+    description: "Validate whether JSON text can be parsed correctly.",
     category: "JSON",
     outputLabel: "Validation Result",
   },
   {
     id: "base64-encode",
-    label: "Base64 Encode",
-    description: "Encode teks Unicode ke Base64 secara aman.",
+    label: "Encode Base64",
+    description: "Safely encode Unicode text to Base64.",
     category: "Encoding",
     outputLabel: "Base64 Result",
     swapTo: "base64-decode",
   },
   {
     id: "base64-decode",
-    label: "Base64 Decode",
-    description: "Decode Base64 kembali ke teks asli.",
+    label: "Decode Base64",
+    description: "Decode Base64 back into the original text.",
     category: "Encoding",
     outputLabel: "Decoded Text",
     swapTo: "base64-encode",
   },
   {
     id: "url-encode",
-    label: "URL Encode",
-    description: "Escape karakter agar aman dipakai di URL atau query string.",
+    label: "Encode URL",
+    description: "Escape characters so they are safe in URLs or query strings.",
     category: "Encoding",
     outputLabel: "Encoded URL",
     swapTo: "url-decode",
   },
   {
     id: "url-decode",
-    label: "URL Decode",
-    description: "Kembalikan string URL-encoded menjadi teks biasa.",
+    label: "Decode URL",
+    description: "Convert URL-encoded strings back into plain text.",
     category: "Encoding",
     outputLabel: "Decoded URL",
     swapTo: "url-encode",
@@ -63,49 +63,49 @@ export const textUtilityOperations: TextUtilityOperationDefinition[] = [
   {
     id: "uppercase",
     label: "Uppercase",
-    description: "Ubah semua huruf menjadi kapital.",
+    description: "Convert all letters to uppercase.",
     category: "Text Transform",
     outputLabel: "Uppercase Text",
   },
   {
     id: "lowercase",
     label: "Lowercase",
-    description: "Ubah semua huruf menjadi huruf kecil.",
+    description: "Convert all letters to lowercase.",
     category: "Text Transform",
     outputLabel: "Lowercase Text",
   },
   {
     id: "title-case",
     label: "Title Case",
-    description: "Kapitalisasi awal kata untuk judul atau label.",
+    description: "Capitalize word starts for titles or labels.",
     category: "Text Transform",
     outputLabel: "Title Case Text",
   },
   {
     id: "remove-extra-spaces",
-    label: "Remove Extra Spaces",
-    description: "Rapikan spasi berlebih dan trim ujung teks.",
+    label: "Clean Spaces",
+    description: "Clean up extra spaces and trim text edges.",
     category: "Text Transform",
-    outputLabel: "Normalized Text",
+    outputLabel: "Cleaned Text",
   },
   {
     id: "slug-generator",
-    label: "Slug Generator",
-    description: "Buat slug URL-friendly dari teks bebas.",
+    label: "Create Slug",
+    description: "Create a URL-friendly slug from free-form text.",
     category: "Text Transform",
     outputLabel: "Slug Result",
   },
   {
     id: "character-counter",
-    label: "Character Counter",
-    description: "Hitung total karakter input, termasuk Unicode.",
+    label: "Character Count",
+    description: "Count total input characters, including Unicode.",
     category: "Metrics",
     outputLabel: "Character Count",
   },
   {
     id: "word-counter",
-    label: "Word Counter",
-    description: "Hitung jumlah kata dari input aktif.",
+    label: "Word Count",
+    description: "Count words in the active input.",
     category: "Metrics",
     outputLabel: "Word Count",
   },
@@ -161,7 +161,7 @@ export function transformText(input: string, operationId: TextUtilityOperationId
       statusLabel = "Waiting for input";
       detailRows = [
         { label: "Operation", value: operation.label },
-        { label: "Input chars", value: "0", mono: true },
+        { label: "Input characters", value: "0", mono: true },
         { label: "Input words", value: "0", mono: true },
       ];
     }
@@ -198,7 +198,7 @@ export function transformText(input: string, operationId: TextUtilityOperationId
       }
       case "json-validate": {
         const parsed = parseJsonInput(input);
-        output = "Valid JSON";
+        output = "JSON valid";
         statusLabel = "Valid";
         detailRows = [
           { label: "Root type", value: describeJsonRoot(parsed) },
@@ -212,8 +212,8 @@ export function transformText(input: string, operationId: TextUtilityOperationId
         statusLabel = "Encoded";
         detailRows = [
           { label: "Algorithm", value: "Base64" },
-          { label: "Input chars", value: String(inputCharacters), mono: true },
-          { label: "Output chars", value: String(countCharacters(output)), mono: true },
+          { label: "Input characters", value: String(inputCharacters), mono: true },
+          { label: "Output characters", value: String(countCharacters(output)), mono: true },
         ];
         break;
       }
@@ -222,8 +222,8 @@ export function transformText(input: string, operationId: TextUtilityOperationId
         statusLabel = "Decoded";
         detailRows = [
           { label: "Algorithm", value: "Base64" },
-          { label: "Input chars", value: String(inputCharacters), mono: true },
-          { label: "Output chars", value: String(countCharacters(output)), mono: true },
+          { label: "Input characters", value: String(inputCharacters), mono: true },
+          { label: "Output characters", value: String(countCharacters(output)), mono: true },
         ];
         break;
       }
@@ -232,8 +232,8 @@ export function transformText(input: string, operationId: TextUtilityOperationId
         statusLabel = "Encoded";
         detailRows = [
           { label: "Mode", value: "encodeURIComponent" },
-          { label: "Input chars", value: String(inputCharacters), mono: true },
-          { label: "Output chars", value: String(countCharacters(output)), mono: true },
+          { label: "Input characters", value: String(inputCharacters), mono: true },
+          { label: "Output characters", value: String(countCharacters(output)), mono: true },
         ];
         break;
       }
@@ -242,8 +242,8 @@ export function transformText(input: string, operationId: TextUtilityOperationId
         statusLabel = "Decoded";
         detailRows = [
           { label: "Mode", value: "decodeURIComponent" },
-          { label: "Input chars", value: String(inputCharacters), mono: true },
-          { label: "Output chars", value: String(countCharacters(output)), mono: true },
+          { label: "Input characters", value: String(inputCharacters), mono: true },
+          { label: "Output characters", value: String(countCharacters(output)), mono: true },
         ];
         break;
       }
@@ -267,13 +267,13 @@ export function transformText(input: string, operationId: TextUtilityOperationId
       }
       case "remove-extra-spaces": {
         output = normalizeSpaces(input);
-        statusLabel = "Normalized";
+        statusLabel = "Cleaned";
         detailRows = buildTransformRows(input, output);
         break;
       }
       case "slug-generator": {
         output = toSlug(input);
-        statusLabel = "Generated";
+        statusLabel = "Created";
         detailRows = buildTransformRows(input, output);
         break;
       }
@@ -301,11 +301,11 @@ export function transformText(input: string, operationId: TextUtilityOperationId
   } catch (error) {
     output = "";
     statusLabel = "Error";
-    errorMessage = error instanceof Error ? error.message : "Transform text gagal diproses.";
+    errorMessage = error instanceof Error ? error.message : "Text transform could not be processed.";
     detailRows = [
       { label: "Operation", value: operation.label },
       { label: "Status", value: "Invalid input" },
-      { label: "Input chars", value: String(inputCharacters), mono: true },
+      { label: "Input characters", value: String(inputCharacters), mono: true },
     ];
   }
 
@@ -332,14 +332,14 @@ export async function copyText(value: string) {
 
 function parseJsonInput(input: string) {
   if (!input.trim()) {
-    throw new Error("Input JSON tidak boleh kosong.");
+    throw new Error("JSON input cannot be empty.");
   }
 
   try {
     return JSON.parse(input);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "JSON tidak valid.";
-    throw new Error(`JSON tidak valid: ${message}`);
+    const message = error instanceof Error ? error.message : "JSON is not valid.";
+    throw new Error(`JSON is not valid: ${message}`);
   }
 }
 
@@ -357,7 +357,7 @@ function describeJsonRoot(value: unknown) {
 
 function buildJsonRows(output: string): ResultRow[] {
   return [
-    { label: "Output chars", value: String(countCharacters(output)), mono: true },
+    { label: "Output characters", value: String(countCharacters(output)), mono: true },
     { label: "Words", value: String(countWords(output)), mono: true },
     { label: "Lines", value: String(countLines(output)), mono: true },
   ];
@@ -365,8 +365,8 @@ function buildJsonRows(output: string): ResultRow[] {
 
 function buildTransformRows(input: string, output: string): ResultRow[] {
   return [
-    { label: "Input chars", value: String(countCharacters(input)), mono: true },
-    { label: "Output chars", value: String(countCharacters(output)), mono: true },
+    { label: "Input characters", value: String(countCharacters(input)), mono: true },
+    { label: "Output characters", value: String(countCharacters(output)), mono: true },
     { label: "Input words", value: String(countWords(input)), mono: true },
     { label: "Output words", value: String(countWords(output)), mono: true },
   ];
@@ -385,7 +385,7 @@ function encodeBase64Unicode(input: string) {
 
 function decodeBase64Unicode(input: string) {
   if (!input.trim()) {
-    throw new Error("Input Base64 tidak boleh kosong.");
+    throw new Error("Base64 input cannot be empty.");
   }
 
   try {
@@ -394,7 +394,7 @@ function decodeBase64Unicode(input: string) {
     const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
     return new TextDecoder().decode(bytes);
   } catch {
-    throw new Error("Base64 tidak valid atau bukan teks UTF-8 yang bisa dibaca.");
+    throw new Error("Base64 is not valid or is not readable UTF-8 text.");
   }
 }
 

@@ -17,8 +17,8 @@ export function DynamicPresetFields({
       return (
         <TextArea
           label="Text or link"
-          hint="Gunakan untuk teks bebas, URL, JSON kecil, atau kode singkat lain."
-          placeholder="Masukkan teks atau link yang ingin dikodekan ke QR..."
+          hint="Use for free-form text, URLs, small JSON snippets, or other short codes."
+          placeholder="Enter text or a link to encode into QR..."
           value={form.rawText}
           onChange={(event) => updateForm("rawText", event.target.value)}
         />
@@ -28,7 +28,7 @@ export function DynamicPresetFields({
       return (
         <Input
           label="Destination URL"
-          hint="Jika Anda tidak menulis protokol, sistem akan mengasumsikan https://."
+          hint="If you do not include a protocol, Orion will assume https://."
           placeholder="https://example.com/product/orion"
           value={form.url}
           onChange={(event) => updateForm("url", event.target.value)}
@@ -40,29 +40,29 @@ export function DynamicPresetFields({
         <div className="grid gap-4 xl:grid-cols-2">
           <Input
             label="SSID"
-            hint="Nama jaringan WiFi yang akan ditampilkan ke scanner."
+            hint="WiFi network name shown to scanners."
             placeholder="Orion Office"
             value={form.wifiSsid}
             onChange={(event) => updateForm("wifiSsid", event.target.value)}
           />
           <Select
             label="Security"
-            hint="Pilih jenis keamanan jaringan yang benar."
+            hint="Choose the correct network security type."
             options={wifiSecurityOptions}
             value={form.wifiSecurity}
             onChange={(event) => updateForm("wifiSecurity", event.target.value as QRFormState["wifiSecurity"])}
           />
           <Input
             label="Password"
-            hint="Biarkan kosong hanya jika jaringan Anda benar-benar open network."
-            placeholder="Masukkan password WiFi"
+            hint="Leave empty only when the network is truly open."
+            placeholder="Enter WiFi password"
             type="password"
             value={form.wifiPassword}
             onChange={(event) => updateForm("wifiPassword", event.target.value)}
           />
           <Toggle
             label="Hidden network"
-            hint="Aktifkan hanya jika SSID Anda memang disembunyikan."
+            hint="Enable only if your SSID is intentionally hidden."
             checked={form.wifiHidden}
             onCheckedChange={(checked) => updateForm("wifiHidden", checked)}
           />
@@ -74,15 +74,15 @@ export function DynamicPresetFields({
         <div className="grid gap-4">
           <Input
             label="Phone number"
-            hint="Gunakan format internasional. Karakter non-angka akan dibersihkan otomatis."
+            hint="Use international format. Non-numeric characters are cleaned automatically."
             placeholder="6281234567890"
             value={form.whatsappPhone}
             onChange={(event) => updateForm("whatsappPhone", event.target.value)}
           />
           <TextArea
-            label="Prefilled message"
-            hint="Opsional. Pesan ini akan langsung muncul saat chat dibuka."
-            placeholder="Halo, saya tertarik dengan Orion Utility Suite..."
+            label="Starting message"
+            hint="Optional. This message appears when the chat opens."
+            placeholder="Hi, I'm interested in Orion Utility Suite..."
             value={form.whatsappMessage}
             onChange={(event) => updateForm("whatsappMessage", event.target.value)}
           />
@@ -94,22 +94,22 @@ export function DynamicPresetFields({
         <div className="grid gap-4">
           <Input
             label="Email recipient"
-            hint="Alamat email tujuan yang akan dibuka oleh mail client."
+            hint="Destination email address that opens in the mail client."
             placeholder="support@example.com"
             value={form.emailTo}
             onChange={(event) => updateForm("emailTo", event.target.value)}
           />
           <Input
             label="Subject"
-            hint="Opsional. Isi subject email secara otomatis."
-            placeholder="Halo Orion Team"
+            hint="Optional. Prefill the email subject."
+            placeholder="Hello Orion Team"
             value={form.emailSubject}
             onChange={(event) => updateForm("emailSubject", event.target.value)}
           />
           <TextArea
-            label="Body"
-            hint="Opsional. Cocok untuk CTA, feedback, atau format request standar."
-            placeholder="Tulis isi email yang ingin diprefill..."
+            label="Email body"
+            hint="Optional. Useful for CTAs, feedback, or standard request formats."
+            placeholder="Write the email body to prefill..."
             value={form.emailBody}
             onChange={(event) => updateForm("emailBody", event.target.value)}
           />
@@ -138,7 +138,7 @@ export function DynamicPresetFields({
             onChange={(event) => updateForm("contactOrganization", event.target.value)}
           />
           <Input
-            label="Title"
+            label="Job title"
             placeholder="Desktop Utility Engineer"
             value={form.contactTitle}
             onChange={(event) => updateForm("contactTitle", event.target.value)}
@@ -163,8 +163,8 @@ export function DynamicPresetFields({
           />
           <TextArea
             label="Address"
-            hint="Alamat lengkap akan dimasukkan sebagai field ADR pada vCard."
-            placeholder="Jl. Contoh No. 123, Jakarta"
+            hint="The full address will be inserted as the ADR field in the vCard."
+            placeholder="123 Example St, Jakarta"
             value={form.contactAddress}
             onChange={(event) => updateForm("contactAddress", event.target.value)}
             className="min-h-[128px] xl:col-span-2"

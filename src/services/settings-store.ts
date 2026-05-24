@@ -31,7 +31,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "cyan",
     label: "Ion Cyan",
-    description: "Segar, terang, dan mudah dibaca.",
+    description: "Fresh, bright, and easy to read.",
     accent: "#4dd8f6",
     accentStrong: "#18b8da",
     accentSoft: "rgba(77, 216, 246, 0.34)",
@@ -40,7 +40,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "emerald",
     label: "Circuit Emerald",
-    description: "Hijau lembut untuk tampilan yang produktif.",
+    description: "A calm green for a productive interface.",
     accent: "#34d399",
     accentStrong: "#10b981",
     accentSoft: "rgba(52, 211, 153, 0.34)",
@@ -49,7 +49,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "amber",
     label: "Signal Amber",
-    description: "Hangat dan jelas untuk highlight penting.",
+    description: "Warm and clear for important highlights.",
     accent: "#fbbf24",
     accentStrong: "#f59e0b",
     accentSoft: "rgba(251, 191, 36, 0.34)",
@@ -58,7 +58,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "violet",
     label: "Pulse Violet",
-    description: "Lebih ekspresif, tetap rapi untuk penggunaan harian.",
+    description: "More expressive while staying tidy for daily use.",
     accent: "#a78bfa",
     accentStrong: "#8b5cf6",
     accentSoft: "rgba(167, 139, 250, 0.34)",
@@ -67,7 +67,7 @@ export const accentPalettes: AccentPalette[] = [
   {
     id: "rose",
     label: "Radar Rose",
-    description: "Kontras tinggi untuk tampilan yang lebih berani.",
+    description: "High contrast for a bolder look.",
     accent: "#fb7185",
     accentStrong: "#f43f5e",
     accentSoft: "rgba(251, 113, 133, 0.34)",
@@ -168,7 +168,7 @@ export async function loadSettings(): Promise<SettingsLoadResult> {
       settings: nextSettings,
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Settings store tidak bisa dibaca.";
+    const message = error instanceof Error ? error.message : "Settings store could not be read.";
 
     console.warn("Orion settings fallback activated:", message);
 
@@ -186,7 +186,7 @@ export async function loadSettings(): Promise<SettingsLoadResult> {
 
     return {
       settings: cachedSettings,
-      errorMessage: "Pengaturan tidak bisa dibaca. Orion memakai pengaturan bawaan dan menyiapkannya ulang.",
+      errorMessage: "Settings could not be read. Orion restored the defaults and rebuilt the settings file.",
     };
   }
 }

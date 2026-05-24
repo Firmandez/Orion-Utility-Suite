@@ -15,8 +15,8 @@ export function PdfResultFileList({ result, onCopyPath }: PdfResultFileListProps
     return (
       <EmptyState
         icon={FileOutput}
-        title="Belum ada hasil operasi PDF"
-        description="Jalankan merge, split, atau image to PDF untuk melihat file output dan ringkasan hasil di sini."
+        title="No PDF operation results yet"
+        description="Run merge, split, or image to PDF to see output files and result summaries here."
       />
     );
   }
@@ -43,7 +43,7 @@ export function PdfResultFileList({ result, onCopyPath }: PdfResultFileListProps
             title={getBaseName(path)}
             description={path}
             status="success"
-            onCopy={() => onCopyPath(path, "generated file path")}
+            onCopy={() => onCopyPath(path, "result file path")}
           />
         ))}
       </div>
@@ -54,11 +54,11 @@ export function PdfResultFileList({ result, onCopyPath }: PdfResultFileListProps
     return (
       <EmptyState
         icon={TriangleAlert}
-        title={result.data.status === "placeholder" ? "PDF to Image segera hadir" : "Belum ada hasil gambar"}
+        title={result.data.status === "placeholder" ? "PDF to Image coming soon" : "No image results yet"}
         description={
           result.data.status === "placeholder"
-            ? "Fitur ini sedang disiapkan dan belum membuat file gambar."
-            : result.data.note ?? "Operasi belum menghasilkan gambar. Cek folder output yang dipilih."
+            ? "This feature is being prepared and has not generated image files yet."
+            : result.data.note ?? "The operation has not generated images yet. Check the selected output folder."
         }
       />
     );
@@ -72,7 +72,7 @@ export function PdfResultFileList({ result, onCopyPath }: PdfResultFileListProps
           title={getBaseName(path)}
           description={path}
           status="success"
-          onCopy={() => onCopyPath(path, "generated image path")}
+          onCopy={() => onCopyPath(path, "result image path")}
         />
       ))}
     </div>
@@ -93,7 +93,7 @@ function ResultPathCard({
   const isSuccess = status === "success";
 
   return (
-    <div className="rounded-[24px] border bg-[var(--surface-2)] p-4">
+    <div className="rounded-3xl border bg-[var(--surface-2)] p-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3">
@@ -102,7 +102,7 @@ function ResultPathCard({
             </div>
             <span
               className={cn(
-                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]",
+                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em]",
                 isSuccess
                   ? "border border-emerald-400/18 bg-emerald-500/10 text-emerald-200"
                   : "border border-amber-400/18 bg-amber-500/10 text-amber-200",
@@ -114,7 +114,7 @@ function ResultPathCard({
           </div>
 
           <div className="mt-3">
-            <div className="text-[11px] uppercase tracking-[0.16em] text-[var(--text-muted)]">Path</div>
+            <div className="text-[11px] uppercase tracking-[0.1em] text-[var(--text-muted)]">Path</div>
             <div className="mt-1 break-all font-mono text-[13px] text-[var(--text-primary)]">{description}</div>
           </div>
         </div>

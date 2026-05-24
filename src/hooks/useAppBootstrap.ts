@@ -41,7 +41,7 @@ export function useAppBootstrap() {
             status: "ready",
             source: "mock",
             data: fallbackBootstrap,
-            errorMessage: "Beberapa fitur file tersedia saat Orion dibuka sebagai aplikasi desktop.",
+            errorMessage: "Some file features are available when Orion is opened as a desktop app.",
           });
         });
       }

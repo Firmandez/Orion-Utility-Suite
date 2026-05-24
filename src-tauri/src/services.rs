@@ -3,25 +3,25 @@ use std::io::{BufReader, BufWriter, Read};
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 
-use anyhow::{Context, anyhow, bail};
+use anyhow::{anyhow, bail, Context};
 use hickory_resolver::Resolver;
 use image::codecs::jpeg::JpegEncoder;
 use image::codecs::png::{CompressionType, FilterType as PngFilterType, PngEncoder};
-use image::{DynamicImage, ImageEncoder, ImageReader, Rgb, RgbImage, imageops::FilterType};
+use image::{imageops::FilterType, DynamicImage, ImageEncoder, ImageReader, Rgb, RgbImage};
 use regex::Regex;
-use reqwest::{Client, Url, redirect};
+use reqwest::{redirect, Client, Url};
+use serde_json::Value;
 use sha1::{Digest as _, Sha1};
 use sha2::Sha256;
 use tauri::{Emitter, Manager};
 use tokio::net::TcpStream;
 use tokio::process::Command as TokioCommand;
-use tokio::time::{Duration, Instant, timeout};
+use tokio::time::{timeout, Duration, Instant};
 
 use crate::models::{
-    AppBootstrapPayload, AppModuleSummary, ConvertImagesOptionsPayload,
-    DnsLookupPayload, HashProgressPayload, HashResultPayload, HttpStatusPayload,
-    ImageConversionFileResultPayload, ImageConversionProgressPayload,
-    ImageConversionResponsePayload, ImageOutputFormatPayload,
+    AppBootstrapPayload, AppModuleSummary, ConvertImagesOptionsPayload, DnsLookupPayload,
+    HashProgressPayload, HashResultPayload, HttpStatusPayload, ImageConversionFileResultPayload,
+    ImageConversionProgressPayload, ImageConversionResponsePayload, ImageOutputFormatPayload,
     ImageResizeOptionsPayload, LocalIpPayload, PingHostPayload, PortCheckPayload,
     SystemInfoPayload,
 };
@@ -31,10 +31,20 @@ const HASH_CHUNK_SIZE: usize = 256 * 1024;
 const HASH_PROGRESS_EVENT: &str = "hash-progress";
 const IMAGE_CONVERSION_PROGRESS_EVENT: &str = "image-conversion-progress";
 const DNS_LOOKUP_TIMEOUT: Duration = Duration::from_secs(5);
+const WINDOWS_NETWORK_QUERY_TIMEOUT: Duration = Duration::from_secs(5);
 const PING_TIMEOUT: Duration = Duration::from_secs(4);
 const PORT_CHECK_TIMEOUT: Duration = Duration::from_secs(3);
 const HTTP_CONNECT_TIMEOUT: Duration = Duration::from_secs(4);
 const HTTP_REQUEST_TIMEOUT: Duration = Duration::from_secs(8);
+
+#[derive(Debug, Clone, Default)]
+struct NetworkInterfaceDetails {
+    subnet_mask: Option<String>,
+    default_gateway: Option<String>,
+    preferred_dns_server: Option<String>,
+    alternate_dns_server: Option<String>,
+    address_mode: String,
+}
 
 pub async fn build_bootstrap_payload() -> AppBootstrapPayload {
     let modules = vec![
@@ -116,10 +126,177 @@ pub async fn build_system_info_payload() -> SystemInfoPayload {
 pub async fn build_local_ip_payload() -> anyhow::Result<LocalIpPayload> {
     let ip_address = local_ip_address::local_ip()
         .context("Failed to resolve the local IP address from this machine.")?;
+    let local_ip = ip_address.to_string();
+    let interface_details = load_network_interface_details(&local_ip).await;
 
     Ok(LocalIpPayload {
-        local_ip: ip_address.to_string(),
+        local_ip,
+        subnet_mask: interface_details.subnet_mask,
+        default_gateway: interface_details.default_gateway,
+        preferred_dns_server: interface_details.preferred_dns_server,
+        alternate_dns_server: interface_details.alternate_dns_server,
+        address_mode: interface_details.address_mode,
     })
+}
+
+async fn load_network_interface_details(local_ip: &str) -> NetworkInterfaceDetails {
+    if !cfg!(target_os = "windows") {
+        return unknown_network_details();
+    }
+
+    let query = r#"$ErrorActionPreference = 'Stop'; Get-CimInstance Win32_NetworkAdapterConfiguration -Filter "IPEnabled = True" | Select-Object Description, DHCPEnabled, IPAddress, IPSubnet, DefaultIPGateway, DNSServerSearchOrder | ConvertTo-Json -Compress -Depth 4"#;
+    let mut command = TokioCommand::new("powershell.exe");
+    command.args([
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        query,
+    ]);
+    #[cfg(target_os = "windows")]
+    {
+        command.creation_flags(0x08000000); // CREATE_NO_WINDOW
+    }
+    command.kill_on_drop(true);
+
+    let output = match timeout(WINDOWS_NETWORK_QUERY_TIMEOUT, command.output()).await {
+        Ok(Ok(output)) => output,
+        _ => return unknown_network_details(),
+    };
+
+    if !output.status.success() {
+        return unknown_network_details();
+    }
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    parse_windows_network_config(local_ip, stdout.trim()).unwrap_or_else(unknown_network_details)
+}
+
+fn unknown_network_details() -> NetworkInterfaceDetails {
+    NetworkInterfaceDetails {
+        address_mode: "Unknown".into(),
+        ..Default::default()
+    }
+}
+
+fn parse_windows_network_config(local_ip: &str, raw_json: &str) -> Option<NetworkInterfaceDetails> {
+    let parsed: Value = serde_json::from_str(raw_json).ok()?;
+    let adapters = match &parsed {
+        Value::Array(values) => values.iter().collect::<Vec<_>>(),
+        Value::Object(_) => vec![&parsed],
+        _ => return None,
+    };
+
+    adapters
+        .iter()
+        .find_map(|adapter| {
+            if adapter_contains_ip(adapter, local_ip) {
+                parse_windows_adapter_details(adapter, Some(local_ip))
+            } else {
+                None
+            }
+        })
+        .or_else(|| {
+            adapters
+                .iter()
+                .find_map(|adapter| parse_windows_adapter_details(adapter, None))
+        })
+}
+
+fn adapter_contains_ip(adapter: &Value, local_ip: &str) -> bool {
+    value_to_string_array(adapter.get("IPAddress"))
+        .iter()
+        .any(|address| address == local_ip)
+}
+
+fn parse_windows_adapter_details(
+    adapter: &Value,
+    preferred_ip: Option<&str>,
+) -> Option<NetworkInterfaceDetails> {
+    let ip_addresses = value_to_string_array(adapter.get("IPAddress"));
+
+    if ip_addresses.is_empty() {
+        return None;
+    }
+
+    let ip_index = preferred_ip
+        .and_then(|ip| ip_addresses.iter().position(|address| address == ip))
+        .or_else(|| {
+            ip_addresses
+                .iter()
+                .position(|address| is_ipv4_address(address))
+        })
+        .unwrap_or(0);
+    let subnet_values = value_to_string_array(adapter.get("IPSubnet"));
+    let subnet_mask = subnet_values
+        .get(ip_index)
+        .cloned()
+        .filter(|value| !value.is_empty())
+        .or_else(|| {
+            subnet_values
+                .iter()
+                .find(|value| value.contains('.'))
+                .cloned()
+        })
+        .or_else(|| first_non_empty_value(&subnet_values));
+    let gateways = value_to_string_array(adapter.get("DefaultIPGateway"));
+    let default_gateway = gateways
+        .iter()
+        .find(|value| is_ipv4_address(value))
+        .cloned()
+        .or_else(|| first_non_empty_value(&gateways));
+    let mut dns_servers = value_to_string_array(adapter.get("DNSServerSearchOrder"))
+        .into_iter()
+        .filter(|value| !value.is_empty());
+
+    Some(NetworkInterfaceDetails {
+        subnet_mask,
+        default_gateway,
+        preferred_dns_server: dns_servers.next(),
+        alternate_dns_server: dns_servers.next(),
+        address_mode: adapter_address_mode(adapter),
+    })
+}
+
+fn value_to_string_array(value: Option<&Value>) -> Vec<String> {
+    match value {
+        Some(Value::Array(items)) => items.iter().filter_map(json_value_to_string).collect(),
+        Some(value) => json_value_to_string(value).into_iter().collect(),
+        None => Vec::new(),
+    }
+}
+
+fn json_value_to_string(value: &Value) -> Option<String> {
+    let text = match value {
+        Value::String(text) => text.trim().to_string(),
+        Value::Number(number) => number.to_string(),
+        Value::Bool(flag) => flag.to_string(),
+        _ => return None,
+    };
+
+    (!text.is_empty()).then_some(text)
+}
+
+fn first_non_empty_value(values: &[String]) -> Option<String> {
+    values.iter().find(|value| !value.is_empty()).cloned()
+}
+
+fn is_ipv4_address(value: &str) -> bool {
+    value.parse::<std::net::Ipv4Addr>().is_ok()
+}
+
+fn adapter_address_mode(adapter: &Value) -> String {
+    match adapter.get("DHCPEnabled") {
+        Some(Value::Bool(true)) => "DHCP".into(),
+        Some(Value::Bool(false)) => "Static".into(),
+        Some(Value::String(value)) => match value.trim().to_ascii_lowercase().as_str() {
+            "true" | "yes" | "enabled" => "DHCP".into(),
+            "false" | "no" | "disabled" => "Static".into(),
+            _ => "Unknown".into(),
+        },
+        _ => "Unknown".into(),
+    }
 }
 
 pub async fn dns_lookup_payload(domain: String) -> anyhow::Result<DnsLookupPayload> {
@@ -128,10 +305,18 @@ pub async fn dns_lookup_payload(domain: String) -> anyhow::Result<DnsLookupPaylo
         .context("Failed to create the DNS resolver with host system configuration.")?
         .build();
 
-    let lookup = timeout(DNS_LOOKUP_TIMEOUT, resolver.lookup_ip(validated_domain.as_str()))
-        .await
-        .map_err(|_| anyhow!("DNS lookup timed out after {} seconds.", DNS_LOOKUP_TIMEOUT.as_secs()))?
-        .with_context(|| format!("DNS lookup failed for {validated_domain}."))?;
+    let lookup = timeout(
+        DNS_LOOKUP_TIMEOUT,
+        resolver.lookup_ip(validated_domain.as_str()),
+    )
+    .await
+    .map_err(|_| {
+        anyhow!(
+            "DNS lookup timed out after {} seconds.",
+            DNS_LOOKUP_TIMEOUT.as_secs()
+        )
+    })?
+    .with_context(|| format!("DNS lookup failed for {validated_domain}."))?;
 
     let mut addresses = lookup
         .iter()
@@ -157,6 +342,10 @@ pub async fn ping_host_payload(host: String) -> anyhow::Result<PingHostPayload> 
     let command_arguments = build_ping_arguments(validated_host.as_str());
 
     command.args(command_arguments).arg(validated_host.as_str());
+    #[cfg(target_os = "windows")]
+    {
+        command.creation_flags(0x08000000); // CREATE_NO_WINDOW
+    }
     command.kill_on_drop(true);
 
     let started_at = Instant::now();
@@ -196,7 +385,12 @@ pub async fn check_port_payload(host: String, port: u16) -> anyhow::Result<PortC
     validate_port(port)?;
 
     let started_at = Instant::now();
-    let is_open = match timeout(PORT_CHECK_TIMEOUT, TcpStream::connect((validated_host.as_str(), port))).await {
+    let is_open = match timeout(
+        PORT_CHECK_TIMEOUT,
+        TcpStream::connect((validated_host.as_str(), port)),
+    )
+    .await
+    {
         Ok(Ok(_stream)) => true,
         Ok(Err(_)) => false,
         Err(_) => false,
@@ -237,9 +431,15 @@ pub async fn check_http_status_payload(url: String) -> anyhow::Result<HttpStatus
     let final_url = response.url().to_string();
     let ok = status_code.is_success();
     let summary = if ok {
-        format!("HTTP request completed successfully with status {}.", status_code.as_u16())
+        format!(
+            "HTTP request completed successfully with status {}.",
+            status_code.as_u16()
+        )
     } else {
-        format!("HTTP request completed with status {}.", status_code.as_u16())
+        format!(
+            "HTTP request completed with status {}.",
+            status_code.as_u16()
+        )
     };
 
     Ok(HttpStatusPayload {
@@ -271,8 +471,9 @@ pub async fn convert_images_payload(
                 );
             }
         } else {
-            fs::create_dir_all(&output_folder)
-                .map_err(|error| map_file_io_error(error, &output_folder, "create output folder"))?;
+            fs::create_dir_all(&output_folder).map_err(|error| {
+                map_file_io_error(error, &output_folder, "create output folder")
+            })?;
         }
 
         let total_files = options.input_paths.len();
@@ -294,7 +495,10 @@ pub async fn convert_images_payload(
 
         for (index, input_path) in options.input_paths.iter().enumerate() {
             let current_file_name = get_base_name(input_path);
-            let start_status = format!("Converting {current_file_name} ({}/{total_files})", index + 1);
+            let start_status = format!(
+                "Converting {current_file_name} ({}/{total_files})",
+                index + 1
+            );
 
             emit_image_conversion_progress(
                 &app_handle,
@@ -534,12 +738,23 @@ fn convert_single_image(
         .with_guessed_format()
         .context("Failed to detect image format from the selected file.")?
         .decode()
-        .with_context(|| format!("Failed to decode image data from {}.", source_path.display()))?;
+        .with_context(|| {
+            format!(
+                "Failed to decode image data from {}.",
+                source_path.display()
+            )
+        })?;
 
     let resized_image = apply_resize(decoded_image, resize);
     let output_path = build_output_path(output_folder, &source_path, output_format)?;
 
-    save_converted_image(&resized_image, &output_path, output_format, quality, compress)?;
+    save_converted_image(
+        &resized_image,
+        &output_path,
+        output_format,
+        quality,
+        compress,
+    )?;
 
     Ok(output_path)
 }
@@ -609,9 +824,7 @@ fn build_output_path(
         let mut suffix = 2_u32;
 
         while candidate == source_path || candidate.exists() {
-            candidate = output_folder.join(format!(
-                "{stem}-orion-converted-{suffix}.{extension}"
-            ));
+            candidate = output_folder.join(format!("{stem}-orion-converted-{suffix}.{extension}"));
             suffix += 1;
         }
     }
@@ -633,7 +846,8 @@ fn save_converted_image(
     match output_format {
         ImageOutputFormatPayload::Jpg => {
             let rgb_image = flatten_image_for_jpeg(image);
-            let mut encoder = JpegEncoder::new_with_quality(&mut writer, sanitize_jpg_quality(quality));
+            let mut encoder =
+                JpegEncoder::new_with_quality(&mut writer, sanitize_jpg_quality(quality));
             encoder
                 .encode_image(&DynamicImage::ImageRgb8(rgb_image))
                 .with_context(|| format!("Failed to encode JPEG for {}.", output_path.display()))?;
@@ -862,7 +1076,10 @@ fn map_file_io_error(error: std::io::Error, path: &Path, action: &str) -> anyhow
     match error.kind() {
         std::io::ErrorKind::NotFound => anyhow!("File not found: {}", path.display()),
         std::io::ErrorKind::PermissionDenied => {
-            anyhow!("Permission denied while trying to {action} {}.", path.display())
+            anyhow!(
+                "Permission denied while trying to {action} {}.",
+                path.display()
+            )
         }
         _ => anyhow!("Failed to {action} {}: {error}", path.display()),
     }
@@ -876,9 +1093,18 @@ mod tests {
 
     #[test]
     fn normalize_image_extension_supports_expected_inputs() {
-        assert_eq!(normalize_image_extension(Path::new("cover.PNG")), Some("png"));
-        assert_eq!(normalize_image_extension(Path::new("photo.jpeg")), Some("jpg"));
-        assert_eq!(normalize_image_extension(Path::new("icon.webp")), Some("webp"));
+        assert_eq!(
+            normalize_image_extension(Path::new("cover.PNG")),
+            Some("png")
+        );
+        assert_eq!(
+            normalize_image_extension(Path::new("photo.jpeg")),
+            Some("jpg")
+        );
+        assert_eq!(
+            normalize_image_extension(Path::new("icon.webp")),
+            Some("webp")
+        );
         assert_eq!(normalize_image_extension(Path::new("notes.txt")), None);
     }
 
@@ -931,7 +1157,9 @@ mod tests {
         };
 
         let error = validate_convert_options(&options).expect_err("validation should fail");
-        assert!(error.to_string().contains("width and height are both empty"));
+        assert!(error
+            .to_string()
+            .contains("width and height are both empty"));
     }
 
     #[test]
@@ -957,6 +1185,62 @@ mod tests {
     }
 
     #[test]
+    fn parse_windows_network_config_extracts_matching_adapter_details() {
+        let raw_json = r#"
+        [
+          {
+            "Description": "Virtual Adapter",
+            "DHCPEnabled": false,
+            "IPAddress": ["10.0.0.5"],
+            "IPSubnet": ["255.255.255.0"],
+            "DefaultIPGateway": ["10.0.0.1"],
+            "DNSServerSearchOrder": ["9.9.9.9"]
+          },
+          {
+            "Description": "Wi-Fi",
+            "DHCPEnabled": true,
+            "IPAddress": ["192.168.1.24", "fe80::3c57:abcd"],
+            "IPSubnet": ["255.255.255.0", "64"],
+            "DefaultIPGateway": ["192.168.1.1"],
+            "DNSServerSearchOrder": ["1.1.1.1", "8.8.8.8"]
+          }
+        ]
+        "#;
+
+        let details = parse_windows_network_config("192.168.1.24", raw_json)
+            .expect("network details should be parsed from the matching adapter");
+
+        assert_eq!(details.subnet_mask.as_deref(), Some("255.255.255.0"));
+        assert_eq!(details.default_gateway.as_deref(), Some("192.168.1.1"));
+        assert_eq!(details.preferred_dns_server.as_deref(), Some("1.1.1.1"));
+        assert_eq!(details.alternate_dns_server.as_deref(), Some("8.8.8.8"));
+        assert_eq!(details.address_mode, "DHCP");
+    }
+
+    #[test]
+    fn parse_windows_network_config_handles_single_static_adapter() {
+        let raw_json = r#"
+        {
+          "Description": "Ethernet",
+          "DHCPEnabled": false,
+          "IPAddress": "172.16.0.9",
+          "IPSubnet": "255.255.0.0",
+          "DefaultIPGateway": "172.16.0.1",
+          "DNSServerSearchOrder": "8.8.4.4"
+        }
+        "#;
+
+        let details = parse_windows_network_config("172.16.0.9", raw_json)
+            .expect("single adapter JSON should be parsed");
+
+        assert_eq!(details.subnet_mask.as_deref(), Some("255.255.0.0"));
+        assert_eq!(details.default_gateway.as_deref(), Some("172.16.0.1"));
+        assert_eq!(details.preferred_dns_server.as_deref(), Some("8.8.4.4"));
+        assert_eq!(details.alternate_dns_server, None);
+        assert_eq!(details.address_mode, "Static");
+    }
+
+    #[test]
     fn normalize_http_url_input_adds_https_scheme_when_missing() {
         assert_eq!(
             normalize_http_url_input("example.com").expect("url should normalize"),
@@ -966,7 +1250,8 @@ mod tests {
 
     #[test]
     fn normalize_http_url_input_rejects_unsupported_scheme() {
-        let error = normalize_http_url_input("ftp://example.com").expect_err("ftp should be rejected");
+        let error =
+            normalize_http_url_input("ftp://example.com").expect_err("ftp should be rejected");
         assert!(error.to_string().contains("Unsupported URL scheme"));
     }
 }

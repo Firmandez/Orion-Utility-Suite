@@ -1,12 +1,12 @@
 import {
   FolderSearch2,
   Gauge,
-  ShieldCheck,
   ShieldX,
   Sparkles,
 } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
 import { EmptyState } from "@/components/common/EmptyState";
+import { ErrorBanner } from "@/components/common/ErrorBanner";
 import { PageSection } from "@/components/common/PageSection";
 import { ResultCard } from "@/components/common/ResultCard";
 import { Button } from "@/components/ui/Button";
@@ -17,7 +17,7 @@ import type { AppBootstrapState } from "@/types/app";
 import { HashDigestCard } from "./HashDigestCard";
 import { HashFileDropZone } from "./HashFileDropZone";
 import { useHashChecker } from "./useHashChecker";
-import { compareReferenceHash, describeComparison } from "./hash-checker.utils";
+import { compareReferenceHash } from "./hash-checker.utils";
 
 export function HashCheckerWorkspace() {
   const bootstrap = useOutletContext<AppBootstrapState>();
@@ -43,66 +43,10 @@ export function HashCheckerWorkspace() {
 
   return (
     <div className="space-y-6">
-      <section className="surface-panel relative overflow-hidden p-6 lg:p-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(77,216,246,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(251,191,36,0.12),transparent_24%)]" />
-        <div className="relative grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-          <div className="space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-soft)] bg-[var(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent-strong)]">
-              <ShieldCheck className="size-3.5" />
-              File Integrity
-            </div>
-            <div className="max-w-3xl">
-              <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl">
-                Cek hash file dengan MD5, SHA1, dan SHA256.
-              </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-[15px]">
-                Pilih file, buat hash, lalu bandingkan dengan nilai referensi untuk memastikan file tidak berubah.
-              </p>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <StatCard
-                label="Selected file"
-                value={selectedFileName ?? "No file"}
-                caption="Drop file ke jendela atau pilih manual."
-              />
-              <StatCard
-                label="Hash status"
-                value={status === "loading" ? "Hashing" : status === "ready" ? "Ready" : status === "error" ? "Error" : "Idle"}
-                caption={progressStatus}
-              />
-              <StatCard
-                label="Compare state"
-                value={compareState.status === "match" ? "Match" : compareState.status === "not-match" ? "Not Match" : "Standby"}
-                caption={describeComparison(compareState)}
-              />
-            </div>
-          </div>
-
-          <div className="surface-panel-alt p-5 sm:p-6">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Tips</div>
-            <div className="mt-4 space-y-3">
-              <InfoItem
-                title="Aman untuk file besar"
-                description="Orion menampilkan progress saat menghitung hash file."
-              />
-              <InfoItem
-                title="File lokal"
-                description="File dibaca dari perangkat Anda tanpa upload ke layanan online."
-              />
-              <InfoItem
-                title="Pembanding hash"
-                description="Tempel hash referensi untuk melihat apakah hasilnya cocok."
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
         <PageSection
-          title="File Source"
-          description="Pilih file dari perangkat Anda, lalu buat hash MD5, SHA1, dan SHA256."
+          title="Source File"
+          description="Choose a file from your device, then generate MD5, SHA1, and SHA256 hashes."
         >
           <div className="space-y-5">
             <HashFileDropZone
@@ -116,8 +60,8 @@ export function HashCheckerWorkspace() {
 
             <Input
               label="Reference hash"
-              hint="Tempel hash pembanding untuk mengecek apakah cocok dengan salah satu digest hasil file."
-              placeholder="Masukkan MD5, SHA1, atau SHA256 pembanding..."
+              hint="Paste a reference hash to check whether it matches any generated file digest."
+              placeholder="Enter an MD5, SHA1, or SHA256 hash..."
               value={referenceHash}
               onChange={(event) => setReferenceHash(event.target.value)}
             />
@@ -127,7 +71,7 @@ export function HashCheckerWorkspace() {
                 Generate hashes
               </Button>
               <Button variant="outline" leadingIcon={FolderSearch2} onClick={pickFile} disabled={status === "loading" || !isDesktopRuntime}>
-                Pick another file
+                Choose another file
               </Button>
             </div>
           </div>
@@ -135,7 +79,7 @@ export function HashCheckerWorkspace() {
 
         <PageSection
           title="Progress & File Info"
-          description="Pantau progress dan informasi file yang sedang dicek."
+          description="Track progress and file information."
         >
           <div className="space-y-5">
             <ProgressBar
@@ -145,15 +89,7 @@ export function HashCheckerWorkspace() {
             />
 
             {errorMessage ? (
-              <div className="rounded-[24px] border border-rose-400/18 bg-rose-500/10 p-4">
-                <div className="flex items-start gap-3">
-                  <ShieldX className="mt-0.5 size-5 shrink-0 text-rose-300" />
-                  <div>
-                    <div className="text-sm font-semibold text-[var(--text-primary)]">Hash generation failed</div>
-                    <div className="mt-1 text-sm leading-6 text-rose-100/90">{errorMessage}</div>
-                  </div>
-                </div>
-              </div>
+              <ErrorBanner title="Hash generation failed" message={errorMessage} icon={ShieldX} />
             ) : null}
 
             {result ? (
@@ -161,16 +97,16 @@ export function HashCheckerWorkspace() {
                 title="File Summary"
                 rows={[
                   { label: "File name", value: result.fileName },
-                  { label: "File size", value: `${result.fileSize.toLocaleString("id-ID")} bytes`, mono: true },
+                  { label: "File size", value: `${result.fileSize.toLocaleString("en-US")} bytes`, mono: true },
                   { label: "Selected path", value: selectedFilePath ? truncateMiddle(selectedFilePath, 24, 16) : "Unavailable" },
-                  { label: "Compare", value: compareState.status === "match" ? "Match" : compareState.status === "not-match" ? "Not Match" : "Idle" },
+                  { label: "Reference", value: compareState.status === "match" ? "Match" : compareState.status === "not-match" ? "No match" : "Waiting" },
                 ]}
               />
             ) : (
               <EmptyState
                 icon={Gauge}
-                title="Belum ada hasil hashing"
-                description="Pilih file lalu jalankan hash generator untuk melihat digest, progress, dan status pembanding."
+                title="No hash results yet"
+                description="Choose a file and run the hash generator to see digests, progress, and reference status."
               />
             )}
           </div>
@@ -179,7 +115,7 @@ export function HashCheckerWorkspace() {
 
       <PageSection
         title="Generated Digests"
-        description="Setiap digest bisa disalin secara individual dan otomatis dibandingkan dengan reference hash yang Anda masukkan."
+        description="Each digest can be copied individually and is automatically compared with the reference hash."
       >
         <div className="grid gap-4 xl:grid-cols-3">
           <HashDigestCard
@@ -202,33 +138,6 @@ export function HashCheckerWorkspace() {
           />
         </div>
       </PageSection>
-    </div>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  caption,
-}: {
-  label: string;
-  value: string;
-  caption: string;
-}) {
-  return (
-    <div className="surface-panel-alt p-4">
-      <div className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">{label}</div>
-      <div className="mt-3 text-lg font-semibold text-[var(--text-primary)]">{value}</div>
-      <div className="mt-2 text-xs leading-6 text-[var(--text-secondary)]">{caption}</div>
-    </div>
-  );
-}
-
-function InfoItem({ title, description }: { title: string; description: string }) {
-  return (
-    <div className="rounded-[22px] border bg-black/10 p-4">
-      <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-      <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</div>
     </div>
   );
 }

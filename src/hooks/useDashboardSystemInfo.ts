@@ -44,7 +44,7 @@ export function useDashboardSystemInfo(bootstrap: AppBootstrapState) {
         setState({
           status: "error",
           systemInfo: buildPreviewSystemInfo(bootstrap),
-          errorMessage: "Informasi perangkat lengkap tersedia saat Orion dibuka sebagai aplikasi desktop.",
+          errorMessage: "Full device information is available when Orion is opened as a desktop app.",
         });
       });
       return;
