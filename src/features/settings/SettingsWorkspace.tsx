@@ -10,6 +10,7 @@ import {
   Settings2,
   Tag,
 } from "lucide-react";
+import { useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { useOutletContext } from "react-router-dom";
 import { useShell } from "@/app/providers/ShellProvider";
@@ -45,6 +46,40 @@ export function SettingsWorkspace() {
     reloadSettings,
   } = useShell();
   const isDesktopRuntime = bootstrap.source === "rust";
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+
+  const handleCheckForUpdates = async () => {
+    if (!isDesktopRuntime) return;
+    
+    setCheckingUpdate(true);
+    notify.info("Checking for updates", "Looking for the latest version of Orion...");
+    
+    try {
+      const { check } = await import("@tauri-apps/plugin-updater");
+      const { relaunch } = await import("@tauri-apps/plugin-process");
+      
+      const update = await check();
+      
+      if (update && update.available) {
+        notify.success("Update Available", `Downloading version v${update.version} in the background...`);
+        
+        // Download and install the update
+        await update.downloadAndInstall();
+        
+        notify.success("Update Complete", "Relaunching Orion to apply changes...");
+        
+        // Relaunch the application
+        await relaunch();
+      } else {
+        notify.success("Up to Date", "You are already using the latest version of Orion.");
+      }
+    } catch (error) {
+      console.error("Failed to check for updates:", error);
+      notify.error("Failed to check update", error instanceof Error ? error.message : "An unexpected error occurred.");
+    } finally {
+      setCheckingUpdate(false);
+    }
+  };
 
   const handleThemeModeChange = async (value: ThemeMode) => {
     await setThemeMode(value);
@@ -242,6 +277,17 @@ export function SettingsWorkspace() {
                 </div>
 
                 <div className="flex flex-wrap gap-3">
+                  {isDesktopRuntime && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      leadingIcon={RefreshCw}
+                      onClick={handleCheckForUpdates}
+                      disabled={checkingUpdate}
+                    >
+                      {checkingUpdate ? "Checking..." : "Check for Updates"}
+                    </Button>
+                  )}
                   <a
                     href={githubProfileUrl}
                     onClick={(e) => {

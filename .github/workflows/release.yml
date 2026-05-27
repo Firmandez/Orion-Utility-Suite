@@ -56,11 +56,20 @@ jobs:
           prerelease: false
 
       - name: Rename and upload portable binary
-        shell: bash
+        shell: pwsh
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          PORTABLE_NAME="orion-utility-suite_${VERSION}_x64_portable.exe"
-          cp src-tauri/target/release/orion-utility-suite.exe ./$PORTABLE_NAME
-          gh release upload v$VERSION ./$PORTABLE_NAME --clobber
+          $version = (Get-Content ./package.json | ConvertFrom-Json).version
+          $zipName = "orion-utility-suite_${version}_x64_portable.zip"
+          
+          # Create temporary folder for portable zip package
+          New-Item -ItemType Directory -Force -Path "./temp_portable"
+          Copy-Item "src-tauri/target/release/orion-utility-suite.exe" -Destination "./temp_portable/orion-utility-suite.exe"
+          Copy-Item "src-tauri/resources/pdfium/windows-x64/pdfium.dll" -Destination "./temp_portable/pdfium.dll"
+          
+          # Compress the folder into a zip archive
+          Compress-Archive -Path "./temp_portable/*" -DestinationPath "./$zipName" -Force
+          
+          # Upload only the bundled ZIP to GitHub Release
+          gh release upload "v$version" "./$zipName" --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

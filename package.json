@@ -18,14 +18,17 @@
     "preview": "vite preview --configLoader native",
     "tauri:installer": "node scripts/run-tauri-build.mjs build -b nsis",
     "tauri:portable": "node scripts/run-tauri-build.mjs build --no-bundle",
-    "tauri": "node scripts/run-tauri-build.mjs"
+    "tauri": "node scripts/run-tauri-build.mjs",
+    "git:tag": "node scripts/git-tag.mjs"
   },
   "dependencies": {
     "@fontsource-variable/plus-jakarta-sans": "^5.1.1",
     "@fontsource-variable/space-grotesk": "^5.1.1",
     "@tauri-apps/api": "^2.11.0",
     "@tauri-apps/plugin-dialog": "^2.7.1",
+    "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-store": "^2.4.3",
+    "@tauri-apps/plugin-updater": "^2.10.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.15.0",
     "lucide-react": "^0.511.0",

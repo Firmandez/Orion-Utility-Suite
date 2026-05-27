@@ -38,5 +38,14 @@
     "resources": [],
     "shortDescription": "Offline-first desktop utility suite for everyday local workflows.",
     "longDescription": "Orion Utility Suite is a cross-platform offline-first desktop workspace by Firmandez for QR generation, image conversion, PDF tools, hashing, text utilities, network diagnostics, and developer helpers."
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "https://raw.githubusercontent.com/Firmandez/Orion-Utility-Suite/main/updater/update.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJDQTQxMTZEQ0U1NjZBNUEKUldSYWFsYk9iUkdrdkwzcVlQMzZMWks3SmhvSVlOYTZ6MzhSUEFQbkZ4dUR5L1N0UDNadDMxQnYK"
+    }
   }
 }
