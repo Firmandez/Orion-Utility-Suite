@@ -54,3 +54,13 @@ jobs:
           releaseBody: "Rilis otomatis Orion Utility Suite oleh GitHub Actions dengan penandatanganan kunci digital sign."
           releaseDraft: true # Menghasilkan rilis sebagai DRAFT di GitHub agar Anda bisa meninjau sebelum dipublikasikan
           prerelease: false
+
+      - name: Rename and upload portable binary
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          PORTABLE_NAME="orion-utility-suite_${VERSION}_x64_portable.exe"
+          cp src-tauri/target/release/orion-utility-suite.exe ./$PORTABLE_NAME
+          gh release upload v$VERSION ./$PORTABLE_NAME --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
