@@ -15,7 +15,7 @@ export function AppLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[var(--app-bg)] text-[var(--text-primary)]">
+    <div className="min-h-screen bg-(--app-bg)] text-(--text-primary)]">
       <div className="pointer-events-none fixed inset-0 app-shell-grid opacity-35" />
       <div className="relative flex min-h-screen">
         <AppSidebar bootstrap={bootstrap} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />

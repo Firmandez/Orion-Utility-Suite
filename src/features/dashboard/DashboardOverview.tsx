@@ -97,15 +97,15 @@ export function DashboardOverview() {
               className={cn(
                 "rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wide transition",
                 activeFilter === filter
-                  ? "border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]"
-                  : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)] hover:border-[var(--accent-soft)] hover:text-[var(--text-primary)]",
+                  ? "border-(--accent-soft)] bg-(--accent-surface)] text-(--accent-strong)]"
+                  : "border-(--border-subtle)] bg-white/5 text-(--text-secondary)] hover:border-(--accent-soft)] hover:text-(--text-primary)]",
               )}
             >
               {filterLabels[filter]}
             </button>
           ))}
         </div>
-        <div className="text-xs text-[var(--text-muted)]">
+        <div className="text-xs text-(--text-muted)]">
           {filteredFeatures.length} {filteredFeatures.length === 1 ? "tool" : "tools"}
         </div>
       </div>
@@ -156,18 +156,18 @@ export function DashboardOverview() {
               <Link
                 key={action.to}
                 to={action.to}
-                className="surface-panel-alt flex items-center justify-between gap-3 p-3 hover:border-[var(--accent-soft)]"
+                className="surface-panel-alt flex items-center justify-between gap-3 p-3 hover:border-(--accent-soft)]"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-(--accent-soft)] bg-(--accent-surface)] text-(--accent-strong)]">
                     <Icon className="size-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm font-semibold text-[var(--text-primary)]">{action.label}</div>
-                    <div className="mt-1 text-xs text-[var(--text-muted)]">{action.caption}</div>
+                    <div className="text-sm font-semibold text-(--text-primary)]">{action.label}</div>
+                    <div className="mt-1 text-xs text-(--text-muted)]">{action.caption}</div>
                   </div>
                 </div>
-                <span className="text-xs font-medium text-[var(--accent-strong)]">Open</span>
+                <span className="text-xs font-medium text-(--accent-strong)]">Open</span>
               </Link>
             );
           })}

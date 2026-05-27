@@ -156,7 +156,6 @@ Metadata rilis utama:
 - Identifier: `com.firmandez.orionutilitysuite`
 - Author / publisher profile: [Firmandez](https://github.com/Firmandez)
 - License: `MIT`
-- Changelog: [CHANGELOG.md](./CHANGELOG.md)
 
 ## Catatan Linux dan macOS
 

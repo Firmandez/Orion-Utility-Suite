@@ -104,7 +104,7 @@ export function SettingsWorkspace() {
                 <div className="flex items-start gap-3">
                   <Info className="mt-0.5 size-5 shrink-0 text-amber-300" />
                   <div>
-                    <div className="text-sm font-semibold text-[var(--text-primary)]">Settings recovered</div>
+                    <div className="text-sm font-semibold text-(--text-primary)]">Settings recovered</div>
                     <div className="mt-1 text-sm leading-5 text-amber-100/85">{settingsState.errorMessage}</div>
                   </div>
                 </div>
@@ -128,8 +128,8 @@ export function SettingsWorkspace() {
 
                 <div className="space-y-3">
                   <div>
-                    <div className="text-sm font-semibold text-[var(--text-primary)]">Accent color</div>
-                    <div className="mt-1 text-xs text-[var(--text-muted)]">
+                    <div className="text-sm font-semibold text-(--text-primary)]">Accent color</div>
+                    <div className="mt-1 text-xs text-(--text-muted)]">
                       Used for primary buttons, highlights, and active elements.
                     </div>
                   </div>
@@ -141,8 +141,8 @@ export function SettingsWorkspace() {
                         onClick={() => void handleAccentChange(palette.id)}
                         className={`rounded-xl border p-3 text-left transition ${
                           accentColor === palette.id
-                            ? "border-[var(--accent-soft)] bg-[var(--accent-surface)]"
-                            : "border-[var(--border-subtle)] bg-white/5 hover:border-[var(--accent-soft)] hover:bg-white/8"
+                            ? "border-(--accent-soft)] bg-(--accent-surface)]"
+                            : "border-(--border-subtle)] bg-white/5 hover:border-(--accent-soft)] hover:bg-white/8"
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -154,8 +154,8 @@ export function SettingsWorkspace() {
                             }}
                           />
                           <div>
-                            <div className="text-sm font-semibold text-[var(--text-primary)]">{palette.label}</div>
-                            <div className="mt-1 text-xs leading-5 text-[var(--text-secondary)]">{palette.description}</div>
+                            <div className="text-sm font-semibold text-(--text-primary)]">{palette.label}</div>
+                            <div className="mt-1 text-xs leading-5 text-(--text-secondary)]">{palette.description}</div>
                           </div>
                         </div>
                       </button>
@@ -244,7 +244,7 @@ export function SettingsWorkspace() {
                     href={githubProfileUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--accent-soft)] hover:bg-white/5"
+                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-(--text-primary)] transition hover:border-(--accent-soft)] hover:bg-white/5"
                   >
                     <ExternalLink className="size-4" />
                     GitHub
@@ -253,7 +253,7 @@ export function SettingsWorkspace() {
                     href="https://opensource.org/license/mit"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--accent-soft)] hover:bg-white/5"
+                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-(--text-primary)] transition hover:border-(--accent-soft)] hover:bg-white/5"
                   >
                     <ExternalLink className="size-4" />
                     License
@@ -280,12 +280,12 @@ function AboutItem({
   return (
     <div className="rounded-xl border bg-black/10 p-3">
       <div className="flex items-center gap-3">
-        <div className="flex size-9 items-center justify-center rounded-lg border bg-[var(--accent-surface)] text-[var(--accent-strong)]">
+        <div className="flex size-9 items-center justify-center rounded-lg border bg-(--accent-surface)] text-(--accent-strong)]">
           <Icon className="size-4" />
         </div>
         <div>
-          <div className="text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)]">{label}</div>
-          <div className="mt-1 text-sm font-semibold text-[var(--text-primary)]">{value}</div>
+          <div className="text-[11px] uppercase tracking-[0.08em] text-(--text-muted)]">{label}</div>
+          <div className="mt-1 text-sm font-semibold text-(--text-primary)]">{value}</div>
         </div>
       </div>
     </div>

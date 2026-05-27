@@ -54,12 +54,8 @@ export function PdfResultFileList({ result, onCopyPath }: PdfResultFileListProps
     return (
       <EmptyState
         icon={TriangleAlert}
-        title={result.data.status === "placeholder" ? "PDF to Image coming soon" : "No image results yet"}
-        description={
-          result.data.status === "placeholder"
-            ? "This feature is being prepared and has not generated image files yet."
-            : result.data.note ?? "The operation has not generated images yet. Check the selected output folder."
-        }
+        title="No image results yet"
+        description={result.data.note ?? "The operation has not generated images yet. Check the selected output folder."}
       />
     );
   }
@@ -93,16 +89,16 @@ function ResultPathCard({
   const isSuccess = status === "success";
 
   return (
-    <div className="rounded-2xl border bg-[var(--surface-2)] p-3">
+    <div className="rounded-2xl border bg-(--surface-2)] p-3">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="text-sm font-semibold text-[var(--text-primary)]">
+            <div className="text-sm font-semibold text-(--text-primary)]">
               {truncateMiddle(title, 28, 18)}
             </div>
             <span
               className={cn(
-                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em]",
+                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest",
                 isSuccess
                   ? "border border-emerald-400/18 bg-emerald-500/10 text-emerald-200"
                   : "border border-amber-400/18 bg-amber-500/10 text-amber-200",
@@ -114,8 +110,8 @@ function ResultPathCard({
           </div>
 
           <div className="mt-3">
-            <div className="text-[11px] uppercase tracking-[0.1em] text-[var(--text-muted)]">Path</div>
-            <div className="mt-1 break-all font-mono text-[13px] text-[var(--text-primary)]">{description}</div>
+            <div className="text-[11px] uppercase tracking-widest text-(--text-muted)]">Path</div>
+            <div className="mt-1 break-all font-mono text-[13px] text-(--text-primary)]">{description}</div>
           </div>
         </div>
 

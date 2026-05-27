@@ -1,0 +1,8 @@
+{
+  "bundle": {
+    "resources": [
+      "resources/pdfium/macos-arm64/libpdfium.dylib",
+      "resources/pdfium/macos-x64/libpdfium.dylib"
+    ]
+  }
+}

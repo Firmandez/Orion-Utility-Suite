@@ -144,7 +144,7 @@ export function NetworkToolkitWorkspace() {
                 footer={
                   <div className="space-y-2">
                     {dns.data.addresses.map((address) => (
-                      <div key={address} className="rounded-xl border bg-black/10 px-3 py-2.5 font-mono text-sm text-[var(--text-primary)]">
+                      <div key={address} className="rounded-xl border bg-black/10 px-3 py-2.5 font-mono text-sm text-(--text-primary)]">
                         {address}
                       </div>
                     ))}
@@ -335,7 +335,7 @@ export function NetworkToolkitWorkspace() {
 
 function SummaryCard({ summary }: { summary: string }) {
   return (
-    <div className="rounded-xl border bg-black/10 p-3 text-sm leading-5 text-[var(--text-secondary)]">
+    <div className="rounded-xl border bg-black/10 p-3 text-sm leading-5 text-(--text-secondary)]">
       {summary}
     </div>
   );

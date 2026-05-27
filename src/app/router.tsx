@@ -23,9 +23,9 @@ function withSuspense(node: ReactNode) {
     <Suspense
       fallback={
         <div className="surface-panel p-5">
-          <div className="text-xs uppercase tracking-[0.08em] text-[var(--text-muted)]">Loading module</div>
-          <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">Preparing Orion...</div>
-          <div className="mt-1.5 text-sm text-[var(--text-secondary)]">Just a moment, the page is loading.</div>
+          <div className="text-xs uppercase tracking-[0.08em] text-(--text-muted)]">Loading module</div>
+          <div className="mt-2 text-lg font-semibold text-(--text-primary)]">Preparing Orion...</div>
+          <div className="mt-1.5 text-sm text-(--text-secondary)]">Just a moment, the page is loading.</div>
         </div>
       }
     >

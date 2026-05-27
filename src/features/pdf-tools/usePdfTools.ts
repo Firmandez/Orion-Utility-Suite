@@ -333,10 +333,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
           ...current,
           status: "ready",
           progressPercent: 100,
-          progressStatus:
-            result.operation === "pdf-to-images" && result.data.status === "placeholder"
-              ? "PDF to Images is not available yet"
-              : `${getOperationLabel(result.operation)} finished`,
+          progressStatus: `${getOperationLabel(result.operation)} finished`,
           currentItemName: undefined,
           result,
           errorMessage: undefined,

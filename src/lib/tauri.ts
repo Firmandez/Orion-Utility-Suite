@@ -26,11 +26,11 @@ export const fallbackBootstrap: AppBootstrapPayload = {
   offlineReady: true,
   modules: [
     { id: "qr-generator", title: "QR Generator", area: "QR Tools", status: "Ready" },
-    { id: "image-converter", title: "Image Converter", area: "Image Tools", status: "Ready" },
-    { id: "pdf-tools", title: "PDF Tools", area: "PDF Tools", status: "Ready" },
+    { id: "image-converter", title: "Image Converter", area: "Image Tools", status: "Desktop only" },
+    { id: "pdf-tools", title: "PDF Tools", area: "PDF Tools", status: "Desktop only" },
     { id: "text-utilities", title: "Text Utilities", area: "Text Tools", status: "Ready" },
-    { id: "hash-checker", title: "Hash Checker", area: "File Checks", status: "Ready" },
-    { id: "network-toolkit", title: "Network Toolkit", area: "Network Tools", status: "Ready" },
+    { id: "hash-checker", title: "Hash Checker", area: "File Checks", status: "Desktop only" },
+    { id: "network-toolkit", title: "Network Toolkit", area: "Network Tools", status: "Desktop only" },
     { id: "developer-tools", title: "Advanced Tools", area: "Advanced Tools", status: "Ready" },
     { id: "settings", title: "Settings", area: "Preferences", status: "Ready" }
   ]

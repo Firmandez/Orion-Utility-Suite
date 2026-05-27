@@ -37,9 +37,9 @@ export function RouteErrorState() {
           <AlertTriangle className="size-5" />
         </div>
         <div className="mt-6">
-          <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Page Error</div>
-          <h1 className="mt-3 text-3xl font-semibold text-[var(--text-primary)]">{details.title}</h1>
-          <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--text-secondary)]">{details.description}</p>
+          <div className="text-xs uppercase tracking-widest text-(--text-muted)]">Page Error</div>
+          <h1 className="mt-3 text-3xl font-semibold text-(--text-primary)]">{details.title}</h1>
+          <p className="mt-3 max-w-xl text-sm leading-7 text-(--text-secondary)]">{details.description}</p>
         </div>
         <div className="mt-6 flex flex-wrap gap-3">
           <Button leadingIcon={Home} onClick={() => window.location.assign(`${window.location.pathname}#/`)}>

@@ -26,8 +26,8 @@ export function DeveloperToolsWorkspace() {
           { title: "Color formats", description: "The color converter accepts HEX, RGB, and HSL with range validation for consistent results." },
         ].map((item) => (
           <div key={item.title} className="surface-panel-alt p-3">
-            <div className="text-sm font-semibold text-[var(--text-primary)]">{item.title}</div>
-            <div className="mt-1.5 text-sm leading-5 text-[var(--text-secondary)]">{item.description}</div>
+            <div className="text-sm font-semibold text-(--text-primary)]">{item.title}</div>
+            <div className="mt-1.5 text-sm leading-5 text-(--text-secondary)]">{item.description}</div>
           </div>
         ))}
       </div>

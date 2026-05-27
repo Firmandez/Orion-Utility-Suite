@@ -4,7 +4,6 @@ import {
   FolderSearch2,
   Gauge,
   Sparkles,
-  TriangleAlert,
 } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
 import { useShell } from "@/app/providers/ShellProvider";
@@ -61,10 +60,6 @@ export function PdfToolsWorkspace() {
   } = usePdfTools(bootstrap, defaultOutputFolder);
 
   const resultRows = buildResultRows(result);
-  const placeholderNote =
-    result?.operation === "pdf-to-images" && result.data.status === "placeholder"
-      ? "This feature is being prepared and has not generated image files yet."
-      : undefined;
 
   return (
     <div className="space-y-5">
@@ -136,9 +131,9 @@ export function PdfToolsWorkspace() {
               readOnly
             />
 
-            <div className="rounded-xl border bg-black/10 p-3 text-sm leading-5 text-[var(--text-secondary)]">
+            <div className="rounded-xl border bg-black/10 p-3 text-sm leading-5 text-(--text-secondary)]">
               Accepted files for this operation:{" "}
-              <span className="font-mono text-[var(--text-primary)]">{getAcceptedExtensions(operation).join(", ").toUpperCase()}</span>
+              <span className="font-mono text-(--text-primary)]">{getAcceptedExtensions(operation).join(", ").toUpperCase()}</span>
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -173,7 +168,6 @@ export function PdfToolsWorkspace() {
 
           {errorMessage ? <ErrorBanner title="PDF operation failed" message={errorMessage} /> : null}
 
-          {placeholderNote ? <NoticeBanner title="PDF to Image coming soon" message={placeholderNote} /> : null}
 
           {resultRows.length > 0 ? (
             <ResultCard
@@ -202,20 +196,6 @@ export function PdfToolsWorkspace() {
       >
         <PdfResultFileList result={result} onCopyPath={copyPath} />
       </PageSection>
-    </div>
-  );
-}
-
-function NoticeBanner({ title, message }: { title: string; message: string }) {
-  return (
-    <div className="rounded-xl border border-amber-400/18 bg-amber-500/10 p-3">
-      <div className="flex items-start gap-3">
-        <TriangleAlert className="mt-0.5 size-5 shrink-0 text-amber-300" />
-        <div>
-          <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-          <div className="mt-1 text-sm leading-6 text-amber-100/90">{message}</div>
-        </div>
-      </div>
     </div>
   );
 }

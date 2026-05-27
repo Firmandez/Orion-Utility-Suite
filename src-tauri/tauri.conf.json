@@ -35,13 +35,7 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": [
-      "resources/pdfium/linux-x64/libpdfium.so",
-      "resources/pdfium/macos-arm64/libpdfium.dylib",
-      "resources/pdfium/macos-univ/libpdfium.dylib",
-      "resources/pdfium/macos-x64/libpdfium.dylib",
-      "resources/pdfium/windows-x64/pdfium.dll"
-    ],
+    "resources": [],
     "shortDescription": "Offline-first desktop utility suite for everyday local workflows.",
     "longDescription": "Orion Utility Suite is a cross-platform offline-first desktop workspace by Firmandez for QR generation, image conversion, PDF tools, hashing, text utilities, network diagnostics, and developer helpers."
   }

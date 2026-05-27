@@ -71,7 +71,7 @@ export function getOperationHint(operation: PdfToolOperation) {
     case "image-to-pdf":
       return "Supports PNG, JPG, JPEG, and WEBP.";
     case "pdf-to-images":
-      return "This feature is being prepared for a future update.";
+      return "Only one PDF is used. Each page is exported as a PNG image.";
   }
 }
 
@@ -216,8 +216,8 @@ export function buildResultRows(result?: PdfOperationResult): ResultRow[] {
       return [
         { label: "Operation", value: "PDF to Images" },
         { label: "Output folder", value: result.data.outputDir },
-        { label: "Status", value: result.data.status === "placeholder" ? "Coming soon" : result.data.status },
-        { label: "Detected pages", value: String(result.data.totalPages), mono: true },
+        { label: "Images created", value: String(result.data.generatedFiles.length), mono: true },
+        { label: "Total pages", value: String(result.data.totalPages), mono: true },
       ];
   }
 }
@@ -255,12 +255,11 @@ export function buildCopyPayload(result?: PdfOperationResult) {
       return [
         "Operation: PDF to Images",
         `Output folder: ${result.data.outputDir}`,
-        `Status: ${result.data.status === "placeholder" ? "Coming soon" : result.data.status}`,
-        `Detected pages: ${result.data.totalPages}`,
-        result.data.note ?? "",
-      ]
-        .filter(Boolean)
-        .join("\n");
+        `Images created: ${result.data.generatedFiles.length}`,
+        `Total pages: ${result.data.totalPages}`,
+        "",
+        ...result.data.generatedFiles,
+      ].join("\n");
   }
 }
 
@@ -290,13 +289,9 @@ export function summarizePdfToast(result: PdfOperationResult): {
       };
     case "pdf-to-images":
       return {
-        tone: "info",
-        title: result.data.status === "placeholder" ? "PDF to Images is not active yet" : "PDF to Images finished",
-        description:
-          result.data.status === "placeholder"
-            ? "PDF to Images is being prepared and has not generated image files yet."
-            : result.data.note ??
-          `${result.data.generatedFiles.length} page images created in the selected output folder.`,
+        tone: "success",
+        title: "PDF to Images finished",
+        description: `${result.data.generatedFiles.length} page images created in the selected output folder.`,
       };
   }
 }
