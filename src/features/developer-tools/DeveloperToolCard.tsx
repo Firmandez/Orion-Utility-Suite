@@ -23,11 +23,11 @@ export function DeveloperToolCard({
     <section className={cn("surface-panel-alt p-4 sm:p-5", className)}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <div className="inline-flex size-10 items-center justify-center rounded-xl border border-(--accent-soft)] bg-(--accent-surface)] text-(--accent-strong)]">
+          <div className="inline-flex size-10 items-center justify-center rounded-xl border border-(--accent-soft) bg-(--accent-surface) text-(--accent-strong)">
             <Icon className="size-4" />
           </div>
-          <h3 className="mt-3 text-base font-semibold text-(--text-primary)]">{title}</h3>
-          <p className="mt-1.5 text-sm leading-5 text-(--text-secondary)]">{description}</p>
+          <h3 className="mt-3 text-base font-semibold text-(--text-primary)">{title}</h3>
+          <p className="mt-1.5 text-sm leading-5 text-(--text-secondary)">{description}</p>
         </div>
         {actions ? <div className="shrink-0">{actions}</div> : null}
       </div>

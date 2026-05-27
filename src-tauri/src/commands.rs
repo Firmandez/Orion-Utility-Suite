@@ -1,9 +1,9 @@
 use crate::error::AppError;
 use crate::models::{
-    AppBootstrapPayload, ConvertImagesOptionsPayload, DnsLookupPayload, HashResultPayload,
-    HttpStatusPayload, ImageConversionResponsePayload, ImageToPdfResponsePayload, LocalIpPayload,
-    PdfMergeResponsePayload, PdfSplitResponsePayload, PdfToImagesResponsePayload, PingHostPayload,
-    PortCheckPayload, SystemInfoPayload,
+    ActiveWifiInterface, AppBootstrapPayload, ConvertImagesOptionsPayload, DnsLookupPayload,
+    HashResultPayload, HttpStatusPayload, ImageConversionResponsePayload, ImageToPdfResponsePayload,
+    LocalIpPayload, PdfMergeResponsePayload, PdfSplitResponsePayload, PdfToImagesResponsePayload,
+    PingHostPayload, PortCheckPayload, SubnetScanResponse, SystemInfoPayload, WifiNetwork,
 };
 use crate::pdf_tools::{
     image_to_pdf_payload, merge_pdfs_payload, pdf_to_images_payload, split_pdf_payload,
@@ -13,6 +13,7 @@ use crate::services::{
     check_http_status_payload, check_port_payload, convert_images_payload, dns_lookup_payload,
     generate_hash_payload, ping_host_payload,
 };
+
 
 #[tauri::command]
 pub async fn bootstrap_app() -> Result<AppBootstrapPayload, AppError> {
@@ -123,3 +124,19 @@ pub async fn validate_text_input(value: String) -> Result<bool, AppError> {
 
     Ok(true)
 }
+
+#[tauri::command]
+pub async fn scan_subnet() -> Result<SubnetScanResponse, AppError> {
+    crate::services::scan_subnet_payload().await.map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn get_wifi_networks() -> Result<Vec<WifiNetwork>, AppError> {
+    crate::services::get_wifi_networks_payload().await.map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn get_active_wifi_interface() -> Result<Option<ActiveWifiInterface>, AppError> {
+    crate::services::get_active_wifi_interface_payload().await.map_err(Into::into)
+}
+

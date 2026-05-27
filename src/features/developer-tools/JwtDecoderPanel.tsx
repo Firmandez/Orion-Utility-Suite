@@ -95,8 +95,8 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
 function StatPill({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border bg-white/5 p-3">
-      <div className="text-xs uppercase tracking-widest text-(--text-muted)]">{label}</div>
-      <div className="mt-3 text-sm font-semibold text-(--text-primary)]">{value}</div>
+      <div className="text-xs uppercase tracking-widest text-(--text-muted)">{label}</div>
+      <div className="mt-3 text-sm font-semibold text-(--text-primary)">{value}</div>
     </div>
   );
 }
@@ -113,19 +113,19 @@ function JwtNotice({
   const Icon = tone === "success" ? CheckCircle2 : CircleAlert;
   const toneClassName =
     tone === "success"
-      ? "border-emerald-400/18 bg-emerald-500/10 text-(--text-secondary)]"
+      ? "border-emerald-400/18 bg-emerald-500/10 text-(--text-secondary)"
       : tone === "error"
         ? "border-rose-400/18 bg-rose-500/10 text-rose-100/90"
-        : "border-(--border-subtle)] bg-white/5 text-(--text-secondary)]";
+        : "border-(--border-subtle) bg-white/5 text-(--text-secondary)";
 
   return (
     <div className={`rounded-xl border p-3 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
-          className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-(--accent-strong)]"}`}
+          className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-(--accent-strong)"}`}
         />
         <div>
-          <div className="text-sm font-semibold text-(--text-primary)]">{title}</div>
+          <div className="text-sm font-semibold text-(--text-primary)">{title}</div>
           <div className="mt-1 text-sm leading-5">{description}</div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { appVersion } from "@/generated/app-version";
 import type {
+  ActiveWifiInterface,
   AppBootstrapPayload,
   ConvertImagesOptionsRequest,
   DnsLookupResponse,
@@ -14,7 +15,9 @@ import type {
   PdfToImagesResponse,
   PingHostResponse,
   PortCheckResponse,
+  SubnetScanResponse,
   SystemInfoResponse,
+  WifiNetwork,
 } from "@/types/app";
 
 export const fallbackBootstrap: AppBootstrapPayload = {
@@ -87,3 +90,16 @@ export async function generateHash(filePath: string) {
 export async function convertImages(options: ConvertImagesOptionsRequest) {
   return invoke<ImageConversionResponse>("convert_images", { options });
 }
+
+export async function scanSubnet() {
+  return invoke<SubnetScanResponse>("scan_subnet");
+}
+
+export async function getWifiNetworks() {
+  return invoke<WifiNetwork[]>("get_wifi_networks");
+}
+
+export async function getActiveWifiInterface() {
+  return invoke<ActiveWifiInterface | null>("get_active_wifi_interface");
+}
+

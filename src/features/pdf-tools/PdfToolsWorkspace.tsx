@@ -131,9 +131,9 @@ export function PdfToolsWorkspace() {
               readOnly
             />
 
-            <div className="rounded-xl border bg-black/10 p-3 text-sm leading-5 text-(--text-secondary)]">
+            <div className="rounded-xl border bg-black/10 p-3 text-sm leading-5 text-(--text-secondary)">
               Accepted files for this operation:{" "}
-              <span className="font-mono text-(--text-primary)]">{getAcceptedExtensions(operation).join(", ").toUpperCase()}</span>
+              <span className="font-mono text-(--text-primary)">{getAcceptedExtensions(operation).join(", ").toUpperCase()}</span>
             </div>
 
             <div className="flex flex-wrap gap-3">

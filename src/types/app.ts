@@ -238,3 +238,50 @@ export interface PdfToolsProgressResponse {
   progressPercent: number;
   status: string;
 }
+
+export interface DiscoveredDevice {
+  ip: string;
+  mac: string;
+  deviceType: string;
+  vendor: string;
+  hostname: string;
+  isAlive: boolean;
+}
+
+export interface SubnetScanResponse {
+  subnet: string;
+  localIp: string;
+  devices: DiscoveredDevice[];
+}
+
+export interface WifiNetworkBssid {
+  bssid: string;
+  signal: number;
+  channel: number;
+  frequency: string;
+  vendor: string;
+}
+
+export interface WifiNetwork {
+  ssid: string;
+  authentication: string;
+  encryption: string;
+  signal: number;
+  band: string;
+  bssids: WifiNetworkBssid[];
+}
+
+export interface ActiveWifiInterface {
+  name: string;
+  description: string;
+  mac: string;
+  state: string;
+  ssid: string;
+  bssid: string;
+  signal: number;
+  channel: number;
+  receiveRate: number;
+  transmitRate: number;
+  vendor: string;
+}
+

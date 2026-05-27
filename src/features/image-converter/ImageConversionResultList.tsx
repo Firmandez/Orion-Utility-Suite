@@ -29,11 +29,11 @@ export function ImageConversionResultList({
         const isSuccess = result.status === "success";
 
         return (
-          <div key={`${result.inputPath}-${result.outputPath ?? result.status}`} className="rounded-2xl border bg-(--surface-2)] p-3">
+          <div key={`${result.inputPath}-${result.outputPath ?? result.status}`} className="rounded-2xl border bg-(--surface-2) p-3">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className="text-sm font-semibold text-(--text-primary)]">
+                  <div className="text-sm font-semibold text-(--text-primary)">
                     {truncateMiddle(result.inputPath.split(/[/\\]/).pop() || result.inputPath, 28, 18)}
                   </div>
                   <span
@@ -51,20 +51,20 @@ export function ImageConversionResultList({
 
                 <div className="mt-3 space-y-2 text-sm leading-6">
                   <div>
-                    <div className="text-[11px] uppercase tracking-widest text-(--text-muted)]">Input path</div>
-                    <div className="break-all font-mono text-[13px] text-(--text-secondary)]">{result.inputPath}</div>
+                    <div className="text-[11px] uppercase tracking-widest text-(--text-muted)">Input path</div>
+                    <div className="break-all font-mono text-[13px] text-(--text-secondary)">{result.inputPath}</div>
                   </div>
 
                   {result.outputPath ? (
                     <div>
-                      <div className="text-[11px] uppercase tracking-widest text-(--text-muted)]">Output path</div>
-                      <div className="break-all font-mono text-[13px] text-(--text-primary)]">{result.outputPath}</div>
+                      <div className="text-[11px] uppercase tracking-widest text-(--text-muted)">Output path</div>
+                      <div className="break-all font-mono text-[13px] text-(--text-primary)">{result.outputPath}</div>
                     </div>
                   ) : null}
 
                   {result.errorMessage ? (
                     <div>
-                      <div className="text-[11px] uppercase tracking-widest text-(--text-muted)]">Error</div>
+                      <div className="text-[11px] uppercase tracking-widest text-(--text-muted)">Error</div>
                       <div className="text-rose-100/90">{result.errorMessage}</div>
                     </div>
                   ) : null}

@@ -1085,6 +1085,726 @@ fn map_file_io_error(error: std::io::Error, path: &Path, action: &str) -> anyhow
     }
 }
 
+// ==========================================
+// Subnet Scanner & Wi-Fi Analyzer Implementations
+// ==========================================
+
+use crate::models::{ActiveWifiInterface, DiscoveredDevice, SubnetScanResponse, WifiNetwork, WifiNetworkBssid};
+use std::net::Ipv4Addr;
+
+const MAC_VENDORS: &[(&str, &str)] = &[
+    ("00:00:0C", "Cisco"),
+    ("00:03:93", "Apple"),
+    ("00:05:cd", "Denon"),
+    ("00:06:86", "FiberHome"),
+    ("00:06:25", "Linksys"),
+    ("00:09:5B", "Netgear"),
+    ("00:0F:3D", "D-Link"),
+    ("00:11:24", "Apple"),
+    ("00:14:22", "Dell"),
+    ("00:15:EB", "ZTE"),
+    ("00:16:3E", "Xen / Virtual Machine"),
+    ("00:18:39", "Linksys"),
+    ("00:19:C6", "ZTE"),
+    ("00:19:E3", "TP-Link"),
+    ("00:1A:11", "Google"),
+    ("00:1B:FC", "ASUS"),
+    ("00:1C:42", "Parallels / Virtual Machine"),
+    ("00:1D:C9", "Garmin"),
+    ("00:1E:10", "Huawei"),
+    ("00:21:27", "TP-Link"),
+    ("00:21:70", "Dell"),
+    ("00:22:93", "ZTE"),
+    ("00:22:A1", "Huawei"),
+    ("00:23:CD", "TP-Link"),
+    ("00:24:8C", "ASUS"),
+    ("00:25:90", "Supermicro"),
+    ("00:26:BB", "Apple"),
+    ("00:50:56", "VMware / Virtual Machine"),
+    ("00:B0:0C", "Tenda"),
+    ("00:E0:FC", "Oppo"),
+    ("00:e0:4c", "Realtek"),
+    ("00:F0:8A", "Vivo"),
+    ("04:18:B6", "Ubiquiti"),
+    ("04:D4:C4", "Samsung"),
+    ("08:00:27", "VirtualBox / Virtual Machine"),
+    ("0C:80:63", "TP-Link"),
+    ("0C:9D:92", "Xiaomi"),
+    ("0C:A6:94", "Realme"),
+    ("10:D0:7A", "Intel"),
+    ("10:D5:61", "Tuya Smart"),
+    ("14:3E:BF", "Oppo"),
+    ("14:CF:92", "TP-Link"),
+    ("18:E8:29", "Ubiquiti"),
+    ("1C:3B:F3", "Intel"),
+    ("1C:73:E2", "Huawei"),
+    ("1C:87:2C", "ASUS"),
+    ("1C:8E:5C", "ZTE"),
+    ("20:28:BC", "Hikvision"),
+    ("24:0A:C4", "Espressif"),
+    ("24:A0:74", "Apple"),
+    ("24:DF:6A", "Huawei"),
+    ("28:D2:44", "Intel"),
+    ("2C:22:8B", "Vivo"),
+    ("30:30:F2", "Espressif"),
+    ("30:5A:3A", "ASUS"),
+    ("30:86:2C", "Huawei"),
+    ("30:AE:A4", "Espressif"),
+    ("3C:5A:B4", "Google"),
+    ("3C:D9:2B", "Hewlett Packard"),
+    ("3C:DF:BD", "ZTE"),
+    ("3C:E1:A1", "Intel"),
+    ("40:40:A7", "Vivo"),
+    ("40:8D:5C", "Apple"),
+    ("44:19:B6", "Hikvision"),
+    ("48:2C:6A", "TP-Link"),
+    ("4C:1F:CC", "Huawei"),
+    ("4C:5E:0C", "Huawei"),
+    ("50:2F:9B", "TP-Link"),
+    ("50:78:B3", "Apple"),
+    ("50:8A:06", "Tuya Smart"),
+    ("50:C7:BF", "TP-Link"),
+    ("54:39:DF", "Huawei"),
+    ("54:5A:A6", "Espressif"),
+    ("54:A5:1B", "Huawei"),
+    ("54:B8:0A", "Lenovo"),
+    ("5C:C9:D3", "Sony"),
+    ("5C:F6:DC", "Realme"),
+    ("60:03:08", "Apple"),
+    ("60:38:E0", "Samsung"),
+    ("64:09:80", "Apple"),
+    ("68:57:2D", "Tuya Smart"),
+    ("70:89:76", "Tuya Smart"),
+    ("70:8B:CD", "ASUS"),
+    ("74:DA:38", "TP-Link"),
+    ("78:3E:5D", "Vivo"),
+    ("7C:60:97", "Huawei"),
+    ("7C:78:B2", "Oppo"),
+    ("7C:8B:CA", "Intel"),
+    ("7C:C5:37", "Xiaomi"),
+    ("80:7A:BF", "Raspberry Pi"),
+    ("84:1E:19", "Realme"),
+    ("84:74:12", "ZTE"),
+    ("84:F3:EB", "TP-Link"),
+    ("88:66:5A", "Apple"),
+    ("88:81:4A", "Vivo"),
+    ("8c:85:90", "Apple"),
+    ("90:02:A9", "Dahua"),
+    ("90:09:D0", "Xiaomi"),
+    ("90:48:9A", "Intel"),
+    ("9C:20:7B", "Intel"),
+    ("9C:C1:21", "ZTE"),
+    ("9C:CB:83", "Oppo"),
+    ("A0:20:A6", "Espressif"),
+    ("A0:9E:1A", "Oppo"),
+    ("A0:BD:1D", "Hikvision"),
+    ("A0:C5:89", "Intel"),
+    ("A0:F3:C1", "TP-Link"),
+    ("A4:2B:B0", "Linksys"),
+    ("A4:3E:51", "Huawei"),
+    ("A8:42:E3", "Espressif"),
+    ("A8:57:4E", "TP-Link"),
+    ("A8:5E:45", "ASUS"),
+    ("B0:C5:54", "Intel"),
+    ("B4:12:F1", "Vivo"),
+    ("B4:2E:99", "Intel"),
+    ("B4:8B:C9", "Intel"),
+    ("B8:27:EB", "Raspberry Pi"),
+    ("B8:85:84", "Intel"),
+    ("BC:32:AC", "Dahua"),
+    ("BC:62:0E", "Hikvision"),
+    ("BC:EC:5D", "Hikvision"),
+    ("C0:3E:BA", "Intel"),
+    ("C0:49:EF", "Espressif"),
+    ("C0:56:E3", "Apple"),
+    ("C0:84:7D", "Oppo"),
+    ("C0:A7:27", "Huawei"),
+    ("C4:9E:C8", "Intel"),
+    ("C8:2B:96", "Espressif"),
+    ("C8:3A:35", "Realme"),
+    ("C8:D7:19", "Intel"),
+    ("CC:50:E3", "Espressif"),
+    ("D0:5B:A8", "ZTE"),
+    ("D4:3B:04", "Huawei"),
+    ("D4:5D:64", "Intel"),
+    ("D8:13:99", "Oppo"),
+    ("D8:1C:2A", "Tuya Smart"),
+    ("D8:3B:BF", "Intel"),
+    ("D8:49:0B", "Huawei"),
+    ("D8:50:E6", "ASUS"),
+    ("D8:EC:5E", "Intel"),
+    ("DC:A6:32", "Raspberry Pi"),
+    ("E0:41:38", "Oppo"),
+    ("E0:50:8B", "Dahua"),
+    ("E0:D5:5E", "Intel"),
+    ("E4:E4:AB", "Intel"),
+    ("E4:F8:9C", "Intel"),
+    ("E8:07:BF", "Vivo"),
+    ("E8:86:14", "Realme"),
+    ("E8:DB:84", "Espressif"),
+    ("EC:08:6B", "Intel"),
+    ("EC:2C:E2", "Intel"),
+    ("EC:8E:B5", "Intel"),
+    ("EC:E7:A2", "Apple"),
+    ("EC:F3:42", "ZTE"),
+    ("F0:18:98", "Apple"),
+    ("F4:3F:61", "Intel"),
+    ("F4:F2:6D", "Intel"),
+    ("F8:32:E4", "Intel"),
+    ("FC:34:97", "ASUS"),
+    ("FC:AA:14", "Intel"),
+    ("FC:E5:57", "Vivo"),
+];
+
+fn to_title_case(s: &str) -> String {
+    let mut result = String::new();
+    let mut capitalize_next = true;
+    
+    for c in s.chars() {
+        if c.is_alphanumeric() {
+            if capitalize_next {
+                result.push(c.to_ascii_uppercase());
+                capitalize_next = false;
+            } else {
+                result.push(c.to_ascii_lowercase());
+            }
+        } else {
+            result.push(c);
+            capitalize_next = true;
+        }
+    }
+    result
+}
+
+fn lookup_vendor(mac: &str) -> String {
+    use std::collections::HashMap;
+    use std::sync::OnceLock;
+
+    static OUI_DATABASE: OnceLock<HashMap<String, String>> = OnceLock::new();
+
+    let normalized: String = mac
+        .replace(&[':', '-'][..], "")
+        .to_ascii_lowercase();
+        
+    if normalized.len() < 6 {
+        return "Unknown".to_string();
+    }
+    
+    // Explicit protection for local loopback / active system references
+    if normalized.contains("loopback") || normalized == "self" {
+        return "Self".to_string();
+    }
+    
+    // Check if it is a locally administered / randomized Private MAC address.
+    // By IEEE networking standards, randomized unicast MACs always end their first byte
+    // with binary '10', meaning the second character of the MAC string is '2', '6', 'a', or 'e'.
+    if normalized.len() >= 2 {
+        let second_char = normalized.chars().nth(1).unwrap_or('0');
+        if second_char == '2' || second_char == '6' || second_char == 'a' || second_char == 'e' {
+            return "Private MAC (Randomized)".to_string();
+        }
+    }
+    
+    let prefix = &normalized[0..6];
+    
+    let db = OUI_DATABASE.get_or_init(|| {
+        let mut map = HashMap::new();
+        
+        // 1. Populate with the curated manual list first as a baseline
+        for &(oui, vendor) in MAC_VENDORS {
+            let oui_clean = oui.replace(&[':', '-'][..], "").to_ascii_lowercase();
+            map.insert(oui_clean, to_title_case(vendor));
+        }
+        
+        // 2. Dynamically parse the complete official IEEE OUI registry file embedded at compile time.
+        // The file is located in the `resources` directory relative to this source file.
+        const OUI_DATA: &str = include_str!("../resources/standards-oui.ieee.org.txt");
+        for line in OUI_DATA.lines() {
+            if line.contains("(hex)") {
+                let parts: Vec<&str> = line.split("(hex)").collect();
+                if parts.len() >= 2 {
+                    let oui = parts[0].replace(&[':', '-'][..], "").trim().to_ascii_lowercase();
+                    let vendor = parts[1].trim().to_string();
+                    if !oui.is_empty() && !vendor.is_empty() {
+                        map.insert(oui, to_title_case(&vendor));
+                    }
+                }
+            }
+        }
+        
+        map
+    });
+    
+    if let Some(vendor) = db.get(prefix) {
+        vendor.clone()
+    } else {
+        "Unknown".to_string()
+    }
+}
+
+#[link(name = "iphlpapi")]
+#[cfg(target_os = "windows")]
+extern "system" {
+    fn GetIpNetTable(
+        pIpNetTable: *mut u8,
+        pdwSize: *mut u32,
+        bOrder: i32,
+    ) -> u32;
+}
+
+#[cfg(target_os = "windows")]
+fn get_native_arp_table() -> anyhow::Result<Vec<(Ipv4Addr, String, String)>> {
+    let mut size: u32 = 0;
+    unsafe {
+        GetIpNetTable(std::ptr::null_mut(), &mut size, 0);
+    }
+    
+    if size == 0 {
+        return Ok(Vec::new());
+    }
+    
+    let mut buffer = vec![0u8; size as usize];
+    let ret = unsafe {
+        GetIpNetTable(buffer.as_mut_ptr(), &mut size, 0)
+    };
+    
+    if ret != 0 {
+        anyhow::bail!("GetIpNetTable failed with exit code: {}", ret);
+    }
+    
+    if buffer.len() < 4 {
+        return Ok(Vec::new());
+    }
+    
+    let num_entries = u32::from_ne_bytes(buffer[0..4].try_into().unwrap()) as usize;
+    let entry_size = 24;
+    
+    let mut entries = Vec::new();
+    for i in 0..num_entries {
+        let offset = 4 + i * entry_size;
+        if offset + entry_size > buffer.len() {
+            break;
+        }
+        
+        let row_bytes = &buffer[offset..offset + entry_size];
+        
+        let phys_addr_len = u32::from_ne_bytes(row_bytes[4..8].try_into().unwrap()) as usize;
+        let mac_bytes = &row_bytes[8..8 + phys_addr_len.min(8)];
+        let ip_bytes = &row_bytes[16..20];
+        let dw_type = u32::from_ne_bytes(row_bytes[20..24].try_into().unwrap());
+        
+        if dw_type == 2 {
+            continue;
+        }
+        
+        let ip = Ipv4Addr::new(ip_bytes[0], ip_bytes[1], ip_bytes[2], ip_bytes[3]);
+        
+        let mac = mac_bytes
+            .iter()
+            .map(|b| format!("{:02X}", b))
+            .collect::<Vec<_>>()
+            .join(":");
+            
+        let device_type = match dw_type {
+            3 => "Dynamic".to_string(),
+            4 => "Static".to_string(),
+            _ => "Other".to_string(),
+        };
+        
+        if mac == "00:00:00:00:00:00" || mac.is_empty() {
+            continue;
+        }
+        
+        entries.push((ip, mac, device_type));
+    }
+    
+    Ok(entries)
+}
+
+#[cfg(not(target_os = "windows"))]
+fn get_native_arp_table() -> anyhow::Result<Vec<(Ipv4Addr, String, String)>> {
+    anyhow::bail!("Subnet scanning is currently only supported on Windows. Support for Linux and macOS is planned for a future release.")
+}
+
+pub async fn scan_subnet_payload() -> anyhow::Result<SubnetScanResponse> {
+    let local_ip_payload = build_local_ip_payload().await?;
+    let local_ip_parsed: Ipv4Addr = local_ip_payload.local_ip.parse().context("Invalid local IP format")?;
+    let subnet_mask_parsed: Ipv4Addr = local_ip_payload.subnet_mask
+        .as_deref()
+        .unwrap_or("255.255.255.0")
+        .parse()
+        .unwrap_or(Ipv4Addr::new(255, 255, 255, 0));
+        
+    let local_ip_u32 = u32::from(local_ip_parsed);
+    let mask_u32 = u32::from(subnet_mask_parsed);
+    let network_u32 = local_ip_u32 & mask_u32;
+    let mut num_hosts = !mask_u32;
+    
+    if num_hosts > 512 {
+        num_hosts = 255;
+    }
+    
+    let mut ips = Vec::new();
+    for i in 1..num_hosts {
+        ips.push(Ipv4Addr::from(network_u32 + i));
+    }
+    
+    if cfg!(target_os = "windows") {
+        if let Ok(socket) = tokio::net::UdpSocket::bind("0.0.0.0:0").await {
+            for &ip in &ips {
+                let target = std::net::SocketAddr::new(std::net::IpAddr::V4(ip), 9);
+                let _ = socket.send_to(&[0], target).await;
+            }
+        }
+        tokio::time::sleep(tokio::time::Duration::from_millis(800)).await;
+    }
+    
+    let arp_entries = get_native_arp_table()?;
+    
+    let resolver = Resolver::builder_tokio()
+        .context("Failed to construct DNS resolver")?
+        .build();
+        
+    let mut devices = Vec::new();
+    
+    let my_mac = local_ip_payload.default_gateway.as_ref()
+        .map(|_| "Local Loopback".to_string())
+        .unwrap_or_else(|| "00:00:00:00:00:00".to_string());
+        
+    let mut set = tokio::task::JoinSet::new();
+    for (ip, mac, dev_type) in arp_entries {
+        let ip_u32 = u32::from(ip);
+        if (ip_u32 & mask_u32) == network_u32 {
+            let resolver_clone = resolver.clone();
+            let default_gateway_clone = local_ip_payload.default_gateway.clone();
+            let local_ip_str = local_ip_payload.local_ip.clone();
+            set.spawn(async move {
+                let ip_addr = std::net::IpAddr::V4(ip);
+                let hostname = match resolver_clone.reverse_lookup(ip_addr).await {
+                    Ok(lookup) => {
+                        if let Some(name) = lookup.iter().next() {
+                            name.to_utf8().trim_end_matches('.').to_string()
+                        } else {
+                            "Unknown".to_string()
+                        }
+                    }
+                    Err(_) => "Unknown".to_string()
+                };
+                
+                let is_gateway = Some(ip.to_string()) == default_gateway_clone;
+                let is_local = ip.to_string() == local_ip_str;
+                
+                let custom_type = if is_local {
+                    "Local PC".to_string()
+                } else if is_gateway {
+                    "Gateway".to_string()
+                } else {
+                    dev_type
+                };
+                
+                let vendor = lookup_vendor(&mac);
+                
+                DiscoveredDevice {
+                    ip: ip.to_string(),
+                    mac,
+                    device_type: custom_type,
+                    vendor,
+                    hostname,
+                    is_alive: true,
+                }
+            });
+        }
+    }
+    
+    while let Some(res) = set.join_next().await {
+        if let Ok(device) = res {
+            devices.push(device);
+        }
+    }
+    
+    if !devices.iter().any(|d| d.ip == local_ip_payload.local_ip) {
+        devices.push(DiscoveredDevice {
+            ip: local_ip_payload.local_ip.clone(),
+            mac: my_mac,
+            device_type: "Local PC".to_string(),
+            vendor: "Self".to_string(),
+            hostname: "localhost".to_string(),
+            is_alive: true,
+        });
+    }
+    
+    devices.sort_by(|a, b| {
+        let ip_a: Result<Ipv4Addr, _> = a.ip.parse();
+        let ip_b: Result<Ipv4Addr, _> = b.ip.parse();
+        match (ip_a, ip_b) {
+            (Ok(a_parsed), Ok(b_parsed)) => a_parsed.cmp(&b_parsed),
+            _ => a.ip.cmp(&b.ip),
+        }
+    });
+    
+    let cidr = match subnet_mask_parsed.to_string().as_str() {
+        "255.255.255.0" => "24",
+        "255.255.0.0" => "16",
+        "255.0.0.0" => "8",
+        _ => "24"
+    };
+    
+    let base_ip = if let Some(dot_idx) = local_ip_payload.local_ip.rfind('.') {
+        &local_ip_payload.local_ip[0..dot_idx]
+    } else {
+        "192.168.1"
+    };
+    
+    Ok(SubnetScanResponse {
+        subnet: format!("{}.0/{}", base_ip, cidr),
+        local_ip: local_ip_payload.local_ip,
+        devices,
+    })
+}
+
+pub async fn get_wifi_networks_payload() -> anyhow::Result<Vec<WifiNetwork>> {
+    if !cfg!(target_os = "windows") {
+        anyhow::bail!("Wi-Fi scanning is currently only supported on Windows. Support for Linux and macOS is planned for a future release.");
+    }
+    
+    let mut command = TokioCommand::new("netsh");
+    command.args(["wlan", "show", "networks", "mode=bssid"]);
+    #[cfg(target_os = "windows")]
+    {
+        command.creation_flags(0x08000000); // CREATE_NO_WINDOW
+    }
+    command.kill_on_drop(true);
+    
+    let output = timeout(Duration::from_secs(5), command.output())
+        .await
+        .map_err(|_| anyhow!("Wi-Fi sweep timed out"))??;
+        
+    if !output.status.success() {
+        anyhow::bail!("Wi-Fi sweep failed: ensure Wi-Fi adapter is enabled.");
+    }
+    
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let networks = parse_netsh_wlan_networks(&stdout);
+    Ok(networks)
+}
+
+pub async fn get_active_wifi_interface_payload() -> anyhow::Result<Option<ActiveWifiInterface>> {
+    if !cfg!(target_os = "windows") {
+        anyhow::bail!("Wi-Fi diagnostics are currently only supported on Windows. Support for Linux and macOS is planned for a future release.");
+    }
+    
+    let mut command = TokioCommand::new("netsh");
+    command.args(["wlan", "show", "interfaces"]);
+    #[cfg(target_os = "windows")]
+    {
+        command.creation_flags(0x08000000); // CREATE_NO_WINDOW
+    }
+    command.kill_on_drop(true);
+    
+    let output = timeout(Duration::from_secs(5), command.output())
+        .await
+        .map_err(|_| anyhow!("Wi-Fi interface details lookup timed out"))??;
+        
+    if !output.status.success() {
+        return Ok(None);
+    }
+    
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let interface = parse_netsh_wlan_interface(&stdout);
+    Ok(interface)
+}
+
+fn parse_netsh_wlan_networks(output: &str) -> Vec<WifiNetwork> {
+    let mut networks = Vec::new();
+    let mut current_network: Option<WifiNetwork> = None;
+    let mut current_bssid: Option<WifiNetworkBssid> = None;
+    
+    for line in output.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+        
+        if line.starts_with("SSID ") {
+            if let Some(mut net) = current_network.take() {
+                if let Some(bssid) = current_bssid.take() {
+                    net.bssids.push(bssid);
+                }
+                finalize_network(&mut net);
+                networks.push(net);
+            }
+            
+            let parts: Vec<&str> = line.splitn(2, ':').collect();
+            if parts.len() == 2 {
+                let ssid = parts[1].trim().to_string();
+                current_network = Some(WifiNetwork {
+                    ssid: if ssid.is_empty() { "<Hidden SSID>".to_string() } else { ssid },
+                    authentication: "Unknown".to_string(),
+                    encryption: "Unknown".to_string(),
+                    signal: 0,
+                    band: "Unknown".to_string(),
+                    bssids: Vec::new(),
+                });
+            }
+        } else if let Some(ref mut net) = current_network {
+            let parts: Vec<&str> = line.splitn(2, ':').collect();
+            if parts.len() == 2 {
+                let key = parts[0].trim().to_ascii_lowercase();
+                let val = parts[1].trim().to_string();
+                
+                if key.starts_with("bssid ") {
+                    if let Some(bssid) = current_bssid.take() {
+                        net.bssids.push(bssid);
+                    }
+                    current_bssid = Some(WifiNetworkBssid {
+                        bssid: val.to_ascii_uppercase(),
+                        signal: 0,
+                        channel: 0,
+                        frequency: "Unknown".to_string(),
+                        vendor: lookup_vendor(&val),
+                    });
+                } else if let Some(ref mut bssid) = current_bssid {
+                    if key == "signal" {
+                        let sig_str = val.trim_end_matches('%').trim();
+                        bssid.signal = sig_str.parse().unwrap_or(0);
+                    } else if key == "channel" {
+                        bssid.channel = val.parse().unwrap_or(0);
+                        bssid.frequency = if bssid.channel >= 36 {
+                            "5 GHz".to_string()
+                        } else {
+                            "2.4 GHz".to_string()
+                        };
+                    }
+                } else {
+                    if key.contains("authentication") {
+                        net.authentication = val;
+                    } else if key.contains("encryption") {
+                        net.encryption = val;
+                    }
+                }
+            }
+        }
+    }
+    
+    if let Some(mut net) = current_network.take() {
+        if let Some(bssid) = current_bssid.take() {
+            net.bssids.push(bssid);
+        }
+        finalize_network(&mut net);
+        networks.push(net);
+    }
+    
+    networks
+}
+
+fn finalize_network(net: &mut WifiNetwork) {
+    if net.bssids.is_empty() {
+        return;
+    }
+    
+    // De-duplicate BSSIDs by MAC address, keeping the one with higher signal strength
+    // This cleans up historic cached records in Windows WLAN service during channel changes
+    let mut unique_bssids: Vec<WifiNetworkBssid> = Vec::new();
+    for b in net.bssids.drain(..) {
+        if let Some(existing) = unique_bssids.iter_mut().find(|x| x.bssid == b.bssid) {
+            if b.signal > existing.signal {
+                *existing = b;
+            }
+        } else {
+            unique_bssids.push(b);
+        }
+    }
+    net.bssids = unique_bssids;
+    
+    net.signal = net.bssids.iter().map(|b| b.signal).max().unwrap_or(0);
+    
+    let has_2g = net.bssids.iter().any(|b| b.channel < 36);
+    let has_5g = net.bssids.iter().any(|b| b.channel >= 36);
+    
+    net.band = match (has_2g, has_5g) {
+        (true, true) => "Mixed".to_string(),
+        (true, false) => "2.4 GHz".to_string(),
+        (false, true) => "5 GHz".to_string(),
+        _ => "Unknown".to_string(),
+    };
+}
+
+fn parse_netsh_wlan_interface(output: &str) -> Option<ActiveWifiInterface> {
+    let mut interfaces = Vec::new();
+    let mut current_interface: Option<ActiveWifiInterface> = None;
+    
+    for line in output.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+        
+        let parts: Vec<&str> = line.splitn(2, ':').collect();
+        if parts.len() == 2 {
+            let key = parts[0].trim().to_ascii_lowercase();
+            let val = parts[1].trim().to_string();
+            
+            if key == "name" {
+                if let Some(iface) = current_interface.take() {
+                    interfaces.push(iface);
+                }
+                current_interface = Some(ActiveWifiInterface {
+                    name: val,
+                    description: String::new(),
+                    mac: String::new(),
+                    state: String::new(),
+                    ssid: String::new(),
+                    bssid: String::new(),
+                    signal: 0,
+                    channel: 0,
+                    receive_rate: 0,
+                    transmit_rate: 0,
+                    vendor: String::new(),
+                });
+            } else if let Some(ref mut iface) = current_interface {
+                if key == "description" {
+                    iface.description = val;
+                } else if key == "physical address" {
+                    iface.mac = val.to_ascii_uppercase();
+                } else if key == "state" {
+                    iface.state = val;
+                } else if key == "ssid" {
+                    iface.ssid = val;
+                } else if key == "bssid" || key == "ap bssid" {
+                    iface.bssid = val.to_ascii_uppercase();
+                } else if key == "signal" {
+                    let sig_str = val.trim_end_matches('%').trim();
+                    iface.signal = sig_str.parse().unwrap_or(0);
+                } else if key == "channel" {
+                    iface.channel = val.parse().unwrap_or(0);
+                } else if key == "receive rate (mbps)" {
+                    iface.receive_rate = val.parse::<f32>().map(|f| f.round() as u32).unwrap_or(0);
+                } else if key == "transmit rate (mbps)" {
+                    iface.transmit_rate = val.parse::<f32>().map(|f| f.round() as u32).unwrap_or(0);
+                }
+            }
+        }
+    }
+    
+    if let Some(iface) = current_interface.take() {
+        interfaces.push(iface);
+    }
+    
+    // Resolve OUI vendors for BSSIDs of discovered active interfaces
+    for iface in &mut interfaces {
+        if !iface.bssid.is_empty() {
+            iface.vendor = lookup_vendor(&iface.bssid);
+        }
+    }
+    
+    // Always locate and return the active interface that is physically "connected"
+    interfaces.into_iter().find(|iface| iface.state == "connected")
+}
+
+
+
+
+
 #[cfg(test)]
 mod tests {
     use std::env;

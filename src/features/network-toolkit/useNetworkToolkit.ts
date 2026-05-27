@@ -1,7 +1,16 @@
 import { startTransition, useEffect, useEffectEvent, useState } from "react";
 import { notify } from "@/components/ui/Toast";
 import { copyText } from "@/lib/clipboard";
-import { checkHttpStatus, checkPort, dnsLookup, getLocalIp, pingHost } from "@/lib/tauri";
+import {
+  checkHttpStatus,
+  checkPort,
+  dnsLookup,
+  getLocalIp,
+  pingHost,
+  scanSubnet,
+  getWifiNetworks,
+  getActiveWifiInterface,
+} from "@/lib/tauri";
 import type { AppBootstrapState } from "@/types/app";
 import type { NetworkToolkitState } from "./network-toolkit.types";
 import { parsePortInput } from "./network-toolkit.utils";
@@ -19,6 +28,9 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     port: { status: "idle" },
     httpUrl: "https://example.com",
     http: { status: "idle" },
+    subnet: { status: "idle" },
+    wifiNetworks: { status: "idle" },
+    activeWifi: { status: "idle" },
   });
 
   const copyDiagnostic = useEffectEvent(async (label: string, content: string) => {
@@ -234,7 +246,196 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
           http: { status: "error", errorMessage: message },
         }));
       });
-      notify.error("HTTP status failed", message);
+    }
+  });
+
+  const runSubnetScan = useEffectEvent(async () => {
+    if (!isDesktopRuntime) {
+      startTransition(() => {
+        setState((current) => ({
+          ...current,
+          subnet: { status: "loading" },
+        }));
+      });
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      const mockSubnet = {
+        subnet: "192.168.1.0/24",
+        localIp: "192.168.1.10",
+        devices: [
+          { ip: "192.168.1.1", mac: "04:18:B6:33:44:55", deviceType: "Gateway", vendor: "Ubiquiti", hostname: "router.local", isAlive: true },
+          { ip: "192.168.1.10", mac: "Local Loopback", deviceType: "Local PC", vendor: "Self", hostname: "localhost", isAlive: true },
+          { ip: "192.168.1.15", mac: "04:D4:C4:AA:BB:CC", deviceType: "Dynamic", vendor: "Samsung", hostname: "galaxy-s24.local", isAlive: true },
+          { ip: "192.168.1.100", mac: "80:7A:BF:99:88:77", deviceType: "Dynamic", vendor: "Raspberry Pi", hostname: "pi-hole.local", isAlive: true },
+        ]
+      };
+      startTransition(() => {
+        setState((current) => ({
+          ...current,
+          subnet: { status: "ready", data: mockSubnet },
+        }));
+      });
+      notify.success("Subnet scan completed", "Discovered 4 active devices in simulated browser environment.");
+      return;
+    }
+
+    startTransition(() => {
+      setState((current) => ({
+        ...current,
+        subnet: { status: "loading" },
+      }));
+    });
+
+    try {
+      const result = await scanSubnet();
+      startTransition(() => {
+        setState((current) => ({
+          ...current,
+          subnet: { status: "ready", data: result },
+        }));
+      });
+      notify.success("Subnet scan completed", `Discovered ${result.devices.length} active devices on subnet ${result.subnet}.`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to scan local subnet.";
+      startTransition(() => {
+        setState((current) => ({
+          ...current,
+          subnet: { status: "error", errorMessage: message },
+        }));
+      });
+      notify.error("Subnet scan failed", message);
+    }
+  });
+
+  const loadWifiNetworks = useEffectEvent(async () => {
+    if (!isDesktopRuntime) {
+      startTransition(() => {
+        setState((current) => ({
+          ...current,
+          wifiNetworks: { status: "loading" },
+          activeWifi: { status: "loading" },
+        }));
+      });
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      const mockWifi = [
+        {
+          ssid: "Orion-HighSpeed-5G",
+          authentication: "WPA2-Personal",
+          encryption: "CCMP",
+          signal: 95,
+          band: "5 GHz",
+          bssids: [{ bssid: "04:18:B6:AA:BB:CC", signal: 95, channel: 44, frequency: "5 GHz", vendor: "Ubiquiti" }]
+        },
+        {
+          ssid: "Firmandez-Home",
+          authentication: "WPA3-Personal",
+          encryption: "CCMP",
+          signal: 88,
+          band: "Mixed",
+          bssids: [
+            { bssid: "18:E8:29:11:22:33", signal: 82, channel: 6, frequency: "2.4 GHz", vendor: "Ubiquiti" },
+            { bssid: "18:E8:29:44:55:66", signal: 88, channel: 149, frequency: "5 GHz", vendor: "Ubiquiti" }
+          ]
+        },
+        {
+          ssid: "Starbucks-Free-WiFi",
+          authentication: "Open",
+          encryption: "None",
+          signal: 62,
+          band: "2.4 GHz",
+          bssids: [{ bssid: "50:2F:9B:AA:DD:EE", signal: 62, channel: 1, frequency: "2.4 GHz", vendor: "TP-Link" }]
+        }
+      ];
+      const mockActive = {
+        name: "Wi-Fi 0",
+        description: "Intel(R) Wi-Fi 6E AX211 160MHz",
+        mac: "AA:BB:CC:11:22:33",
+        state: "connected",
+        ssid: "Orion-HighSpeed-5G",
+        bssid: "04:18:B6:AA:BB:CC",
+        signal: 95,
+        channel: 44,
+        receiveRate: 1201,
+        transmitRate: 1201,
+        vendor: "Ubiquiti"
+      };
+      startTransition(() => {
+        setState((current) => ({
+          ...current,
+          wifiNetworks: { status: "ready", data: mockWifi },
+          activeWifi: { status: "ready", data: mockActive },
+        }));
+      });
+      notify.success("Wi-Fi scan finished", "Discovered 3 networks in simulated browser environment.");
+      return;
+    }
+
+    startTransition(() => {
+      setState((current) => ({
+        ...current,
+        wifiNetworks: { status: "loading" },
+        activeWifi: { status: "loading" },
+      }));
+    });
+
+    try {
+      const networks = await getWifiNetworks();
+      const active = await getActiveWifiInterface();
+      startTransition(() => {
+        setState((current) => ({
+          ...current,
+          wifiNetworks: { status: "ready", data: networks },
+          activeWifi: { status: "ready", data: active },
+        }));
+      });
+      notify.success("Wi-Fi scan finished", `Discovered ${networks.length} networks near your device.`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to retrieve Wi-Fi networks.";
+      startTransition(() => {
+        setState((current) => ({
+          ...current,
+          wifiNetworks: { status: "error", errorMessage: message },
+          activeWifi: { status: "error", errorMessage: message },
+        }));
+      });
+      notify.error("Wi-Fi scan failed", message);
+    }
+  });
+
+  const refreshActiveWifi = useEffectEvent(async () => {
+    if (!isDesktopRuntime) {
+      // In browser demo mode, fluctuate the mock active Wi-Fi signal slightly (e.g. +/- 3%)
+      // to make the real-time SVG chart look animated and alive.
+      setState((current) => {
+        if (current.activeWifi.status === "ready" && current.activeWifi.data) {
+          const currentSignal = current.activeWifi.data.signal;
+          const delta = Math.floor(Math.random() * 7) - 3;
+          const nextSignal = Math.max(30, Math.min(100, currentSignal + delta));
+          return {
+            ...current,
+            activeWifi: {
+              ...current.activeWifi,
+              data: {
+                ...current.activeWifi.data,
+                signal: nextSignal,
+              },
+            },
+          };
+        }
+        return current;
+      });
+      return;
+    }
+
+    try {
+      const active = await getActiveWifiInterface();
+      startTransition(() => {
+        setState((current) => ({
+          ...current,
+          activeWifi: { status: "ready", data: active },
+        }));
+      });
+    } catch {
+      // Silently fail to ensure background polling doesn't display intrusive errors
     }
   });
 
@@ -280,5 +481,8 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
     runPingHost: () => void runPingHost(),
     runPortCheck: () => void runPortCheck(),
     runHttpStatusCheck: () => void runHttpStatusCheck(),
+    runSubnetScan: () => void runSubnetScan(),
+    loadWifiNetworks: () => void loadWifiNetworks(),
+    refreshActiveWifi: () => void refreshActiveWifi(),
   };
 }

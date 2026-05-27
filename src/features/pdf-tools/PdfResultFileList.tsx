@@ -89,11 +89,11 @@ function ResultPathCard({
   const isSuccess = status === "success";
 
   return (
-    <div className="rounded-2xl border bg-(--surface-2)] p-3">
+    <div className="rounded-2xl border bg-(--surface-2) p-3">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="text-sm font-semibold text-(--text-primary)]">
+            <div className="text-sm font-semibold text-(--text-primary)">
               {truncateMiddle(title, 28, 18)}
             </div>
             <span
@@ -110,8 +110,8 @@ function ResultPathCard({
           </div>
 
           <div className="mt-3">
-            <div className="text-[11px] uppercase tracking-widest text-(--text-muted)]">Path</div>
-            <div className="mt-1 break-all font-mono text-[13px] text-(--text-primary)]">{description}</div>
+            <div className="text-[11px] uppercase tracking-widest text-(--text-muted)">Path</div>
+            <div className="mt-1 break-all font-mono text-[13px] text-(--text-primary)">{description}</div>
           </div>
         </div>
 

@@ -6,6 +6,15 @@ dist/
 src-tauri/target/
 .orion-build-temp/
 *.tsbuildinfo
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 
 # Downloaded PDFium archives; keep extracted runtime libraries tracked.
 src-tauri/resources/pdfium/**/*.tgz

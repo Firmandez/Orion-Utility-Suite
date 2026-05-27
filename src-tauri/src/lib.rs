@@ -22,7 +22,10 @@ pub fn run() {
             commands::pdf_to_images,
             commands::convert_images,
             commands::generate_hash,
-            commands::validate_text_input
+            commands::validate_text_input,
+            commands::scan_subnet,
+            commands::get_wifi_networks,
+            commands::get_active_wifi_interface
         ])
         .run(tauri::generate_context!())
         .expect("error while running Orion Utility Suite");

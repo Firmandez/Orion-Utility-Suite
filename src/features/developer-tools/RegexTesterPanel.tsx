@@ -105,24 +105,24 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
                 result.matches.map((match) => (
                   <div key={`${match.matchNumber}-${match.index}-${match.value}`} className="rounded-xl border bg-black/10 p-3">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="text-sm font-semibold text-(--text-primary)]">Match #{match.matchNumber}</div>
-                      <div className="rounded-full border px-3 py-1 text-[11px] uppercase tracking-widest text-(--text-muted)]">
+                      <div className="text-sm font-semibold text-(--text-primary)">Match #{match.matchNumber}</div>
+                      <div className="rounded-full border px-3 py-1 text-[11px] uppercase tracking-widest text-(--text-muted)">
                         Index {match.index}
                       </div>
                     </div>
-                    <div className="mt-2.5 break-all rounded-xl border bg-white/5 px-3 py-2.5 font-mono text-sm text-(--text-primary)]">
+                    <div className="mt-2.5 break-all rounded-xl border bg-white/5 px-3 py-2.5 font-mono text-sm text-(--text-primary)">
                       {match.value}
                     </div>
-                    <div className="mt-3 text-xs uppercase tracking-widest text-(--text-muted)]">Capture groups</div>
+                    <div className="mt-3 text-xs uppercase tracking-widest text-(--text-muted)">Capture groups</div>
                     <div className="mt-2 space-y-2">
                       {match.captureGroups.length > 0 ? (
                         match.captureGroups.map((group, index) => (
-                          <div key={`${match.matchNumber}-group-${index}`} className="rounded-xl border bg-white/5 px-3 py-2.5 font-mono text-sm text-(--text-secondary)]">
+                          <div key={`${match.matchNumber}-group-${index}`} className="rounded-xl border bg-white/5 px-3 py-2.5 font-mono text-sm text-(--text-secondary)">
                             Group {index + 1}: {group}
                           </div>
                         ))
                       ) : (
-                        <div className="rounded-xl border bg-white/5 px-3 py-2.5 text-sm text-(--text-secondary)]">
+                        <div className="rounded-xl border bg-white/5 px-3 py-2.5 text-sm text-(--text-secondary)">
                           No capture groups in this match.
                         </div>
                       )}
@@ -130,7 +130,7 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
                   </div>
                 ))
               ) : (
-                <div className="rounded-xl border bg-white/5 p-3 text-sm leading-5 text-(--text-secondary)]">
+                <div className="rounded-xl border bg-white/5 p-3 text-sm leading-5 text-(--text-secondary)">
                   Regex is valid, but no matches were found in the active sample text.
                 </div>
               )}
@@ -147,8 +147,8 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
 function MatchStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border bg-white/5 p-3">
-      <div className="text-xs uppercase tracking-widest text-(--text-muted)]">{label}</div>
-      <div className="mt-3 break-words text-sm font-semibold text-(--text-primary)]">{value}</div>
+      <div className="text-xs uppercase tracking-widest text-(--text-muted)">{label}</div>
+      <div className="mt-3 break-words text-sm font-semibold text-(--text-primary)">{value}</div>
     </div>
   );
 }
@@ -165,19 +165,19 @@ function ToolNotice({
   const Icon = tone === "success" ? CheckCircle2 : CircleAlert;
   const toneClassName =
     tone === "success"
-      ? "border-emerald-400/18 bg-emerald-500/10 text-(--text-secondary)]"
+      ? "border-emerald-400/18 bg-emerald-500/10 text-(--text-secondary)"
       : tone === "error"
         ? "border-rose-400/18 bg-rose-500/10 text-rose-100/90"
-        : "border-(--border-subtle)] bg-white/5 text-(--text-secondary)]";
+        : "border-(--border-subtle) bg-white/5 text-(--text-secondary)";
 
   return (
     <div className={`rounded-xl border p-3 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
-          className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-(--accent-strong)]"}`}
+          className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-(--accent-strong)"}`}
         />
         <div>
-          <div className="text-sm font-semibold text-(--text-primary)]">{title}</div>
+          <div className="text-sm font-semibold text-(--text-primary)">{title}</div>
           <div className="mt-1 text-sm leading-5">{description}</div>
         </div>
       </div>

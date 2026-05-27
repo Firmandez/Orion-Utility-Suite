@@ -115,7 +115,7 @@ export function TextUtilitiesWorkspace() {
 
                 return (
                   <div key={category}>
-                    <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-(--text-muted)]">
+                    <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-(--text-muted)">
                       <Icon className="size-3.5" />
                       {category}
                     </div>
@@ -131,8 +131,8 @@ export function TextUtilitiesWorkspace() {
                           className={cn(
                             "rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-widest transition",
                             operation.id === operationId
-                              ? "border-(--accent-soft)] bg-(--accent-surface)] text-(--accent-strong)]"
-                              : "border-(--border-subtle)] bg-white/5 text-(--text-secondary)] hover:border-(--accent-soft)] hover:text-(--text-primary)]",
+                              ? "border-(--accent-soft) bg-(--accent-surface) text-(--accent-strong)"
+                              : "border-(--border-subtle) bg-white/5 text-(--text-secondary) hover:border-(--accent-soft) hover:text-(--text-primary)",
                           )}
                         >
                           {operation.label}
@@ -180,7 +180,7 @@ export function TextUtilitiesWorkspace() {
                 <div className="flex items-start gap-3">
                   <FileJson2 className="mt-0.5 size-5 shrink-0 text-rose-300" />
                   <div>
-                    <div className="text-sm font-semibold text-(--text-primary)]">Transform failed</div>
+                    <div className="text-sm font-semibold text-(--text-primary)">Transform failed</div>
                     <div className="mt-1 text-sm leading-6 text-rose-100/90">{transformResult.errorMessage}</div>
                   </div>
                 </div>
@@ -190,8 +190,8 @@ export function TextUtilitiesWorkspace() {
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-300" />
                   <div>
-                    <div className="text-sm font-semibold text-(--text-primary)]">{activeOperation.label} ready</div>
-                    <div className="mt-1 text-sm leading-6 text-(--text-secondary)]">
+                    <div className="text-sm font-semibold text-(--text-primary)">{activeOperation.label} ready</div>
+                    <div className="mt-1 text-sm leading-6 text-(--text-secondary)">
                       Processed locally, ready to copy or reuse as new input.
                     </div>
                   </div>

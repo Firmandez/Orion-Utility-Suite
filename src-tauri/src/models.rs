@@ -201,3 +201,62 @@ pub struct PdfToolsProgressPayload {
     pub progress_percent: u8,
     pub status: String,
 }
+
+// Subnet Scan models
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DiscoveredDevice {
+    pub ip: String,
+    pub mac: String,
+    pub device_type: String, // "Dynamic" / "Static" / "Local"
+    pub vendor: String,      // OUI vendor lookup
+    pub hostname: String,    // Resolved hostname or "Unknown"
+    pub is_alive: bool,      // Verified active status
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SubnetScanResponse {
+    pub subnet: String,
+    pub local_ip: String,
+    pub devices: Vec<DiscoveredDevice>,
+}
+
+// Wi-Fi Analyzer models
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WifiNetworkBssid {
+    pub bssid: String,
+    pub signal: u8,
+    pub channel: u32,
+    pub frequency: String, // "2.4 GHz" or "5 GHz"
+    pub vendor: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WifiNetwork {
+    pub ssid: String,
+    pub authentication: String,
+    pub encryption: String,
+    pub signal: u8,
+    pub band: String, // "2.4 GHz" / "5 GHz" / "Mixed"
+    pub bssids: Vec<WifiNetworkBssid>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ActiveWifiInterface {
+    pub name: String,
+    pub description: String,
+    pub mac: String,
+    pub state: String,
+    pub ssid: String,
+    pub bssid: String,
+    pub signal: u8,
+    pub channel: u32,
+    pub receive_rate: u32,
+    pub transmit_rate: u32,
+    pub vendor: String,
+}
+

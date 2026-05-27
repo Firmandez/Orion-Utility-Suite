@@ -186,8 +186,8 @@ export function QRGeneratorWorkspace() {
                     className={cn(
                       "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-widest transition",
                       isActive
-                        ? "border-(--accent-soft)] bg-(--accent-surface)] text-(--accent-strong)]"
-                        : "border-(--border-subtle)] bg-white/5 text-(--text-secondary)] hover:border-(--accent-soft)] hover:text-(--text-primary)]",
+                        ? "border-(--accent-soft) bg-(--accent-surface) text-(--accent-strong)"
+                        : "border-(--border-subtle) bg-white/5 text-(--text-secondary) hover:border-(--accent-soft) hover:text-(--text-primary)",
                     )}
                   >
                     <Icon className="size-3.5" />
@@ -205,7 +205,7 @@ export function QRGeneratorWorkspace() {
           title="Style & Export"
           description="Customize colors, size, error correction, and center logo. Changes are reflected in the live preview."
           actions={
-            <div className="rounded-full border border-(--accent-soft)] bg-(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-widest text-(--accent-strong)]">
+            <div className="rounded-full border border-(--accent-soft) bg-(--accent-surface) px-3 py-1 text-[11px] uppercase tracking-widest text-(--accent-strong)">
               PNG + SVG
             </div>
           }
@@ -269,8 +269,8 @@ export function QRGeneratorWorkspace() {
 
               <div className="surface-panel-alt flex flex-col gap-4 p-5">
                 <div>
-                  <div className="text-sm font-semibold text-(--text-primary)]">Preview logo</div>
-                  <div className="mt-1 text-xs leading-6 text-(--text-muted)]">
+                  <div className="text-sm font-semibold text-(--text-primary)">Preview logo</div>
+                  <div className="mt-1 text-xs leading-6 text-(--text-muted)">
                    Use a simple logo with enough whitespace around it.
                   </div>
                 </div>
@@ -282,9 +282,9 @@ export function QRGeneratorWorkspace() {
                         <img src={logoPreviewUrl} alt={logoFiles[0].name} className="max-h-full max-w-full object-contain" />
                       </div>
                       <div className="min-w-0">
-                        <div className="truncate text-sm font-semibold text-(--text-primary)]">{logoFiles[0].name}</div>
-                        <div className="mt-1 text-xs text-(--text-muted)]">{formatFileSize(logoFiles[0].size)}</div>
-                        <div className="mt-2 text-xs text-(--accent-strong)]">Rendered at {form.logoSizePercent}% of QR area</div>
+                        <div className="truncate text-sm font-semibold text-(--text-primary)">{logoFiles[0].name}</div>
+                        <div className="mt-1 text-xs text-(--text-muted)">{formatFileSize(logoFiles[0].size)}</div>
+                        <div className="mt-2 text-xs text-(--accent-strong)">Rendered at {form.logoSizePercent}% of QR area</div>
                       </div>
                     </div>
                     <Button variant="outline" leadingIcon={Trash2} onClick={() => clearLogo()}>
@@ -324,8 +324,8 @@ export function QRGeneratorWorkspace() {
           <div className="space-y-4">
             <div className="surface-panel-alt relative overflow-hidden p-5">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-xs uppercase tracking-widest text-(--text-muted)]">Realtime canvas</div>
-                <div className="rounded-full border border-(--accent-soft)] bg-(--accent-surface)] px-3 py-1 text-[11px] uppercase tracking-widest text-(--accent-strong)]">
+                <div className="text-xs uppercase tracking-widest text-(--text-muted)">Realtime canvas</div>
+                <div className="rounded-full border border-(--accent-soft) bg-(--accent-surface) px-3 py-1 text-[11px] uppercase tracking-widest text-(--accent-strong)">
                   {form.size}px
                 </div>
               </div>
@@ -343,8 +343,8 @@ export function QRGeneratorWorkspace() {
                         <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-amber-500/12 text-amber-300">
                           <AlertTriangle className="size-6" />
                         </div>
-                        <div className="mt-4 text-lg font-semibold text-(--text-primary)]">Preview waiting for valid input</div>
-                        <p className="mt-2 text-sm leading-6 text-(--text-secondary)]">
+                        <div className="mt-4 text-lg font-semibold text-(--text-primary)">Preview waiting for valid input</div>
+                        <p className="mt-2 text-sm leading-6 text-(--text-secondary)">
                           Fix the highlighted fields so the QR can be generated and exported.
                         </p>
                       </div>
