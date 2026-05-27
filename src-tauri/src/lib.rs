@@ -25,7 +25,8 @@ pub fn run() {
             commands::validate_text_input,
             commands::scan_subnet,
             commands::get_wifi_networks,
-            commands::get_active_wifi_interface
+            commands::get_active_wifi_interface,
+            commands::open_external_url
         ])
         .run(tauri::generate_context!())
         .expect("error while running Orion Utility Suite");

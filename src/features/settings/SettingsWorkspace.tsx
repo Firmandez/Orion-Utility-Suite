@@ -1,13 +1,14 @@
 import {
+  AppWindow,
+  Cpu,
   ExternalLink,
   FolderSearch2,
   FolderX,
   Info,
-  Palette,
   RefreshCw,
+  Scale,
   Settings2,
-  Sparkles,
-  SunMoon,
+  Tag,
 } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { useOutletContext } from "react-router-dom";
@@ -20,6 +21,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { notify } from "@/components/ui/Toast";
 import { accentPalettes, githubProfileUrl } from "@/services/settings-store";
 import type { AppBootstrapState, ThemeMode } from "@/types/app";
+import { openExternalUrl } from "@/lib/tauri";
 
 const themeModeOptions = [
   { value: "system", label: "System" },
@@ -233,27 +235,40 @@ export function SettingsWorkspace() {
             <PageSection title="About" description="Information about Orion Utility Suite.">
               <div className="space-y-5">
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <AboutItem icon={Sparkles} label="App" value="Orion Utility Suite" />
-                  <AboutItem icon={SunMoon} label="Version" value={bootstrap.data.version} />
-                  <AboutItem icon={Palette} label="License" value="MIT License" />
-                  <AboutItem icon={Settings2} label="Platform" value={bootstrap.data.platformLabel} />
+                  <AboutItem icon={AppWindow} label="App" value="Orion Utility Suite" />
+                  <AboutItem icon={Tag} label="Version" value={bootstrap.data.version} />
+                  <AboutItem icon={Scale} label="License" value="MIT License" />
+                  <AboutItem icon={Cpu} label="Platform" value={bootstrap.data.platformLabel} />
                 </div>
 
                 <div className="flex flex-wrap gap-3">
                   <a
                     href={githubProfileUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-(--text-primary) transition hover:border-(--accent-soft) hover:bg-white/5"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isDesktopRuntime) {
+                        void openExternalUrl(githubProfileUrl);
+                      } else {
+                        window.open(githubProfileUrl, "_blank", "noopener,noreferrer");
+                      }
+                    }}
+                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-(--text-primary) transition hover:border-(--accent-soft) hover:bg-white/5 cursor-pointer"
                   >
                     <ExternalLink className="size-4" />
                     GitHub
                   </a>
                   <a
                     href="https://opensource.org/license/mit"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-(--text-primary) transition hover:border-(--accent-soft) hover:bg-white/5"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const url = "https://opensource.org/license/mit";
+                      if (isDesktopRuntime) {
+                        void openExternalUrl(url);
+                      } else {
+                        window.open(url, "_blank", "noopener,noreferrer");
+                      }
+                    }}
+                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-(--text-primary) transition hover:border-(--accent-soft) hover:bg-white/5 cursor-pointer"
                   >
                     <ExternalLink className="size-4" />
                     License

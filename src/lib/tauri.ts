@@ -103,3 +103,7 @@ export async function getActiveWifiInterface() {
   return invoke<ActiveWifiInterface | null>("get_active_wifi_interface");
 }
 
+export async function openExternalUrl(url: string) {
+  return invoke<void>("open_external_url", { url });
+}
+

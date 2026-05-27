@@ -137,6 +137,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     }
 
     const appWindow = getCurrentWindow();
+    let disposed = false;
     let debounceTimer: ReturnType<typeof setTimeout> | undefined;
     let unlistenResize: (() => void) | undefined;
     let unlistenMove: (() => void) | undefined;
@@ -156,16 +157,28 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     void appWindow.onResized(() => {
       scheduleSave();
     }).then((unlisten) => {
+      if (disposed) {
+        unlisten();
+        return;
+      }
+
       unlistenResize = unlisten;
     });
 
     void appWindow.onMoved(() => {
       scheduleSave();
     }).then((unlisten) => {
+      if (disposed) {
+        unlisten();
+        return;
+      }
+
       unlistenMove = unlisten;
     });
 
     return () => {
+      disposed = true;
+
       if (debounceTimer) {
         clearTimeout(debounceTimer);
       }

@@ -181,7 +181,13 @@ Orion saat ini sudah berjalan tanpa dependency eksternal berat untuk sebagian be
 - Di Windows, `npm run tauri build` dan script packaging terkait memakai wrapper lokal agar temporary build files diarahkan ke workspace `.orion-build-temp` saat diperlukan.
 
 ## Known Limitations
-
-- `PDF to Image` membutuhkan bundled PDFium yang cocok dengan OS/arsitektur target.
 - Beberapa workflow desktop memerlukan izin akses file/folder dari OS target.
 - Verifikasi build Rust di environment sandbox tertentu bisa gagal karena pembatasan write permission atau fetch dependency, walaupun project dapat tetap dibangun normal di mesin developer lokal.
+
+## Lisensi & Credit
+
+- **Lisensi Proyek**: Proyek ini dilisensikan di bawah lisensi **MIT**.
+- **Credit Library PDF**:
+  - **pdfium-render**: Binding Rust tingkat tinggi yang ramah (*idiomatic Rust wrapper*) dibuat oleh **ajrcarey** untuk menjembatani komunikasi ke engine PDFium. Library ini dilisensikan di bawah lisensi **MIT** dan dapat diakses di [GitHub pdfium-render](https://github.com/ajrcarey/pdfium-render).
+  - **Google PDFium**: Engine rendering C++ asli bawaan dari Google yang melakukan komputasi render dan konversi halaman *PDF to Image*. Google PDFium dilisensikan di bawah lisensi **BSD 3-Clause**. Hak cipta (c) milik Google LLC dan kontributor lainnya. Library resmi dapat diakses di [situs resmi PDFium](https://pdfium.googlesource.com/pdfium/).
+

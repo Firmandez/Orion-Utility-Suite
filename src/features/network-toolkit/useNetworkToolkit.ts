@@ -246,6 +246,7 @@ export function useNetworkToolkit(bootstrap: AppBootstrapState) {
           http: { status: "error", errorMessage: message },
         }));
       });
+      notify.error("HTTP status failed", message);
     }
   });
 

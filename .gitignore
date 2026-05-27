@@ -36,3 +36,6 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
+
+# Local guides & instructions
+TAURI_UPDATER_GUIDE.md

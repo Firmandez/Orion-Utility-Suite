@@ -364,6 +364,7 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
     }
 
     const window = getCurrentWindow();
+    let disposed = false;
     let unlistenDragDrop: (() => void) | undefined;
     let unlistenProgress: (() => void) | undefined;
 
@@ -390,6 +391,11 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
         appendPaths(event.payload.paths, "drop");
       }
     }).then((unlisten) => {
+      if (disposed) {
+        unlisten();
+        return;
+      }
+
       unlistenDragDrop = unlisten;
     });
 
@@ -409,10 +415,16 @@ export function usePdfTools(bootstrap: AppBootstrapState, defaultOutputFolder?: 
         }));
       });
     }).then((unlisten) => {
+      if (disposed) {
+        unlisten();
+        return;
+      }
+
       unlistenProgress = unlisten;
     });
 
     return () => {
+      disposed = true;
       unlistenDragDrop?.();
       unlistenProgress?.();
     };

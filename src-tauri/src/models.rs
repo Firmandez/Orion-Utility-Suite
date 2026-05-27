@@ -259,4 +259,3 @@ pub struct ActiveWifiInterface {
     pub transmit_rate: u32,
     pub vendor: String,
 }
-

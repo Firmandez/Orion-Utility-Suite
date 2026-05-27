@@ -162,6 +162,7 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
     }
 
     const window = getCurrentWindow();
+    let disposed = false;
     let unlistenDragDrop: (() => void) | undefined;
     let unlistenProgress: (() => void) | undefined;
 
@@ -192,6 +193,11 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
         }
       }
     }).then((unlisten) => {
+      if (disposed) {
+        unlisten();
+        return;
+      }
+
       unlistenDragDrop = unlisten;
     });
 
@@ -208,10 +214,16 @@ export function useHashChecker(bootstrap: AppBootstrapState) {
         }));
       });
     }).then((unlisten) => {
+      if (disposed) {
+        unlisten();
+        return;
+      }
+
       unlistenProgress = unlisten;
     });
 
     return () => {
+      disposed = true;
       unlistenDragDrop?.();
       unlistenProgress?.();
     };
