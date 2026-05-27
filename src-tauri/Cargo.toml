@@ -1,6 +1,6 @@
 [package]
 name = "orion-utility-suite"
-version = "0.4.7"
+version = "0.4.8"
 description = "Cross-platform offline-first desktop utility suite"
 authors = ["Firmandez"]
 license = "MIT"
