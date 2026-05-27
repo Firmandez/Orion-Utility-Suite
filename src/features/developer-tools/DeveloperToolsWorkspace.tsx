@@ -10,8 +10,8 @@ export function DeveloperToolsWorkspace() {
   useOutletContext<AppBootstrapState>();
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-2">
+    <div className="space-y-5">
+      <div className="grid items-start gap-5 xl:grid-cols-2">
         <UuidGeneratorPanel />
         <TimestampConverterPanel />
         <RegexTesterPanel className="xl:col-span-2" />
@@ -25,9 +25,9 @@ export function DeveloperToolsWorkspace() {
           { title: "JWT note", description: "The decoder only reads the header and payload. Signatures are not verified." },
           { title: "Color formats", description: "The color converter accepts HEX, RGB, and HSL with range validation for consistent results." },
         ].map((item) => (
-          <div key={item.title} className="surface-panel-alt p-4">
+          <div key={item.title} className="surface-panel-alt p-3">
             <div className="text-sm font-semibold text-[var(--text-primary)]">{item.title}</div>
-            <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</div>
+            <div className="mt-1.5 text-sm leading-5 text-[var(--text-secondary)]">{item.description}</div>
           </div>
         ))}
       </div>

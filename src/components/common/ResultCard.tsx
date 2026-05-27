@@ -12,23 +12,23 @@ interface ResultCardProps {
 
 export function ResultCard({ title, description, rows, footer, className }: ResultCardProps) {
   return (
-    <div className={cn("surface-panel-alt p-5", className)}>
+    <div className={cn("surface-panel-alt p-4", className)}>
       <div>
-        <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-        {description ? <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</p> : null}
+        <div className="text-[13px] font-semibold text-[var(--text-primary)]">{title}</div>
+        {description ? <p className="mt-1.5 text-sm leading-5 text-[var(--text-secondary)]">{description}</p> : null}
       </div>
-      <div className="mt-5 space-y-3">
+      <div className="mt-4 space-y-2">
         {rows.map((row) => (
           <div
             key={`${row.label}-${row.value}`}
-            className="flex items-start justify-between gap-4 rounded-2xl border bg-black/10 px-4 py-3"
+            className="flex flex-col gap-1 rounded-xl border bg-black/10 px-3 py-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
           >
-            <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{row.label}</div>
-            <div className={cn("text-right text-sm text-[var(--text-primary)]", row.mono && "font-mono")}>{row.value}</div>
+            <div className="shrink-0 text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)]">{row.label}</div>
+            <div className={cn("min-w-0 break-words text-sm text-[var(--text-primary)] sm:text-right", row.mono && "font-mono text-[13px]")}>{row.value}</div>
           </div>
         ))}
       </div>
-      {footer ? <div className="mt-5">{footer}</div> : null}
+      {footer ? <div className="mt-4">{footer}</div> : null}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export function ValidationPanel({ errors, warnings }: { errors: string[]; warnings: string[] }) {
   if (errors.length === 0 && warnings.length === 0) {
     return (
-      <div className="rounded-3xl border border-emerald-400/18 bg-emerald-500/10 p-4">
+      <div className="rounded-2xl border border-emerald-400/18 bg-emerald-500/10 p-3">
         <div className="flex items-start gap-3">
           <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-300" />
           <div>
@@ -21,7 +21,7 @@ export function ValidationPanel({ errors, warnings }: { errors: string[]; warnin
   return (
     <div className="grid gap-3">
       {errors.map((error) => (
-        <div key={error} className="rounded-2xl border border-rose-400/18 bg-rose-500/10 p-4 text-sm text-rose-100">
+        <div key={error} className="rounded-xl border border-rose-400/18 bg-rose-500/10 p-3 text-sm text-rose-100">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 size-4 shrink-0 text-rose-300" />
             <span className="leading-6">{error}</span>
@@ -29,7 +29,7 @@ export function ValidationPanel({ errors, warnings }: { errors: string[]; warnin
         </div>
       ))}
       {warnings.map((warning) => (
-        <div key={warning} className="rounded-2xl border border-amber-400/18 bg-amber-500/10 p-4 text-sm text-amber-100">
+        <div key={warning} className="rounded-xl border border-amber-400/18 bg-amber-500/10 p-3 text-sm text-amber-100">
           <div className="flex items-start gap-3">
             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-amber-300" />
             <span className="leading-6">{warning}</span>
@@ -62,7 +62,7 @@ export function ColorSwatchCard({
       </div>
       <div className="mt-4 flex items-center gap-4">
         <label
-          className="flex size-14 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border bg-[var(--surface-3)]"
+          className="flex size-12 cursor-pointer items-center justify-center overflow-hidden rounded-xl border bg-[var(--surface-3)]"
           style={{ backgroundColor: value }}
         >
           <input type="color" value={value} onChange={(event) => onChange(event.target.value.toUpperCase())} className="sr-only" />
@@ -150,9 +150,9 @@ export function ReadinessItem({
   };
 
   return (
-    <div className="rounded-2xl border bg-black/10 p-4">
+    <div className="rounded-xl border bg-black/10 p-3">
       <div className="flex items-start gap-3">
-        <div className={cn("flex size-10 items-center justify-center rounded-2xl", toneClassMap[tone])}>
+        <div className={cn("flex size-9 items-center justify-center rounded-xl", toneClassMap[tone])}>
           <Icon className="size-5" />
         </div>
         <div>

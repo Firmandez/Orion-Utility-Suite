@@ -93,8 +93,8 @@ export function TextUtilitiesWorkspace() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+    <div className="space-y-5">
+      <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Input Panel"
           description="Paste text or JSON, then choose an operation to run."
@@ -150,7 +150,7 @@ export function TextUtilitiesWorkspace() {
               placeholder="Paste text, JSON, Base64, query string, or sentences..."
               value={inputValue}
               onChange={(event) => setInputValue(event.target.value)}
-              className="min-h-[420px]"
+              className="min-h-[340px]"
             />
 
             <div className="flex flex-wrap gap-3">
@@ -176,7 +176,7 @@ export function TextUtilitiesWorkspace() {
         >
           <div className="space-y-5">
             {transformResult.errorMessage ? (
-              <div className="rounded-3xl border border-rose-400/18 bg-rose-500/10 p-4">
+              <div className="rounded-2xl border border-rose-400/18 bg-rose-500/10 p-3">
                 <div className="flex items-start gap-3">
                   <FileJson2 className="mt-0.5 size-5 shrink-0 text-rose-300" />
                   <div>
@@ -186,7 +186,7 @@ export function TextUtilitiesWorkspace() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-3xl border border-emerald-400/18 bg-emerald-500/10 p-4">
+              <div className="rounded-2xl border border-emerald-400/18 bg-emerald-500/10 p-3">
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-300" />
                   <div>
@@ -208,7 +208,7 @@ export function TextUtilitiesWorkspace() {
                   : transformResult.output || "No results yet. Start by filling the input panel or choosing another operation."
               }
               readOnly
-              className="min-h-[420px] font-mono text-[13px]"
+              className="min-h-[340px] font-mono text-[13px]"
             />
           </div>
         </PageSection>

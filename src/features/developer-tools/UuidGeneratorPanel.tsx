@@ -95,23 +95,23 @@ export function UuidGeneratorPanel({ className }: UuidGeneratorPanelProps) {
       }
     >
       {uuidResult.errorMessage ? (
-        <div className="rounded-2xl border border-rose-400/18 bg-rose-500/10 p-4 text-sm leading-6 text-rose-100/90">
+        <div className="rounded-xl border border-rose-400/18 bg-rose-500/10 p-3 text-sm leading-5 text-rose-100/90">
           {uuidResult.errorMessage}
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="rounded-2xl border bg-black/10 p-4">
+          <div className="rounded-xl border bg-black/10 p-3">
             <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Active UUID</div>
             <div className="mt-4 break-all font-mono text-lg text-[var(--text-primary)]">
               {uuidResult.value?.value ?? "No UUID has been generated yet."}
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[20px] border bg-white/5 p-4">
+            <div className="rounded-xl border bg-white/5 p-3">
               <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Version</div>
               <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">UUID v4</div>
             </div>
-            <div className="rounded-[20px] border bg-white/5 p-4">
+            <div className="rounded-xl border bg-white/5 p-3">
               <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Source</div>
               <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">
                 {uuidResult.value?.source === "randomUUID" ? "crypto.randomUUID()" : uuidResult.value?.source === "getRandomValues" ? "crypto.getRandomValues()" : "Unavailable"}

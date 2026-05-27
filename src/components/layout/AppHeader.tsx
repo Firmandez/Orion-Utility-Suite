@@ -21,16 +21,16 @@ export function AppHeader({ onOpenSidebar }: AppHeaderProps) {
     .find(Boolean);
 
   return (
-    <header className="border-b border-[var(--border-subtle)] bg-[var(--surface-1)] px-4 py-4 backdrop-blur-2xl sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+    <header className="border-b border-[var(--border-subtle)] bg-[var(--surface-1)] px-4 py-3 backdrop-blur-2xl sm:px-5 lg:px-6">
+      <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex items-start gap-3">
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={onOpenSidebar} aria-label="Open sidebar">
             <Menu className="size-4" />
           </Button>
-          <h1 className="text-2xl font-semibold text-[var(--text-primary)]">{currentHandle?.title ?? "Orion Utility Suite"}</h1>
+          <h1 className="text-xl font-semibold text-[var(--text-primary)]">{currentHandle?.title ?? "Orion Utility Suite"}</h1>
         </div>
 
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center">
           <div className="w-full min-w-0 lg:w-[320px]">
             <Input
               value={searchQuery}

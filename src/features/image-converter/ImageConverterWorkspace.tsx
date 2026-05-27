@@ -72,8 +72,8 @@ export function ImageConverterWorkspace() {
       ];
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+    <div className="space-y-5">
+      <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Image Queue"
           description="Add images from your device. You can add files incrementally."

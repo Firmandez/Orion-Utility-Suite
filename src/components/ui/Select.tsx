@@ -17,10 +17,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   const selectId = id ?? fallbackId;
 
   return (
-    <label className="block space-y-2" htmlFor={selectId}>
+    <label className="block space-y-1.5" htmlFor={selectId}>
       {label ? (
         <div>
-          <div className="text-sm font-semibold text-[var(--text-primary)]">{label}</div>
+          <div className="text-[13px] font-semibold text-[var(--text-primary)]">{label}</div>
           {hint ? <div className="mt-1 text-xs text-[var(--text-muted)]">{hint}</div> : null}
         </div>
       ) : null}
@@ -29,7 +29,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           id={selectId}
           ref={ref}
           className={cn(
-            "h-11 w-full appearance-none rounded-xl border bg-[var(--surface-2)] px-4 pr-10 text-sm text-[var(--text-primary)] outline-none transition focus:border-[var(--accent-soft)] focus:ring-4 focus:ring-[var(--accent-surface)]",
+            "h-10 w-full appearance-none rounded-lg border bg-[var(--surface-2)] px-3.5 pr-10 text-sm text-[var(--text-primary)] outline-none transition focus:border-[var(--accent-soft)] focus:ring-4 focus:ring-[var(--accent-surface)]",
             className,
           )}
           {...props}

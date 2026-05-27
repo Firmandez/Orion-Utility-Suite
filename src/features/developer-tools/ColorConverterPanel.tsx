@@ -72,7 +72,7 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
             />
             <div className="grid gap-4 xl:grid-cols-[220px_1fr]">
               <div
-                className="min-h-[220px] rounded-3xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                className="min-h-[180px] rounded-2xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                 style={{
                   background: `linear-gradient(160deg, ${result.swatch} 0%, rgba(255,255,255,0.12) 100%)`,
                 }}
@@ -95,7 +95,7 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
 
 function ColorMetric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[20px] border bg-black/10 p-4">
+    <div className="rounded-xl border bg-black/10 p-3">
       <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</div>
       <div className="mt-3 break-words font-mono text-sm text-[var(--text-primary)]">{value}</div>
     </div>
@@ -120,14 +120,14 @@ function ColorNotice({
         : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)]";
 
   return (
-    <div className={`rounded-2xl border p-4 ${toneClassName}`}>
+    <div className={`rounded-xl border p-3 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-[var(--accent-strong)]"}`}
         />
         <div>
           <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-          <div className="mt-1 text-sm leading-6">{description}</div>
+          <div className="mt-1 text-sm leading-5">{description}</div>
         </div>
       </div>
     </div>

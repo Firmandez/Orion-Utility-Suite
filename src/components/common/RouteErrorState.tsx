@@ -32,9 +32,9 @@ export function RouteErrorState() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-8">
-      <div className="surface-panel w-full max-w-2xl p-6 sm:p-8">
-        <div className="flex size-16 items-center justify-center rounded-3xl bg-rose-500/10 text-rose-300">
-          <AlertTriangle className="size-7" />
+      <div className="surface-panel w-full max-w-2xl p-5 sm:p-6">
+        <div className="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-300">
+          <AlertTriangle className="size-5" />
         </div>
         <div className="mt-6">
           <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Page Error</div>

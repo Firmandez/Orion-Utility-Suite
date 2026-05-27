@@ -36,7 +36,7 @@ export function HashDigestCard({ label, value, compareStatus, onCopy }: HashDige
           Copy
         </Button>
       </div>
-      <div className="mt-5 rounded-2xl border bg-black/10 p-4">
+      <div className="mt-4 rounded-xl border bg-black/10 p-3">
         <div className="break-all font-mono text-[13px] leading-7 text-[var(--text-primary)]">
           {value || "No digest yet. Choose a file, then run the hash generator."}
         </div>

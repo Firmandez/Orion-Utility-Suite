@@ -103,26 +103,26 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
             <div className="space-y-3">
               {result.matches.length > 0 ? (
                 result.matches.map((match) => (
-                  <div key={`${match.matchNumber}-${match.index}-${match.value}`} className="rounded-2xl border bg-black/10 p-4">
+                  <div key={`${match.matchNumber}-${match.index}-${match.value}`} className="rounded-xl border bg-black/10 p-3">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="text-sm font-semibold text-[var(--text-primary)]">Match #{match.matchNumber}</div>
                       <div className="rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.1em] text-[var(--text-muted)]">
                         Index {match.index}
                       </div>
                     </div>
-                    <div className="mt-3 break-all rounded-2xl border bg-white/5 px-4 py-3 font-mono text-sm text-[var(--text-primary)]">
+                    <div className="mt-2.5 break-all rounded-xl border bg-white/5 px-3 py-2.5 font-mono text-sm text-[var(--text-primary)]">
                       {match.value}
                     </div>
                     <div className="mt-3 text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">Capture groups</div>
                     <div className="mt-2 space-y-2">
                       {match.captureGroups.length > 0 ? (
                         match.captureGroups.map((group, index) => (
-                          <div key={`${match.matchNumber}-group-${index}`} className="rounded-2xl border bg-white/5 px-4 py-3 font-mono text-sm text-[var(--text-secondary)]">
+                          <div key={`${match.matchNumber}-group-${index}`} className="rounded-xl border bg-white/5 px-3 py-2.5 font-mono text-sm text-[var(--text-secondary)]">
                             Group {index + 1}: {group}
                           </div>
                         ))
                       ) : (
-                        <div className="rounded-2xl border bg-white/5 px-4 py-3 text-sm text-[var(--text-secondary)]">
+                        <div className="rounded-xl border bg-white/5 px-3 py-2.5 text-sm text-[var(--text-secondary)]">
                           No capture groups in this match.
                         </div>
                       )}
@@ -130,7 +130,7 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
                   </div>
                 ))
               ) : (
-                <div className="rounded-2xl border bg-white/5 p-4 text-sm leading-6 text-[var(--text-secondary)]">
+                <div className="rounded-xl border bg-white/5 p-3 text-sm leading-5 text-[var(--text-secondary)]">
                   Regex is valid, but no matches were found in the active sample text.
                 </div>
               )}
@@ -146,7 +146,7 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
 
 function MatchStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[20px] border bg-white/5 p-4">
+    <div className="rounded-xl border bg-white/5 p-3">
       <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</div>
       <div className="mt-3 break-words text-sm font-semibold text-[var(--text-primary)]">{value}</div>
     </div>
@@ -171,14 +171,14 @@ function ToolNotice({
         : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)]";
 
   return (
-    <div className={`rounded-2xl border p-4 ${toneClassName}`}>
+    <div className={`rounded-xl border p-3 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-[var(--accent-strong)]"}`}
         />
         <div>
           <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-          <div className="mt-1 text-sm leading-6">{description}</div>
+          <div className="mt-1 text-sm leading-5">{description}</div>
         </div>
       </div>
     </div>

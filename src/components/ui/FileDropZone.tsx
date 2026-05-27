@@ -28,24 +28,24 @@ export function FileDropZone({
   });
 
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn("space-y-2.5", className)}>
       {label ? (
         <div>
-          <div className="text-sm font-semibold text-[var(--text-primary)]">{label}</div>
+          <div className="text-[13px] font-semibold text-[var(--text-primary)]">{label}</div>
           {hint ? <div className="mt-1 text-xs text-[var(--text-muted)]">{hint}</div> : null}
         </div>
       ) : null}
       <div
         {...getRootProps()}
         className={cn(
-          "group rounded-3xl border border-dashed bg-[var(--surface-2)] p-5 text-center transition outline-none",
+          "group rounded-2xl border border-dashed bg-[var(--surface-2)] p-4 text-center transition outline-none",
           isDragActive ? "border-[var(--accent-soft)] bg-[var(--accent-surface)]" : "hover:border-[var(--accent-soft)] hover:bg-white/5",
         )}
       >
         <input {...getInputProps()} />
-        <div className="mx-auto flex max-w-sm flex-col items-center gap-3">
-          <div className="flex size-14 items-center justify-center rounded-2xl border border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]">
-            {isDragActive ? <Upload className="size-6" /> : <FolderOpen className="size-6" />}
+        <div className="mx-auto flex max-w-sm flex-col items-center gap-2.5">
+          <div className="flex size-12 items-center justify-center rounded-xl border border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]">
+            {isDragActive ? <Upload className="size-5" /> : <FolderOpen className="size-5" />}
           </div>
           <div>
             <div className="text-sm font-semibold text-[var(--text-primary)]">
@@ -62,7 +62,7 @@ export function FileDropZone({
           {files.map((file) => (
             <div
               key={`${file.name}-${file.size}-${file.lastModified}`}
-              className="flex items-center justify-between gap-3 rounded-2xl border bg-[var(--surface-2)] px-4 py-3"
+              className="flex items-center justify-between gap-3 rounded-xl border bg-[var(--surface-2)] px-3 py-2.5"
             >
               <div className="min-w-0">
                 <div className="truncate text-sm font-medium text-[var(--text-primary)]">{truncateMiddle(file.name)}</div>

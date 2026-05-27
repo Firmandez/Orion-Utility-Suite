@@ -14,10 +14,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
   const textAreaId = id ?? fallbackId;
 
   return (
-    <label className="block space-y-2" htmlFor={textAreaId}>
+    <label className="block space-y-1.5" htmlFor={textAreaId}>
       {label ? (
         <div>
-          <div className="text-sm font-semibold text-[var(--text-primary)]">{label}</div>
+          <div className="text-[13px] font-semibold text-[var(--text-primary)]">{label}</div>
           {hint ? <div className="mt-1 text-xs text-[var(--text-muted)]">{hint}</div> : null}
         </div>
       ) : null}
@@ -25,7 +25,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
         id={textAreaId}
         ref={ref}
         className={cn(
-          "min-h-[136px] w-full rounded-2xl border bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--accent-soft)] focus:ring-4 focus:ring-[var(--accent-surface)]",
+          "min-h-[112px] w-full rounded-lg border bg-[var(--surface-2)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--accent-soft)] focus:ring-4 focus:ring-[var(--accent-surface)]",
           className,
         )}
         {...props}

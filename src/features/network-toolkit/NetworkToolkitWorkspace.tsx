@@ -60,8 +60,8 @@ export function NetworkToolkitWorkspace() {
   } = useNetworkToolkit(bootstrap);
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+    <div className="space-y-5">
+      <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Local IP"
           description="Shows your device's local IP, subnet, gateway, DNS servers, and IP assignment mode."
@@ -124,7 +124,7 @@ export function NetworkToolkitWorkspace() {
             </Button>
           }
         >
-          <div className="space-y-5">
+          <div className="space-y-4">
             <Input
               label="Domain or host"
               hint="Example: example.com, openai.com, localhost, or an IP address."
@@ -144,7 +144,7 @@ export function NetworkToolkitWorkspace() {
                 footer={
                   <div className="space-y-2">
                     {dns.data.addresses.map((address) => (
-                      <div key={address} className="rounded-2xl border bg-black/10 px-4 py-3 font-mono text-sm text-[var(--text-primary)]">
+                      <div key={address} className="rounded-xl border bg-black/10 px-3 py-2.5 font-mono text-sm text-[var(--text-primary)]">
                         {address}
                       </div>
                     ))}
@@ -168,7 +168,7 @@ export function NetworkToolkitWorkspace() {
         </PageSection>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+      <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Ping Host"
           description="Check if a host or IP is reachable."
@@ -184,7 +184,7 @@ export function NetworkToolkitWorkspace() {
             </Button>
           }
         >
-          <div className="space-y-5">
+          <div className="space-y-4">
             <Input
               label="Host"
               hint="Example: example.com, 1.1.1.1, localhost."
@@ -239,7 +239,7 @@ export function NetworkToolkitWorkspace() {
             </Button>
           }
         >
-          <div className="space-y-5">
+          <div className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-[1fr_140px]">
               <Input
                 label="Host"
@@ -295,8 +295,8 @@ export function NetworkToolkitWorkspace() {
           </Button>
         }
       >
-        <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <div className="space-y-5">
+        <div className="grid items-start gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+          <div className="space-y-4">
             <Input
               label="URL"
               hint="Example: https://example.com or just example.com for auto-https."
@@ -335,7 +335,7 @@ export function NetworkToolkitWorkspace() {
 
 function SummaryCard({ summary }: { summary: string }) {
   return (
-    <div className="rounded-2xl border bg-black/10 p-4 text-sm leading-6 text-[var(--text-secondary)]">
+    <div className="rounded-xl border bg-black/10 p-3 text-sm leading-5 text-[var(--text-secondary)]">
       {summary}
     </div>
   );

@@ -107,9 +107,9 @@ export function ToolWorkspace({
   };
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+    <div className="grid items-start gap-5 xl:grid-cols-[1.2fr_0.8fr]">
       <PageSection title={feature.title} description={note}>
-        <div className="space-y-5">
+        <div className="space-y-4">
           <TextArea
             label={inputLabel}
             hint="Use this field for text, file locations, or any input this tool needs."
@@ -149,7 +149,7 @@ export function ToolWorkspace({
         </div>
       </PageSection>
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         <ResultCard
           title="Summary"
           description="Quick information about the current tool."

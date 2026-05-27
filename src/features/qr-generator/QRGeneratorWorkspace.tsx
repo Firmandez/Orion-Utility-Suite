@@ -165,8 +165,8 @@ export function QRGeneratorWorkspace() {
   };
 
   return (
-    <div className="grid gap-6 2xl:grid-cols-[1.12fr_0.88fr]">
-      <div className="space-y-6">
+    <div className="grid items-start gap-5 2xl:grid-cols-[1.12fr_0.88fr]">
+      <div className="space-y-5">
         <PageSection
           title="QR Content"
           description="Choose a QR type and fill in the required fields. Preview updates automatically."
@@ -277,8 +277,8 @@ export function QRGeneratorWorkspace() {
 
                 {logoPreviewUrl && logoFiles[0] ? (
                   <div className="space-y-4">
-                    <div className="flex items-center gap-4 rounded-2xl border bg-black/10 p-4">
-                      <div className="flex size-16 items-center justify-center overflow-hidden rounded-2xl border bg-white">
+                    <div className="flex items-center gap-3 rounded-xl border bg-black/10 p-3">
+                      <div className="flex size-12 items-center justify-center overflow-hidden rounded-xl border bg-white">
                         <img src={logoPreviewUrl} alt={logoFiles[0].name} className="max-h-full max-w-full object-contain" />
                       </div>
                       <div className="min-w-0">
@@ -316,7 +316,7 @@ export function QRGeneratorWorkspace() {
         </PageSection>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         <PageSection
           title="QR Preview"
           description="Preview reflects content, colors, size, and logo settings."
@@ -332,15 +332,15 @@ export function QRGeneratorWorkspace() {
               <div className="mt-5 flex justify-center">
                 <div
                   className={cn(
-                    "relative flex min-h-[380px] w-full items-center justify-center rounded-3xl border bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(235,245,255,0.92))] p-6",
+                    "relative flex min-h-[320px] w-full items-center justify-center rounded-2xl border bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(235,245,255,0.92))] p-4",
                     qrBuild.errors.length > 0 && "opacity-65",
                   )}
                 >
                   <div ref={containerRef} className="flex items-center justify-center" />
                   {qrBuild.errors.length > 0 ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-[rgba(4,10,18,0.42)] p-6 backdrop-blur-[2px]">
-                      <div className="max-w-sm rounded-3xl border border-amber-300/20 bg-[rgba(11,20,34,0.92)] p-5 text-center">
-                        <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-amber-500/12 text-amber-300">
+                    <div className="absolute inset-0 flex items-center justify-center bg-[rgba(4,10,18,0.42)] p-4 backdrop-blur-[2px]">
+                      <div className="max-w-sm rounded-2xl border border-amber-300/20 bg-[rgba(11,20,34,0.92)] p-4 text-center">
+                        <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-amber-500/12 text-amber-300">
                           <AlertTriangle className="size-6" />
                         </div>
                         <div className="mt-4 text-lg font-semibold text-[var(--text-primary)]">Preview waiting for valid input</div>

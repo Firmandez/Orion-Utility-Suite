@@ -83,7 +83,7 @@ export function DashboardOverview() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap gap-2">
           {dashboardFilters.map((filter) => (
@@ -95,7 +95,7 @@ export function DashboardOverview() {
                 startTransition(() => setActiveFilter(filter));
               }}
               className={cn(
-                "rounded-full border px-4 py-2 text-xs font-semibold tracking-wide transition",
+                "rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wide transition",
                 activeFilter === filter
                   ? "border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]"
                   : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)] hover:border-[var(--accent-soft)] hover:text-[var(--text-primary)]",
@@ -111,7 +111,7 @@ export function DashboardOverview() {
       </div>
 
       {filteredFeatures.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {filteredFeatures.map((feature) => (
             <FeatureCard key={feature.id} feature={feature} />
           ))}
@@ -156,10 +156,10 @@ export function DashboardOverview() {
               <Link
                 key={action.to}
                 to={action.to}
-                className="surface-panel-alt flex items-center justify-between gap-4 p-4 hover:border-[var(--accent-soft)]"
+                className="surface-panel-alt flex items-center justify-between gap-3 p-3 hover:border-[var(--accent-soft)]"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-[var(--accent-soft)] bg-[var(--accent-surface)] text-[var(--accent-strong)]">
                     <Icon className="size-4" />
                   </div>
                   <div className="min-w-0">

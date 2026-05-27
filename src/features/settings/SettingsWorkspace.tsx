@@ -83,14 +83,14 @@ export function SettingsWorkspace() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {settingsState.status === "loading" ? (
         <PageSection title="Loading Settings" description="Just a moment, settings are loading.">
           <div className="grid gap-4 md:grid-cols-3">
             {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="surface-panel-alt p-5">
+              <div key={index} className="surface-panel-alt p-4">
                 <div className="h-3 w-24 animate-pulse rounded-full bg-white/10" />
-                <div className="mt-4 h-10 w-full animate-pulse rounded-2xl bg-white/8" />
+                <div className="mt-3 h-9 w-full animate-pulse rounded-xl bg-white/8" />
                 <div className="mt-3 h-3 w-3/4 animate-pulse rounded-full bg-white/8" />
               </div>
             ))}
@@ -99,13 +99,13 @@ export function SettingsWorkspace() {
       ) : (
         <>
           {settingsState.errorMessage ? (
-            <div className="rounded-3xl border border-amber-400/18 bg-amber-500/10 p-4 sm:p-5">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="rounded-2xl border border-amber-400/18 bg-amber-500/10 p-3 sm:p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-3">
                   <Info className="mt-0.5 size-5 shrink-0 text-amber-300" />
                   <div>
                     <div className="text-sm font-semibold text-[var(--text-primary)]">Settings recovered</div>
-                    <div className="mt-1 text-sm leading-6 text-amber-100/85">{settingsState.errorMessage}</div>
+                    <div className="mt-1 text-sm leading-5 text-amber-100/85">{settingsState.errorMessage}</div>
                   </div>
                 </div>
                 <Button variant="outline" size="sm" leadingIcon={RefreshCw} onClick={() => void reloadSettings()}>
@@ -115,9 +115,9 @@ export function SettingsWorkspace() {
             </div>
           ) : null}
 
-          <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+          <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
             <PageSection title="Appearance" description="Choose Orion's theme and accent color.">
-              <div className="space-y-5">
+              <div className="space-y-4">
                 <Select
                   label="Theme"
                   hint="System follows your device settings. Dark and Light can be set manually."
@@ -139,7 +139,7 @@ export function SettingsWorkspace() {
                         key={palette.id}
                         type="button"
                         onClick={() => void handleAccentChange(palette.id)}
-                        className={`rounded-2xl border p-4 text-left transition ${
+                        className={`rounded-xl border p-3 text-left transition ${
                           accentColor === palette.id
                             ? "border-[var(--accent-soft)] bg-[var(--accent-surface)]"
                             : "border-[var(--border-subtle)] bg-white/5 hover:border-[var(--accent-soft)] hover:bg-white/8"
@@ -147,7 +147,7 @@ export function SettingsWorkspace() {
                       >
                         <div className="flex items-center gap-3">
                           <div
-                            className="size-11 rounded-2xl border"
+                            className="size-9 rounded-lg border"
                             style={{
                               background: `linear-gradient(145deg, ${palette.accent}, ${palette.accentStrong})`,
                               borderColor: palette.accentSoft,
@@ -186,7 +186,7 @@ export function SettingsWorkspace() {
                 </div>
               }
             >
-              <div className="space-y-5">
+              <div className="space-y-4">
                 <Input
                   label="Default output folder"
                   hint="If empty, Orion will ask for a destination when you run an export."
@@ -198,7 +198,7 @@ export function SettingsWorkspace() {
             </PageSection>
           </div>
 
-          <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+          <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
             <PageSection
               title="Application"
               description="Configure basic Orion behavior."
@@ -244,7 +244,7 @@ export function SettingsWorkspace() {
                     href={githubProfileUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--accent-soft)] hover:bg-white/5"
+                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--accent-soft)] hover:bg-white/5"
                   >
                     <ExternalLink className="size-4" />
                     GitHub
@@ -253,7 +253,7 @@ export function SettingsWorkspace() {
                     href="https://opensource.org/license/mit"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--accent-soft)] hover:bg-white/5"
+                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-[var(--text-primary)] transition hover:border-[var(--accent-soft)] hover:bg-white/5"
                   >
                     <ExternalLink className="size-4" />
                     License
@@ -278,13 +278,13 @@ function AboutItem({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border bg-black/10 p-4">
+    <div className="rounded-xl border bg-black/10 p-3">
       <div className="flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-2xl border bg-[var(--accent-surface)] text-[var(--accent-strong)]">
+        <div className="flex size-9 items-center justify-center rounded-lg border bg-[var(--accent-surface)] text-[var(--accent-strong)]">
           <Icon className="size-4" />
         </div>
         <div>
-          <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</div>
+          <div className="text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)]">{label}</div>
           <div className="mt-1 text-sm font-semibold text-[var(--text-primary)]">{value}</div>
         </div>
       </div>

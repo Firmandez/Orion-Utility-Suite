@@ -94,7 +94,7 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
 
 function StatPill({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[20px] border bg-white/5 p-4">
+    <div className="rounded-xl border bg-white/5 p-3">
       <div className="text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</div>
       <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">{value}</div>
     </div>
@@ -119,14 +119,14 @@ function JwtNotice({
         : "border-[var(--border-subtle)] bg-white/5 text-[var(--text-secondary)]";
 
   return (
-    <div className={`rounded-2xl border p-4 ${toneClassName}`}>
+    <div className={`rounded-xl border p-3 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-[var(--accent-strong)]"}`}
         />
         <div>
           <div className="text-sm font-semibold text-[var(--text-primary)]">{title}</div>
-          <div className="mt-1 text-sm leading-6">{description}</div>
+          <div className="mt-1 text-sm leading-5">{description}</div>
         </div>
       </div>
     </div>

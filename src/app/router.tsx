@@ -22,10 +22,10 @@ function withSuspense(node: ReactNode) {
   return (
     <Suspense
       fallback={
-        <div className="surface-panel p-6">
-          <div className="text-sm uppercase tracking-[0.1em] text-[var(--text-muted)]">Loading module</div>
-          <div className="mt-3 text-xl font-semibold text-[var(--text-primary)]">Preparing Orion...</div>
-          <div className="mt-2 text-sm text-[var(--text-secondary)]">Just a moment, the page is loading.</div>
+        <div className="surface-panel p-5">
+          <div className="text-xs uppercase tracking-[0.08em] text-[var(--text-muted)]">Loading module</div>
+          <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">Preparing Orion...</div>
+          <div className="mt-1.5 text-sm text-[var(--text-secondary)]">Just a moment, the page is loading.</div>
         </div>
       }
     >

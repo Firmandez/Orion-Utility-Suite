@@ -5,6 +5,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, bail, Context};
 use lopdf::{Document, Object, ObjectId};
+use pdfium_render::prelude::{PdfRenderConfig, Pdfium};
 use printpdf::{
     Mm, Op, PdfDocument, PdfPage, PdfSaveOptions, PdfWarnMsg, Px, RawImage, XObjectTransform,
 };
@@ -17,6 +18,7 @@ use crate::models::{
 
 const PDF_TOOLS_PROGRESS_EVENT: &str = "pdf-tools-progress";
 const DEFAULT_IMAGE_DPI: f32 = 300.0;
+const PDF_TO_IMAGE_RENDER_WIDTH: i32 = 2200;
 
 pub async fn merge_pdfs_payload(
     window: tauri::Window,
@@ -355,10 +357,17 @@ pub async fn pdf_to_images_payload(
 
     tokio::task::spawn_blocking(move || {
         validate_pdf_input_file(&file)?;
-        let document = load_pdf_document(&file)?;
-        let total_pages = document.get_pages().len();
         let output_dir_path = PathBuf::from(&output_dir);
         ensure_directory(&output_dir_path)?;
+        let pdfium = load_pdfium(&app_handle)?;
+        let document = pdfium.load_pdf_from_file(&file, None).with_context(|| {
+            format!("Failed to render PDF file {}.", Path::new(&file).display())
+        })?;
+        let total_pages = document.pages().len() as usize;
+
+        if total_pages == 0 {
+            bail!("The selected PDF does not contain any pages to export.");
+        }
 
         emit_pdf_tools_progress(
             &app_handle,
@@ -366,23 +375,64 @@ pub async fn pdf_to_images_payload(
             "pdf-to-images",
             &get_base_name(&file),
             0,
-            total_pages.max(1),
-            "Checking PDF to image availability",
+            total_pages,
+            "Preparing PDF pages for image export",
         )?;
+
+        let source_stem = get_file_stem(&file, "pdf-page");
+        let digits = page_number_digits(total_pages);
+        let render_config = PdfRenderConfig::new().set_target_width(PDF_TO_IMAGE_RENDER_WIDTH);
+        let mut generated_files = Vec::with_capacity(total_pages);
+
+        for (index, page) in document.pages().iter().enumerate() {
+            let page_number = index + 1;
+            let output_path = build_pdf_image_output_path(
+                &output_dir_path,
+                &source_stem,
+                page_number as u32,
+                digits,
+            );
+
+            page.render_with_config(&render_config)
+                .with_context(|| {
+                    format!(
+                        "Failed to render page {page_number} from {}.",
+                        get_base_name(&file)
+                    )
+                })?
+                .as_image()
+                .context("Failed to convert rendered PDF page to an image.")?
+                .save_with_format(&output_path, ::image::ImageFormat::Png)
+                .map_err(|error| {
+                    anyhow!(
+                        "Failed to save page image {}: {error}",
+                        output_path.display()
+                    )
+                })?;
+
+            generated_files.push(output_path.to_string_lossy().into_owned());
+
+            emit_pdf_tools_progress(
+                &app_handle,
+                &window_label,
+                "pdf-to-images",
+                &get_base_name(&file),
+                page_number,
+                total_pages,
+                &format!("Exported page {page_number} of {total_pages}"),
+            )?;
+        }
 
         Ok(PdfToImagesResponsePayload {
             output_dir,
-            generated_files: Vec::new(),
+            generated_files,
             total_pages,
-            status: "placeholder".into(),
-            note: Some(
-                "PDF page-to-image export is not active yet. pdfium-render needs native PDFium binaries per platform plus additional wiring before it is stable across operating systems."
-                    .into(),
-            ),
+            status: "completed".into(),
+            note: Some("PDF pages exported as PNG images.".into()),
         })
     })
     .await
-    .context("PDF to image availability worker panicked before completing.")?
+    .context("PDF to image export worker panicked before completing.")?
 }
 
 fn validate_pdf_input_files(files: &[String], min_count: usize) -> anyhow::Result<()> {
@@ -501,6 +551,119 @@ fn build_split_output_path(
     ))
 }
 
+fn build_pdf_image_output_path(
+    output_dir: &Path,
+    source_stem: &str,
+    page_number: u32,
+    digits: usize,
+) -> PathBuf {
+    output_dir.join(format!(
+        "{source_stem}-page-{page_number:0digits$}.png",
+        digits = digits
+    ))
+}
+
+fn page_number_digits(total_pages: usize) -> usize {
+    total_pages.max(1).to_string().len()
+}
+
+fn load_pdfium(app_handle: &tauri::AppHandle) -> anyhow::Result<Pdfium> {
+    let library_path = resolve_pdfium_library_path(app_handle)?;
+
+    Pdfium::bind_to_library(&library_path)
+        .or_else(|_| Pdfium::bind_to_system_library())
+        .map(Pdfium::new)
+        .map_err(|error| {
+            anyhow!(
+                "PDFium could not be loaded. Expected bundled library at {} or a system PDFium installation. {error}",
+                library_path.display()
+            )
+        })
+}
+
+fn resolve_pdfium_library_path(app_handle: &tauri::AppHandle) -> anyhow::Result<PathBuf> {
+    let subdirectory = pdfium_resource_subdirectory().ok_or_else(|| {
+        anyhow!(
+            "PDF to Images is not supported for this platform yet: {}-{}.",
+            std::env::consts::OS,
+            std::env::consts::ARCH
+        )
+    })?;
+    let library_name = pdfium_library_file_name();
+    let mut candidates = Vec::new();
+
+    if let Ok(resource_dir) = app_handle.path().resource_dir() {
+        candidates.push(
+            resource_dir
+                .join("pdfium")
+                .join(subdirectory)
+                .join(library_name),
+        );
+        candidates.push(
+            resource_dir
+                .join("resources")
+                .join("pdfium")
+                .join(subdirectory)
+                .join(library_name),
+        );
+    }
+
+    if let Ok(exe_path) = std::env::current_exe() {
+        if let Some(exe_dir) = exe_path.parent() {
+            candidates.push(exe_dir.join("pdfium").join(subdirectory).join(library_name));
+            candidates.push(
+                exe_dir
+                    .join("resources")
+                    .join("pdfium")
+                    .join(subdirectory)
+                    .join(library_name),
+            );
+        }
+    }
+
+    candidates.push(
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("resources")
+            .join("pdfium")
+            .join(subdirectory)
+            .join(library_name),
+    );
+
+    candidates
+        .into_iter()
+        .find(|path| path.is_file())
+        .ok_or_else(|| {
+            anyhow!(
+                "Bundled PDFium library was not found for {} in src-tauri/resources/pdfium/{subdirectory}.",
+                std::env::consts::OS
+            )
+        })
+}
+
+fn pdfium_resource_subdirectory() -> Option<&'static str> {
+    if cfg!(all(target_os = "windows", target_arch = "x86_64")) {
+        Some("windows-x64")
+    } else if cfg!(all(target_os = "linux", target_arch = "x86_64")) {
+        Some("linux-x64")
+    } else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
+        Some("macos-x64")
+    } else if cfg!(all(target_os = "macos", target_arch = "aarch64")) {
+        Some("macos-arm64")
+    } else {
+        None
+    }
+}
+
+fn pdfium_library_file_name() -> &'static str {
+    if cfg!(target_os = "windows") {
+        "pdfium.dll"
+    } else if cfg!(target_os = "macos") {
+        "libpdfium.dylib"
+    } else {
+        "libpdfium.so"
+    }
+}
+
 fn emit_pdf_tools_progress(
     app_handle: &tauri::AppHandle,
     window_label: &str,
@@ -591,6 +754,35 @@ mod tests {
     }
 
     #[test]
+    fn build_pdf_image_output_path_formats_page_numbers_as_png() {
+        let output_dir = env::temp_dir();
+        let output = build_pdf_image_output_path(&output_dir, "report", 12, 3);
+
+        assert!(output
+            .file_name()
+            .and_then(|value| value.to_str())
+            .unwrap_or_default()
+            .contains("report-page-012.png"));
+    }
+
+    #[test]
+    fn pdfium_resource_subdirectory_matches_supported_desktop_target() {
+        let subdirectory = pdfium_resource_subdirectory();
+
+        #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
+        assert_eq!(subdirectory, Some("windows-x64"));
+
+        #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+        assert_eq!(subdirectory, Some("linux-x64"));
+
+        #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
+        assert_eq!(subdirectory, Some("macos-x64"));
+
+        #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+        assert_eq!(subdirectory, Some("macos-arm64"));
+    }
+
+    #[test]
     fn validate_image_input_files_rejects_invalid_extensions() {
         let error = validate_image_input_files(&["C:\\temp\\not-image.txt".into()])
             .expect_err("invalid image should fail");
@@ -635,6 +827,79 @@ mod tests {
 
         let _ = fs::remove_file(&image_path);
         let _ = fs::remove_file(&output_path);
+        let _ = fs::remove_dir_all(&temp_dir);
+    }
+
+    #[test]
+    fn bundled_pdfium_renders_pdf_page_to_png() {
+        let subdirectory =
+            pdfium_resource_subdirectory().expect("desktop test target should be supported");
+        let library_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("resources")
+            .join("pdfium")
+            .join(subdirectory)
+            .join(pdfium_library_file_name());
+
+        assert!(
+            library_path.is_file(),
+            "bundled PDFium library should exist at {}",
+            library_path.display()
+        );
+
+        let temp_dir = env::temp_dir().join(format!("orion-pdfium-render-{}", Uuid::new_v4()));
+        fs::create_dir_all(&temp_dir).expect("temp dir should be created");
+
+        let image_path = temp_dir.join("source.png");
+        let pdf_path = temp_dir.join("source.pdf");
+        let rendered_path = temp_dir.join("source-page-1.png");
+
+        let mut image = ::image::RgbaImage::new(4, 4);
+        for (index, pixel) in image.pixels_mut().enumerate() {
+            *pixel = ::image::Rgba([200, (index * 8) as u8, 80, 255]);
+        }
+
+        ::image::DynamicImage::ImageRgba8(image)
+            .save(&image_path)
+            .expect("png should be saved");
+
+        let mut document = PdfDocument::new("test-pdfium-render");
+        let mut warnings = Vec::<PdfWarnMsg>::new();
+        let page = create_pdf_page_from_image(
+            &mut document,
+            image_path.to_string_lossy().as_ref(),
+            &mut warnings,
+        )
+        .expect("image should decode into a PDF page");
+
+        document.with_pages(vec![page]);
+
+        let mut writer =
+            BufWriter::new(File::create(&pdf_path).expect("pdf file should be created"));
+        document.save_writer(&mut writer, &PdfSaveOptions::default(), &mut warnings);
+        writer.flush().expect("writer should flush to disk");
+
+        let pdfium = Pdfium::bind_to_library(&library_path)
+            .map(Pdfium::new)
+            .expect("bundled PDFium should load");
+        let pdf = pdfium
+            .load_pdf_from_file(&pdf_path, None)
+            .expect("generated PDF should load through PDFium");
+        let render_config = PdfRenderConfig::new().set_target_width(128);
+
+        for page in pdf.pages().iter() {
+            page.render_with_config(&render_config)
+                .expect("PDF page should render")
+                .as_image()
+                .expect("rendered page should convert to image")
+                .save_with_format(&rendered_path, ::image::ImageFormat::Png)
+                .expect("rendered page should save as PNG");
+        }
+
+        assert!(rendered_path.is_file(), "rendered PNG should exist");
+
+        let _ = fs::remove_file(&image_path);
+        let _ = fs::remove_file(&pdf_path);
+        let _ = fs::remove_file(&rendered_path);
         let _ = fs::remove_dir_all(&temp_dir);
     }
 }

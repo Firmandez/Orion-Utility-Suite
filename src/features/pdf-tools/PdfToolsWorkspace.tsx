@@ -67,8 +67,8 @@ export function PdfToolsWorkspace() {
       : undefined;
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+    <div className="space-y-5">
+      <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
         <PageSection title="Document Queue" description={getQueueDescription(operation)}>
           <PdfQueueDropZone
             operation={operation}
@@ -136,7 +136,7 @@ export function PdfToolsWorkspace() {
               readOnly
             />
 
-            <div className="rounded-2xl border bg-black/10 p-4 text-sm leading-6 text-[var(--text-secondary)]">
+            <div className="rounded-xl border bg-black/10 p-3 text-sm leading-5 text-[var(--text-secondary)]">
               Accepted files for this operation:{" "}
               <span className="font-mono text-[var(--text-primary)]">{getAcceptedExtensions(operation).join(", ").toUpperCase()}</span>
             </div>
@@ -208,7 +208,7 @@ export function PdfToolsWorkspace() {
 
 function NoticeBanner({ title, message }: { title: string; message: string }) {
   return (
-    <div className="rounded-2xl border border-amber-400/18 bg-amber-500/10 p-4">
+    <div className="rounded-xl border border-amber-400/18 bg-amber-500/10 p-3">
       <div className="flex items-start gap-3">
         <TriangleAlert className="mt-0.5 size-5 shrink-0 text-amber-300" />
         <div>

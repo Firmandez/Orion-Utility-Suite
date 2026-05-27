@@ -1,6 +1,6 @@
 [package]
 name = "orion-utility-suite"
-version = "0.2.1"
+version = "0.2.3"
 description = "Cross-platform offline-first desktop utility suite"
 authors = ["Firmandez"]
 license = "MIT"
@@ -24,6 +24,7 @@ local-ip-address = "0.6"
 lopdf = "0.35"
 md5 = "0.7"
 open = "5"
+pdfium-render = { version = "0.9.1", default-features = false, features = ["pdfium_latest", "image_025", "thread_safe"] }
 printpdf = { version = "0.8", default-features = false, features = ["jpeg", "png", "webp"] }
 qrcode = "0.14"
 regex = "1"

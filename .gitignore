@@ -1,8 +1,19 @@
+# Dependencies
 node_modules/
+
+# Build outputs
 dist/
 src-tauri/target/
 .orion-build-temp/
 *.tsbuildinfo
+
+# Downloaded PDFium archives; keep extracted runtime libraries tracked.
+src-tauri/resources/pdfium/**/*.tgz
+src-tauri/resources/pdfium/**/*.tar
+src-tauri/resources/pdfium/**/*.tar.gz
+src-tauri/resources/pdfium/**/*.zip
+
+# OS and editor files
 .DS_Store
 Thumbs.db
 npm-debug.log*
@@ -11,5 +22,8 @@ yarn-error.log*
 pnpm-debug.log*
 .idea/
 .vscode/
+
+# Local environment files
 .env
 .env.*
+!.env.example

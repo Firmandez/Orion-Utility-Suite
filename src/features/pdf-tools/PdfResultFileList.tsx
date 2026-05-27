@@ -93,7 +93,7 @@ function ResultPathCard({
   const isSuccess = status === "success";
 
   return (
-    <div className="rounded-3xl border bg-[var(--surface-2)] p-4">
+    <div className="rounded-2xl border bg-[var(--surface-2)] p-3">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3">

@@ -42,8 +42,8 @@ export function HashCheckerWorkspace() {
   const compareState = compareReferenceHash(referenceHash, result);
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+    <div className="space-y-5">
+      <div className="grid items-start gap-5 xl:grid-cols-[1.05fr_0.95fr]">
         <PageSection
           title="Source File"
           description="Choose a file from your device, then generate MD5, SHA1, and SHA256 hashes."

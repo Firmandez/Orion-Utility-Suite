@@ -162,13 +162,13 @@ Metadata rilis utama:
 
 - Pastikan prerequisite Tauri untuk GTK/WebKit/Linux atau Xcode/macOS sudah terpenuhi sebelum `tauri dev` atau `tauri build`.
 - Beberapa tool seperti `ping`, permission akses folder, dan behavior window state bisa sedikit berbeda antar OS.
-- `PDF to Image` belum diaktifkan penuh lintas platform karena `pdfium-render` membutuhkan binary PDFium native per OS/arsitektur.
+- `PDF to Image` memakai bundled PDFium native per OS/arsitektur. Pastikan resource `src-tauri/resources/pdfium` ikut tersedia saat build lintas platform.
 
 ## Dependency Eksternal Opsional
 
-Orion saat ini sudah berjalan tanpa dependency eksternal berat untuk fitur yang sudah aktif. Namun dependency berikut bisa relevan untuk tahap pengembangan lanjut:
+Orion saat ini sudah berjalan tanpa dependency eksternal berat untuk sebagian besar fitur aktif. Resource native berikut dipaketkan atau bisa relevan untuk tahap pengembangan lanjut:
 
-- `PDFium` untuk `PDF to Image`
+- `PDFium` untuk render `PDF to Image`
 - `FFmpeg` bila nanti ditambahkan media workflow lanjutan
 - `ImageMagick` untuk eksperimen pipeline image eksternal
 - `Poppler` atau `Tesseract` bila nanti ditambahkan ekstraksi/ocr dokumen
@@ -183,6 +183,6 @@ Orion saat ini sudah berjalan tanpa dependency eksternal berat untuk fitur yang 
 
 ## Known Limitations
 
-- `PDF to Image` masih placeholder teknis, belum aktif penuh.
+- `PDF to Image` membutuhkan bundled PDFium yang cocok dengan OS/arsitektur target.
 - Beberapa workflow desktop memerlukan izin akses file/folder dari OS target.
 - Verifikasi build Rust di environment sandbox tertentu bisa gagal karena pembatasan write permission atau fetch dependency, walaupun project dapat tetap dibangun normal di mesin developer lokal.

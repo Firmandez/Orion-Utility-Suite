@@ -35,30 +35,30 @@ export function PdfQueueDropZone({
   const isSingle = isPdfOperationSingleFile(operation);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div
         className={cn(
-          "rounded-3xl border border-dashed bg-[var(--surface-2)] p-6 transition",
+          "rounded-2xl border border-dashed bg-[var(--surface-2)] p-4 transition",
           isDragActive ? "border-amber-400/55 bg-amber-500/10" : "hover:border-amber-400/28 hover:bg-white/5",
           disabled && "pointer-events-none opacity-70",
         )}
       >
-        <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
-          <div className="flex size-16 items-center justify-center rounded-3xl bg-amber-500/12 text-amber-300">
-            <Icon className="size-7" />
+        <div className="mx-auto flex max-w-2xl flex-col items-center gap-3 text-center">
+          <div className="flex size-12 items-center justify-center rounded-2xl bg-amber-500/12 text-amber-300">
+            <Icon className="size-5" />
           </div>
           <div>
-            <div className="text-base font-semibold text-[var(--text-primary)]">
+            <div className="text-sm font-semibold text-[var(--text-primary)]">
               {isDragActive
                 ? "Drop files to add them"
                 : isSingle
                   ? "Drop one source file into this area"
                   : "Drop multiple files into this area"}
             </div>
-            <div className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+            <div className="mt-1.5 text-sm leading-5 text-[var(--text-secondary)]">
               {getQueueDescription(operation)}
             </div>
-            <div className="mt-2 text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">
+            <div className="mt-1.5 text-xs uppercase tracking-[0.08em] text-[var(--text-muted)]">
               {getOperationHint(operation)}
             </div>
             {!isSingle ? (
@@ -80,25 +80,25 @@ export function PdfQueueDropZone({
       </div>
 
       {files.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {files.map((file, index) => (
             <div
               key={file.path}
-              className="flex items-start justify-between gap-4 rounded-3xl border bg-[var(--surface-2)] px-4 py-4"
+              className="flex items-start justify-between gap-3 rounded-2xl border bg-[var(--surface-2)] px-3 py-3"
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   {!isSingle ? (
-                    <span className="inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-amber-200">
+                    <span className="inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-200">
                       #{index + 1}
                     </span>
                   ) : null}
                   <div className="text-sm font-semibold text-[var(--text-primary)]">{truncateMiddle(file.fileName, 26, 14)}</div>
                 </div>
-                <div className="mt-1 break-all font-mono text-[12px] leading-6 text-[var(--text-muted)]">
+                <div className="mt-1 break-all font-mono text-[12px] leading-5 text-[var(--text-muted)]">
                   {truncateMiddle(file.path, 36, 18)}
                 </div>
-                <div className="mt-2 inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-3 py-1 text-[11px] uppercase tracking-[0.1em] text-amber-200">
+                <div className="mt-2 inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-2.5 py-0.5 text-[11px] uppercase tracking-[0.08em] text-amber-200">
                   {file.extension.toUpperCase()}
                 </div>
               </div>
@@ -111,7 +111,7 @@ export function PdfQueueDropZone({
                     aria-label={`Move ${file.fileName} up`}
                       onClick={() => onMoveUp(file.path)}
                       disabled={disabled || index === 0}
-                      className="inline-flex size-10 items-center justify-center rounded-2xl border bg-black/10 text-[var(--text-secondary)] transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex size-9 items-center justify-center rounded-xl border bg-black/10 text-[var(--text-secondary)] transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <ArrowUp className="size-4" />
                     </button>
@@ -120,7 +120,7 @@ export function PdfQueueDropZone({
                     aria-label={`Move ${file.fileName} down`}
                       onClick={() => onMoveDown(file.path)}
                       disabled={disabled || index === files.length - 1}
-                      className="inline-flex size-10 items-center justify-center rounded-2xl border bg-black/10 text-[var(--text-secondary)] transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex size-9 items-center justify-center rounded-xl border bg-black/10 text-[var(--text-secondary)] transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <ArrowDown className="size-4" />
                     </button>
@@ -132,7 +132,7 @@ export function PdfQueueDropZone({
                   aria-label={`Remove ${file.fileName}`}
                   onClick={() => onRemove(file.path)}
                   disabled={disabled}
-                  className="inline-flex size-10 items-center justify-center rounded-2xl border bg-black/10 text-[var(--text-secondary)] transition hover:border-rose-400/30 hover:text-rose-200 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex size-9 items-center justify-center rounded-xl border bg-black/10 text-[var(--text-secondary)] transition hover:border-rose-400/30 hover:text-rose-200 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <X className="size-4" />
                 </button>
