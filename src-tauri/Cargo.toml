@@ -45,6 +45,9 @@ urlencoding = "2.1"
 uuid = { version = "1", features = ["v4", "serde"] }
 walkdir = "2"
 
+[target.'cfg(windows)'.dependencies]
+winreg = "0.55"
+
 [features]
 default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]

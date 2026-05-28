@@ -80,62 +80,24 @@ pub async fn build_system_info_payload() -> SystemInfoPayload {
 fn get_specific_os_name() -> String {
     #[cfg(target_os = "windows")]
     {
-        let mut product_name = "Windows".to_string();
-        let mut build_number = 0;
-        
-        if let Ok(output) = std::process::Command::new("reg")
-            .args(&["query", "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "/v", "ProductName"])
-            .output()
-        {
-            if let Ok(stdout) = String::from_utf8(output.stdout) {
-                for line in stdout.lines() {
-                    if line.contains("ProductName") {
-                        let parts: Vec<&str> = line.split("REG_SZ").collect();
-                        if parts.len() >= 2 {
-                            product_name = parts[1].trim().to_string();
-                        }
-                    }
-                }
-            }
-        }
-        
-        if let Ok(output) = std::process::Command::new("reg")
-            .args(&["query", "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "/v", "CurrentBuild"])
-            .output()
-        {
-            if let Ok(stdout) = String::from_utf8(output.stdout) {
-                for line in stdout.lines() {
-                    if line.contains("CurrentBuild") {
-                        let parts: Vec<&str> = line.split("REG_SZ").collect();
-                        if parts.len() >= 2 {
-                            if let Ok(build) = parts[1].trim().parse::<u32>() {
-                                build_number = build;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        if build_number >= 22000 {
-            product_name = product_name.replace("Windows 10", "Windows 11");
-        }
-        
-        product_name
+        windows_product_name_from_registry().unwrap_or_else(|| "Windows".to_string())
     }
-    
+
     #[cfg(target_os = "linux")]
     {
         if let Ok(content) = std::fs::read_to_string("/etc/os-release") {
             for line in content.lines() {
                 if line.starts_with("PRETTY_NAME=") {
-                    return line.trim_start_matches("PRETTY_NAME=").trim_matches('"').to_string();
+                    return line
+                        .trim_start_matches("PRETTY_NAME=")
+                        .trim_matches('"')
+                        .to_string();
                 }
             }
         }
         "Linux".to_string()
     }
-    
+
     #[cfg(target_os = "macos")]
     {
         let mut version = String::new();
@@ -147,16 +109,80 @@ fn get_specific_os_name() -> String {
                 version = stdout.trim().to_string();
             }
         }
-        
+
         if version.is_empty() {
             "macOS".to_string()
         } else {
             format!("macOS {}", version)
         }
     }
-    
+
     #[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos")))]
     {
         std::env::consts::OS.to_string()
+    }
+}
+
+#[cfg(target_os = "windows")]
+fn windows_product_name_from_registry() -> Option<String> {
+    use winreg::enums::HKEY_LOCAL_MACHINE;
+    use winreg::RegKey;
+
+    let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
+    let current_version = hklm
+        .open_subkey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion")
+        .ok()?;
+    let product_name = current_version.get_value::<String, _>("ProductName").ok()?;
+    let build_number = current_version
+        .get_value::<String, _>("CurrentBuild")
+        .ok()
+        .and_then(|value| parse_windows_build_number(&value));
+
+    Some(normalize_windows_product_name(product_name, build_number))
+}
+
+#[cfg(any(target_os = "windows", test))]
+fn normalize_windows_product_name(product_name: String, build_number: Option<u32>) -> String {
+    let mut normalized_name = match product_name.trim() {
+        "" => "Windows".to_string(),
+        value => value.to_string(),
+    };
+
+    if build_number.is_some_and(|build| build >= 22000) {
+        normalized_name = normalized_name.replace("Windows 10", "Windows 11");
+    }
+
+    normalized_name
+}
+
+#[cfg(any(target_os = "windows", test))]
+fn parse_windows_build_number(value: &str) -> Option<u32> {
+    value.trim().parse().ok()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn normalize_windows_product_name_promotes_windows_11_builds() {
+        assert_eq!(
+            normalize_windows_product_name("Windows 10 Pro".to_string(), Some(22631)),
+            "Windows 11 Pro"
+        );
+    }
+
+    #[test]
+    fn normalize_windows_product_name_preserves_windows_10_builds() {
+        assert_eq!(
+            normalize_windows_product_name("Windows 10 Pro".to_string(), Some(19045)),
+            "Windows 10 Pro"
+        );
+    }
+
+    #[test]
+    fn parse_windows_build_number_rejects_invalid_values() {
+        assert_eq!(parse_windows_build_number("22631"), Some(22631));
+        assert_eq!(parse_windows_build_number("not-a-build"), None);
     }
 }

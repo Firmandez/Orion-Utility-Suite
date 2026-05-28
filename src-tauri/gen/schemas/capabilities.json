@@ -1,1 +1,1 @@
-{"main-capability":{"identifier":"main-capability","description":"Capability for the Orion Utility Suite main window.","local":true,"windows":["main"],"permissions":["core:default","dialog:default","store:default"]}}
+{"main-capability":{"identifier":"main-capability","description":"Capability for the Orion Utility Suite main window.","local":true,"windows":["main"],"permissions":["core:default","dialog:default","store:default","updater:default","process:default"]}}

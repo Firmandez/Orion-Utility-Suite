@@ -3,5 +3,5 @@
   "identifier": "main-capability",
   "description": "Capability for the Orion Utility Suite main window.",
   "windows": ["main"],
-  "permissions": ["core:default", "dialog:default", "store:default"]
+  "permissions": ["core:default", "dialog:default", "store:default", "updater:default", "process:default"]
 }
