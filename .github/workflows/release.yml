@@ -51,7 +51,13 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: "Orion v__VERSION__"
-          releaseBody: "Rilis otomatis Orion Utility Suite oleh GitHub Actions dengan penandatanganan kunci digital sign."
+          releaseBody: |
+            ### Detail Update v__VERSION__
+            * (Tambahkan detail fitur baru atau perubahan di sini...)
+            * (Perbaikan bug atau peningkatan performa...)
+            
+            ---
+            *Rilis ini ditandatangani secara digital demi keamanan sistem dan integritas aplikasi.*
           releaseDraft: true # Menghasilkan rilis sebagai DRAFT di GitHub agar Anda bisa meninjau sebelum dipublikasikan
           prerelease: false
 
