@@ -1,11 +1,11 @@
 {
   "version": "0.4.9",
   "notes": "Rilis pertama Orion Utility Suite dengan fitur offline-first lengkap dan sistem auto-updater terenkripsi.",
-  "pub_date": "2026-05-27T13:40:00Z",
+  "pub_date": "2026-05-28T16:50:00Z",
   "platforms": {
     "windows-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYWFsYk9iUkdrdkJPT01JWTU5bHlkbFFjdEFyNmpWcmhjQ1BhM3djWk9obE9iN255bzl4WUhSNDdtZWdWZkRCVGhKdGxNMUM3Wmp1TUhRRmVpaW1YYUsyUkl6b2xJN3dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5OTI3NTE5CWZpbGU6T3Jpb24gVXRpbGl0eSBTdWl0ZV8wLjQuOV94NjQtc2V0dXAuZXhlCjBYbm95bkdsQUZUWEwvK25wVi8zMzFhOXRCanRKVXh5ZVlVc1ZVUFVPMXlMZGJKSlltMWZtcHVaS3Q0cDJaeXNlOGxrS2U3TEJFb3hYT3RtVkZRbkNnPT0K",
-      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.4.8/orion-utility-suite_0.4.8_x64-setup.exe"
+      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.4.8/orion-utility-suite_0.4.9_x64-setup.exe"
     }
   }
 }
