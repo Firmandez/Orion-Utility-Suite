@@ -68,9 +68,9 @@ jobs:
           $zipName = "orion-utility-suite_${version}_x64_portable.zip"
           
           # Create temporary folder for portable zip package
-          New-Item -ItemType Directory -Force -Path "./temp_portable"
+          New-Item -ItemType Directory -Force -Path "./temp_portable/resources/pdfium/windows-x64"
           Copy-Item "src-tauri/target/release/orion-utility-suite.exe" -Destination "./temp_portable/orion-utility-suite.exe"
-          Copy-Item "src-tauri/resources/pdfium/windows-x64/pdfium.dll" -Destination "./temp_portable/pdfium.dll"
+          Copy-Item "src-tauri/resources/pdfium/windows-x64/pdfium.dll" -Destination "./temp_portable/resources/pdfium/windows-x64/pdfium.dll"
           
           # Compress the folder into a zip archive
           Compress-Archive -Path "./temp_portable/*" -DestinationPath "./$zipName" -Force
