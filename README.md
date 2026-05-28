@@ -129,22 +129,6 @@ Outputs the portable standalone executable (`.exe`) inside:
 
 ---
 
-### 📦 Release Pipeline Workflow
-
-To package and deploy a new official release:
-1. Update `"version"` inside `package.json` (e.g. `"0.4.9"`).
-2. Sync the versions to Rust manifests:
-   ```bash
-   npm run sync:version
-   ```
-3. Commit all changes and push the version tag using our smart tagging automation:
-   ```bash
-   npm run git:tag
-   ```
-   *This automatically generates the git tag, pushes it to GitHub, and triggers the automated release pipeline in GitHub Actions.*
-
----
-
 ### 🐧 Linux & macOS Notes
 
 - Ensure GTK/WebKit (Linux) or Xcode Command Line Tools (macOS) are installed prior to compilation.
@@ -291,22 +275,6 @@ npm run tauri:portable
 ```
 Menghasilkan berkas executable portabel mandiri (`.exe`) di dalam:
 `src-tauri/target/release/orion-utility-suite.exe`
-
----
-
-### 📦 Alur Kerja Release Pipeline
-
-Untuk merilis versi resmi baru:
-1. Ubah versi di `package.json` (misalnya `"0.4.9"`).
-2. Sinkronkan versi ke manifest Rust:
-   ```bash
-   npm run sync:version
-   ```
-3. Lakukan commit dan push tag menggunakan skrip otomatisasi tag kita:
-   ```bash
-   npm run git:tag
-   ```
-   *Perintah ini akan membuat tag secara otomatis, mendorongnya ke GitHub, dan memicu workflow rilis otomatis di GitHub Actions.*
 
 ---
 
