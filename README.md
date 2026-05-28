@@ -1,29 +1,40 @@
-# Orion Utility Suite
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c56cc908-01bb-44b7-b8df-ab2bbbbcfcc6" alt="Orion Utility Suite Logo" width="128" height="128" />
+</p>
 
-Orion Utility Suite adalah aplikasi desktop cross-platform all-in-one utility untuk Windows, Linux, dan macOS yang dibangun dengan pendekatan offline-first. Seluruh proses backend utama berjalan lokal melalui command Tauri + Rust, tanpa Express, Laravel, atau backend cloud.
+<h1 align="center">Orion Utility Suite</h1>
 
-Tahap yang sudah aktif saat ini:
+<p align="center">
+  <a href="#-english">🇺🇸 English</a> | <a href="#-bahasa-indonesia">🇮🇩 Bahasa Indonesia</a>
+</p>
 
-- Dashboard + system info
-- QR Generator
-- Text Utilities
-- Hash Checker berbasis Rust streaming
-- Image Converter berbasis Rust batch async
-- Network Toolkit berbasis Rust
-- PDF Tools dasar berbasis Rust
-- Developer Tools frontend-only
-- Settings persistent berbasis Tauri Store
+---
 
-## Stack
+## 🇺🇸 English
 
-- Tauri v2
-- React 19
-- TypeScript
-- Rust
-- Vite
-- Tailwind CSS v4
+Orion Utility Suite is a cross-platform, all-in-one desktop utility application for Windows, Linux, and macOS built with a strict **offline-first** architecture. All core backend operations run entirely locally using Tauri and Rust, without any reliance on Node.js/Express, PHP/Laravel, or cloud-based APIs, ensuring ultimate data privacy and native execution speed.
 
-## Struktur Folder
+### 🚀 Active Modules & Features
+
+- **Dashboard & Diagnostics**: Live interactive HUD displaying operating system specific info, CPU architecture, local IP, gateway status, and offline security check.
+- **Image Converter**: Multithreaded Rust-powered batch image compression and format conversion (PNG, JPEG, WebP) with custom resizing options—engineered to keep the UI fully responsive.
+- **PDF Tools**: Native Rust document utilities to merge, split, convert images to PDF, and convert PDF pages into high-resolution images via native Google PDFium rendering.
+- **Network Toolkit**: Native diagnostic suite including subnet scanner, neighboring Wi-Fi analyzer, ping latency tracker, port scanner, DNS lookup, and HTTP status checker.
+- **Hash Checker**: Ultra-fast file checksum generation (MD5, SHA-1, SHA-256, SHA-512) utilizing a memory-efficient streaming buffer in Rust for files of any size.
+- **QR Generator**: Custom styling, gradients, and custom colors for interactive QR code generation.
+- **Text & Developer Tools**: Local text calculators, passphrase validators, and frontend developer helpers.
+- **Persistent Settings**: Multi-theme support (Light, Dark, System) and custom accent configurations persisted via Tauri Store.
+
+### 🛠️ Core Tech Stack
+
+- **Tauri v2** (Rust Backend & App Shell)
+- **React 19** & **TypeScript** (Frontend Engine)
+- **Vite** (Build Tool)
+- **Tailwind CSS v4** (Styling Framework)
+
+---
+
+### 📂 Folder Structure
 
 ```text
 .
@@ -45,149 +56,286 @@ Tahap yang sudah aktif saat ini:
 `- vite.config.ts
 ```
 
-## Prasyarat
+---
 
-1. Node.js 20+ atau lebih baru
-2. Rust toolchain melalui `rustup`
-3. Tauri prerequisites sesuai OS
+### ⚙️ Prerequisites
 
-Referensi resmi:
+Before building or running the project, ensure your machine meets the following requirements:
+1. **Node.js** v20 or newer
+2. **Rust Toolchain** (via `rustup`)
+3. **Tauri v2 Prerequisites** specific to your OS:
+   - Refer to the official [Tauri v2 Prerequisites Guide](https://v2.tauri.app/start/prerequisites/)
+   - Refer to the [Tauri v2 + Vite Quickstart Guide](https://v2.tauri.app/start/frontend/vite/)
 
-- [Tauri v2 prerequisites](https://v2.tauri.app/start/prerequisites/)
-- [Tauri v2 + Vite guide](https://v2.tauri.app/start/frontend/vite/)
+---
 
-## Install
+### 📦 Installation
 
+To install frontend and build dependencies:
 ```bash
 npm install
 ```
 
-## Run Dev
+---
 
-Frontend browser preview:
+### 💻 Running Development Server
 
+For standard web browser preview (mock workspace without native commands):
 ```bash
 npm run dev
 ```
 
-Desktop app Tauri:
-
+For full desktop application runtime (React UI connected to native Rust backend):
 ```bash
 npm run tauri dev
 ```
 
-## Build Frontend
+---
 
+### 🔨 Compilation & Build Commands
+
+Build production frontend bundles:
 ```bash
 npm run build
 ```
 
-## Build Desktop App
-
-Build default bundle Tauri:
-
+Build default platform-specific desktop app packages:
 ```bash
 npm run tauri build
 ```
+This builds production-ready frontend assets, compiles the Rust backend, and packages the desktop installer for your active OS.
 
-Perintah ini akan menjalankan:
+*Note: On Windows, Orion defaults specifically to `NSIS Setup EXE` packaging and skips `MSI` bundles to optimize packaging speed.*
 
-- build frontend production
-- compile backend Rust
-- generate bundle installer desktop sesuai target OS
+---
 
-Catatan:
+### 💾 Windows Packaging (Installer & Portable)
 
-- Di Windows, Orion sekarang default ke `NSIS setup EXE` saja agar tidak ikut mencoba `MSI`.
-- Di Linux/macOS, Tauri tetap memakai target bundle default platform masing-masing.
-
-## Build Windows Installer
-
-Di Windows, `npm run tauri build` atau perintah yang lebih eksplisit:
-
+For standard setup installers:
 ```bash
 npm run tauri:installer
 ```
+Outputs the setup installer (`.exe`) inside:
+`src-tauri/target/release/bundle/nsis/`
 
-akan menghasilkan installer:
-
-- `NSIS setup EXE`
-
-Script ini memakai temporary build directory lokal workspace pada Windows agar tidak terlalu bergantung pada `%TEMP%` user profile saat drive sistem atau drive home sedang sempit.
-Script ini juga membersihkan folder bundle release lama sebelum packaging baru dimulai agar output installer tetap rapi.
-
-Lokasi output biasanya:
-
-```text
-src-tauri/target/release/bundle/nsis/
-```
-
-Jika Anda ingin binary portable tanpa installer:
-
+For portable versions:
 ```bash
 npm run tauri:portable
 ```
+Outputs the portable standalone executable (`.exe`) inside:
+`src-tauri/target/release/orion-utility-suite.exe`
 
-Binary hasil release biasanya ada di:
+*Note: The Windows build scripts redirect temporary build files to `.orion-build-temp` in the project root. This ensures stable compilation even when the user system's standard `%TEMP%` partition has restricted disk space.*
+
+---
+
+### 📦 Release Pipeline Workflow
+
+To package and deploy a new official release:
+1. Update `"version"` inside `package.json` (e.g. `"0.4.9"`).
+2. Sync the versions to Rust manifests:
+   ```bash
+   npm run sync:version
+   ```
+3. Commit all changes and push the version tag using our smart tagging automation:
+   ```bash
+   npm run git:tag
+   ```
+   *This automatically generates the git tag, pushes it to GitHub, and triggers the automated release pipeline in GitHub Actions.*
+
+---
+
+### 🐧 Linux & macOS Notes
+
+- Ensure GTK/WebKit (Linux) or Xcode Command Line Tools (macOS) are installed prior to compilation.
+- Features like ping, subnet scanning, and window position persistence might behave slightly differently across operating systems due to platform permission models.
+- **PDF rendering** utilizes native pre-compiled PDFium libraries per architecture/OS. Ensure files inside `src-tauri/resources/pdfium/` are intact during compilation.
+
+---
+
+### 🧩 Optional External Dependencies
+
+Orion runs standalone with zero heavy external runtime dependencies. However, native resources are compiled or integrated inside:
+- **PDFium** (for PDF-to-Image rendering)
+- **FFmpeg** (reserved for future media workflow features)
+
+---
+
+### 🔒 Known Limitations
+
+- Some desktop actions (such as picking a folder) require read/write file access permissions from the host OS.
+- If compiling in heavily sandboxed or virtual environments, Rust compilation might experience file lock issues or permission blocks; compiling on a standard local developer machine is highly recommended.
+
+---
+
+### 📄 License & Credits
+
+- **License**: This project is licensed under the **MIT License**.
+- **PDF Crate Credits**:
+  - **pdfium-render**: An idiomatic Rust wrapper created by **ajrcarey** to bind native PDFium engines in Rust. Licensed under the **MIT License** ([GitHub Repository](https://github.com/ajrcarey/pdfium-render)).
+  - **Google PDFium**: The official C++ rendering engine developed by Google LLC. Licensed under the **BSD 3-Clause License** ([Official PDFium Site](https://pdfium.googlesource.com/pdfium/)).
+
+---
+
+## 🇮🇩 Bahasa Indonesia
+
+Orion Utility Suite adalah aplikasi desktop *cross-platform* all-in-one utility untuk Windows, Linux, dan macOS yang dibangun dengan pendekatan **offline-first**. Seluruh proses backend utama berjalan lokal melalui command Tauri + Rust, tanpa Express, Laravel, atau backend cloud.
+
+### 🚀 Modul & Fitur Aktif
+
+- **Dashboard & Diagnostics**: Tampilan HUD interaktif yang menampilkan info sistem operasi spesifik, arsitektur CPU, IP lokal, status gateway, dan cek keamanan offline.
+- **Image Converter**: Pemrosesan konversi dan kompresi gambar (PNG, JPEG, WebP) massal berbasis Rust *multithreading* dengan opsi kustomisasi dimensi—UI tetap responsif selama proses berjalan.
+- **PDF Tools**: Perkakas native Rust untuk menggabungkan, memecah, merubah gambar ke PDF, dan merender halaman PDF menjadi file gambar beresolusi tinggi menggunakan engine native Google PDFium.
+- **Network Toolkit**: Alat diagnostik lokal lengkap yang mencakup subnet scanner, pemindai sinyal Wi-Fi, pemantau latensi ping, pemindai port, pencarian DNS, dan pengecek status HTTP.
+- **Hash Checker**: Pembuatan nilai hash (*MD5, SHA-1, SHA-256, SHA-512*) berkecepatan tinggi dengan teknologi *streaming buffer* lokal di Rust untuk berkas berukuran raksasa.
+- **QR Generator**: Membuat kode QR interaktif kustom dengan gaya dan warna khusus.
+- **Text & Developer Tools**: Alat pemformatan teks, validasi sandi, kalkulator teks, dan pembantu frontend developer.
+- **Persistent Settings**: Preferensi tema (*Light/Dark/System*) dan warna aksen tersimpan otomatis menggunakan *Tauri Store*.
+
+### 🛠️ Stack Utama
+
+- **Tauri v2** (Rust Backend & App Shell)
+- **React 19** & **TypeScript** (Frontend Engine)
+- **Vite** (Build Tool)
+- **Tailwind CSS v4** (Styling Framework)
+
+---
+
+### 📂 Struktur Folder
 
 ```text
-src-tauri/target/release/orion-utility-suite.exe
+.
+|- src/
+|  |- app/
+|  |- components/
+|  |- data/
+|  |- features/
+|  |- lib/
+|  |- pages/
+|  |- services/
+|  `- types/
+|- src-tauri/
+|  |- capabilities/
+|  |- icons/
+|  `- src/
+|- index.html
+|- package.json
+`- vite.config.ts
 ```
 
-## Release Preparation
+---
 
-Untuk packaging final MVP, workflow yang disarankan:
+### ⚙️ Prasyarat
 
+Sebelum membangun atau menjalankan proyek, pastikan mesin Anda memenuhi persyaratan berikut:
+1. **Node.js** v20 atau lebih baru
+2. **Rust Toolchain** (melalui `rustup`)
+3. **Tauri v2 Prerequisites** sesuai dengan OS Anda:
+   - Referensi resmi: [Tauri v2 Prerequisites Guide](https://v2.tauri.app/start/prerequisites/)
+   - Referensi resmi: [Tauri v2 + Vite Quickstart Guide](https://v2.tauri.app/start/frontend/vite/)
+
+---
+
+### 📦 Install
+
+Untuk menginstal dependency frontend dan build:
+```bash
+npm install
+```
+
+---
+
+### 💻 Menjalankan Server Pengembangan
+
+Pratinjau browser standar (tanpa perintah native):
+```bash
+npm run dev
+```
+
+Aplikasi desktop Tauri penuh (React UI terhubung ke native Rust backend):
+```bash
+npm run tauri dev
+```
+
+---
+
+### 🔨 Perintah Kompilasi & Build
+
+Build frontend produksi:
 ```bash
 npm run build
-cargo check --manifest-path src-tauri/Cargo.toml
-cargo build --manifest-path src-tauri/Cargo.toml --release
-npm run tauri build
 ```
 
-Output Windows yang relevan:
+Build paket desktop default sesuai OS aktif:
+```bash
+npm run tauri build
+```
+Perintah ini akan menyusun aset frontend produksi, mengompilasi backend Rust, dan mengemas installer desktop sesuai sistem operasi Anda.
 
-- Installer EXE: `src-tauri/target/release/bundle/nsis/`
-- Portable EXE: `src-tauri/target/release/orion-utility-suite.exe`
+*Catatan: Di Windows, Orion sekarang default ke `NSIS setup EXE` saja agar mempercepat pemrosesan packaging.*
 
-Metadata rilis utama:
+---
 
-- Product name: `Orion Utility Suite`
-- Identifier: `com.firmandez.orionutilitysuite`
-- Author / publisher profile: [Firmandez](https://github.com/Firmandez)
-- License: `MIT`
+### 💾 Windows Packaging (Installer & Portable)
 
-## Catatan Linux dan macOS
+Untuk installer setup standar:
+```bash
+npm run tauri:installer
+```
+Menghasilkan installer (`.exe`) di dalam:
+`src-tauri/target/release/bundle/nsis/`
 
-- Pastikan prerequisite Tauri untuk GTK/WebKit/Linux atau Xcode/macOS sudah terpenuhi sebelum `tauri dev` atau `tauri build`.
-- Beberapa tool seperti `ping`, permission akses folder, dan behavior window state bisa sedikit berbeda antar OS.
-- `PDF to Image` memakai bundled PDFium native per OS/arsitektur. Pastikan resource `src-tauri/resources/pdfium` ikut tersedia saat build lintas platform.
+Untuk versi portable:
+```bash
+npm run tauri:portable
+```
+Menghasilkan berkas executable portabel mandiri (`.exe`) di dalam:
+`src-tauri/target/release/orion-utility-suite.exe`
 
-## Dependency Eksternal Opsional
+---
 
-Orion saat ini sudah berjalan tanpa dependency eksternal berat untuk sebagian besar fitur aktif. Resource native berikut dipaketkan atau bisa relevan untuk tahap pengembangan lanjut:
+### 📦 Alur Kerja Release Pipeline
 
-- `PDFium` untuk render `PDF to Image`
-- `FFmpeg` bila nanti ditambahkan media workflow lanjutan
-- `ImageMagick` untuk eksperimen pipeline image eksternal
-- `Poppler` atau `Tesseract` bila nanti ditambahkan ekstraksi/ocr dokumen
+Untuk merilis versi resmi baru:
+1. Ubah versi di `package.json` (misalnya `"0.4.9"`).
+2. Sinkronkan versi ke manifest Rust:
+   ```bash
+   npm run sync:version
+   ```
+3. Lakukan commit dan push tag menggunakan skrip otomatisasi tag kita:
+   ```bash
+   npm run git:tag
+   ```
+   *Perintah ini akan membuat tag secara otomatis, mendorongnya ke GitHub, dan memicu workflow rilis otomatis di GitHub Actions.*
 
-## Catatan Build dan Runtime
+---
 
-- Settings persistent disimpan ke `settings.json` melalui plugin resmi Tauri Store di app data directory.
-- Sumber versi utama ada di `package.json`. Jalankan `npm run sync:version` jika Anda mengubah versi secara manual agar `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`, `package-lock.json`, dan fallback frontend ikut sinkron.
-- Browser preview tetap bisa dipakai untuk pengembangan UI, tetapi persistence native, file picker desktop, dan command Rust penuh hanya tersedia saat berjalan sebagai aplikasi Tauri desktop.
-- Hash Checker, Image Converter, PDF Tools, dan Network Toolkit dirancang agar UI tetap responsif melalui async processing atau worker blocking terpisah di backend Rust.
-- Di Windows, `npm run tauri build` dan script packaging terkait memakai wrapper lokal agar temporary build files diarahkan ke workspace `.orion-build-temp` saat diperlukan.
+### 🐧 Catatan Linux dan macOS
 
-## Known Limitations
-- Beberapa workflow desktop memerlukan izin akses file/folder dari OS target.
-- Verifikasi build Rust di environment sandbox tertentu bisa gagal karena pembatasan write permission atau fetch dependency, walaupun project dapat tetap dibangun normal di mesin developer lokal.
+- Pastikan GTK/WebKit (Linux) atau Xcode Command Line Tools (macOS) sudah terpasang sebelum kompilasi.
+- Beberapa modul seperti ping, pemindaian subnet, dan penyimpanan preferensi posisi jendela dapat berperilaku sedikit berbeda tergantung model izin platform OS.
+- **PDF rendering** menggunakan pustaka native PDFium per arsitektur/OS. Pastikan file di folder `src-tauri/resources/pdfium/` tidak terhapus selama kompilasi.
 
-## Lisensi & Credit
+---
 
-- **Lisensi Proyek**: Proyek ini dilisensikan di bawah lisensi **MIT**.
-- **Credit Library PDF**:
-  - **pdfium-render**: Binding Rust tingkat tinggi yang ramah (*idiomatic Rust wrapper*) dibuat oleh **ajrcarey** untuk menjembatani komunikasi ke engine PDFium. Library ini dilisensikan di bawah lisensi **MIT** dan dapat diakses di [GitHub pdfium-render](https://github.com/ajrcarey/pdfium-render).
-  - **Google PDFium**: Engine rendering C++ asli bawaan dari Google yang melakukan komputasi render dan konversi halaman *PDF to Image*. Google PDFium dilisensikan di bawah lisensi **BSD 3-Clause**. Hak cipta (c) milik Google LLC dan kontributor lainnya. Library resmi dapat diakses di [situs resmi PDFium](https://pdfium.googlesource.com/pdfium/).
+### 🧩 Dependency Eksternal Opsional
 
+Orion berjalan mandiri tanpa dependency runtime eksternal yang berat. Namun, resource native berikut dipaketkan langsung:
+- **PDFium** (untuk rendering PDF-ke-Gambar)
+- **FFmpeg** (opsional untuk fitur media di masa depan)
+
+---
+
+### 🔒 Batasan yang Diketahui
+
+- Beberapa tindakan desktop (seperti memilih folder) memerlukan izin akses berkas dari sistem operasi induk.
+- Jika dikompilasi dalam lingkungan terisolasi atau virtual, kompilasi Rust dapat mengalami masalah izin menulis berkas; sangat disarankan untuk melakukan kompilasi langsung di mesin lokal pengembang.
+
+---
+
+### 📄 Lisensi & Credit
+
+- **Lisensi**: Proyek ini dilisensikan di bawah lisensi **MIT**.
+- **Credit Crate PDF**:
+  - **pdfium-render**: Wrapper Rust idiomatic yang dibuat oleh **ajrcarey** untuk menghubungkan engine PDFium. Dilisensikan di bawah lisensi **MIT** ([Repositori GitHub](https://github.com/ajrcarey/pdfium-render)).
+  - **Google PDFium**: Engine rendering C++ asli bawaan dari Google. Dilisensikan di bawah lisensi **BSD 3-Clause** ([Situs Resmi PDFium](https://pdfium.googlesource.com/pdfium/)).
