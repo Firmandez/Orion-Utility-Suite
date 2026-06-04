@@ -1,11 +1,11 @@
 {
-  "version": "0.4.9",
-  "notes": "Rilis pertama Orion Utility Suite dengan fitur offline-first lengkap dan sistem auto-updater terenkripsi.",
-  "pub_date": "2026-05-28T16:50:00Z",
+  "version": "0.4.10",
+  "notes": "add PDF metadata management features, update settings UI for improved spacing and accessibility, enhance text utilities with compact tabs",
+  "pub_date": "2026-06-04T09:00:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYWFsYk9iUkdrdkJPT01JWTU5bHlkbFFjdEFyNmpWcmhjQ1BhM3djWk9obE9iN255bzl4WUhSNDdtZWdWZkRCVGhKdGxNMUM3Wmp1TUhRRmVpaW1YYUsyUkl6b2xJN3dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5OTI3NTE5CWZpbGU6T3Jpb24gVXRpbGl0eSBTdWl0ZV8wLjQuOV94NjQtc2V0dXAuZXhlCjBYbm95bkdsQUZUWEwvK25wVi8zMzFhOXRCanRKVXh5ZVlVc1ZVUFVPMXlMZGJKSlltMWZtcHVaS3Q0cDJaeXNlOGxrS2U3TEJFb3hYT3RtVkZRbkNnPT0K",
-      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.4.8/orion-utility-suite_0.4.9_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYWFsYk9iUkdrdkhDd085MjdlMEVqYWNtcXlrQ3R1S2xoZXZRd2xONENFSTVSRU8wRFZwdUlQZk5DNjdFTjJuTld2TFNrODllTzU5a0hKZ3lZWFBMTmtyVXZVTC9lR1E4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNTM4MDg2CWZpbGU6T3Jpb24gVXRpbGl0eSBTdWl0ZV8wLjUuMTBfeDY0LXNldHVwLmV4ZQp5V2IzTlpxQlVBRHc2K3ZWQ2xabzRIVVBsVFZ3NWdlV1Q2ckkxUVNNQzhqUlppc2pPSUpqaFhWVzBtK3F0UEVJNmlMcDd1M0dNS3FDWlVJL3phcTFEQT09Cg==",
+      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.4.10/orion-utility-suite_0.4.10_x64-setup.exe"
     }
   }
 }
