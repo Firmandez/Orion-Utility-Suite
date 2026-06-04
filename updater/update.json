@@ -1,11 +1,11 @@
 {
-  "version": "0.4.10",
+  "version": "0.5.10",
   "notes": "add PDF metadata management features, update settings UI for improved spacing and accessibility, enhance text utilities with compact tabs",
   "pub_date": "2026-06-04T09:00:00Z",
   "platforms": {
     "windows-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYWFsYk9iUkdrdkhDd085MjdlMEVqYWNtcXlrQ3R1S2xoZXZRd2xONENFSTVSRU8wRFZwdUlQZk5DNjdFTjJuTld2TFNrODllTzU5a0hKZ3lZWFBMTmtyVXZVTC9lR1E4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNTM4MDg2CWZpbGU6T3Jpb24gVXRpbGl0eSBTdWl0ZV8wLjUuMTBfeDY0LXNldHVwLmV4ZQp5V2IzTlpxQlVBRHc2K3ZWQ2xabzRIVVBsVFZ3NWdlV1Q2ckkxUVNNQzhqUlppc2pPSUpqaFhWVzBtK3F0UEVJNmlMcDd1M0dNS3FDWlVJL3phcTFEQT09Cg==",
-      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.4.10/orion-utility-suite_0.4.10_x64-setup.exe"
+      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.5.10/orion-utility-suite_0.5.10_x64-setup.exe"
     }
   }
 }
