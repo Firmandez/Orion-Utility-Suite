@@ -1,11 +1,11 @@
 {
-  "version": "0.5.10",
+  "version": "0.6.1",
   "notes": "add PDF metadata management features, update settings UI for improved spacing and accessibility, enhance text utilities with compact tabs",
-  "pub_date": "2026-06-04T09:00:00Z",
+  "pub_date": "2026-06-04T11:55:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYWFsYk9iUkdrdkYxL1RNQVhQbEFWSWFPelFRbFpKbllhS0pYTzRyRmUyWUFRRmVjVG5PMjFZT3MyZ2VlWkxjS0lOQ1VwT2I5NkdYeEhmWi9NQU5JL1hWYzlSZ2xCNlE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNTM5MTIyCWZpbGU6T3Jpb24gVXRpbGl0eSBTdWl0ZV8wLjUuMTBfeDY0LXNldHVwLmV4ZQppZnBmQWVnbHhzS0xWN3FwblYwRWZFRjVXMVFkMXdIK3VFSlNZV1ArYkJodWhMQStUaVNqVGxyZ0pDMmRFR1lOYytxcm5RVDBIUFZza3pwY1BvQTZDdz09Cg==",
-      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.5.10/Orion.Utility.Suite_0.5.10_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYWFsYk9iUkdrdkxJdnA5ZTJIWTV2Umk0Y2JFWEZ4eHRnaTZvS0c0VDZhSXBVcDE1a3l3eGNva1RjSVVLeWYrSDl6RU5uK1pqeFp1VU5QK2grRk5MTlhibEdDb0w3cndrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNTQ4NTU2CWZpbGU6T3Jpb24gVXRpbGl0eSBTdWl0ZV8wLjYuMV94NjQtc2V0dXAuZXhlCjF4OVZxYk1NWUh3M0UybnFia0EwcDNRVTh5L3lTbDVPRms4Q1VES1d4Z1JQNk1nczd1c2F1azc0K25iY25BZjhNNFJ0WisxUCtKYmJDZGhNR1BOK0JBPT0K",
+      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.6.1/Orion.Utility.Suite_0.6.1_x64-setup.exe"
     }
   }
 }
