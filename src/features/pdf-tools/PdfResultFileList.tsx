@@ -16,7 +16,7 @@ export function PdfResultFileList({ result, onCopyPath }: PdfResultFileListProps
       <EmptyState
         icon={FileOutput}
         title="No PDF operation results yet"
-        description="Run merge, split, or image to PDF to see output files and result summaries here."
+        description="Run a PDF operation to see output files here."
       />
     );
   }
@@ -89,8 +89,8 @@ function ResultPathCard({
   const isSuccess = status === "success";
 
   return (
-    <div className="rounded-2xl border bg-(--surface-2) p-3">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div className="rounded-lg border bg-(--surface-2) p-3">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3">
             <div className="text-sm font-semibold text-(--text-primary)">
@@ -98,7 +98,7 @@ function ResultPathCard({
             </div>
             <span
               className={cn(
-                "inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest",
+            "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest",
                 isSuccess
                   ? "border border-emerald-400/18 bg-emerald-500/10 text-emerald-200"
                   : "border border-amber-400/18 bg-amber-500/10 text-amber-200",
@@ -109,9 +109,9 @@ function ResultPathCard({
             </span>
           </div>
 
-          <div className="mt-3">
+          <div className="mt-2">
             <div className="text-[11px] uppercase tracking-widest text-(--text-muted)">Path</div>
-            <div className="mt-1 break-all font-mono text-[13px] text-(--text-primary)">{description}</div>
+            <div className="mt-1 break-all font-mono text-[12px] leading-5 text-(--text-primary)">{description}</div>
           </div>
         </div>
 

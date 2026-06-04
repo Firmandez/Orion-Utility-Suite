@@ -14,13 +14,13 @@ export function HashDigestCard({ label, value, compareStatus, onCopy }: HashDige
     compareStatus === "match" ? "Match" : compareStatus === "not-match" ? "No match" : "Waiting for reference";
 
   return (
-    <div className="surface-panel-alt p-5">
-      <div className="flex items-start justify-between gap-4">
+    <div className="surface-panel-alt p-3">
+      <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-xs uppercase tracking-widest text-(--text-muted)">{label}</div>
           <div
             className={cn(
-              "mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] uppercase tracking-widest",
+            "mt-2 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-widest",
               compareStatus === "match"
                 ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-300"
                 : compareStatus === "not-match"
@@ -36,9 +36,9 @@ export function HashDigestCard({ label, value, compareStatus, onCopy }: HashDige
           Copy
         </Button>
       </div>
-      <div className="mt-4 rounded-xl border bg-black/10 p-3">
-        <div className="break-all font-mono text-[13px] leading-7 text-(--text-primary)">
-          {value || "No digest yet. Choose a file, then run the hash generator."}
+      <div className="mt-3 rounded-lg border bg-black/10 p-2.5">
+        <div className="break-all font-mono text-[12px] leading-5 text-(--text-primary)">
+          {value || "No digest yet."}
         </div>
       </div>
     </div>

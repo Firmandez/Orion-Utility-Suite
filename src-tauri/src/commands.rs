@@ -2,12 +2,13 @@ use crate::error::AppError;
 use crate::models::{
     ActiveWifiInterface, AppBootstrapPayload, ConvertImagesOptionsPayload, DnsLookupPayload,
     HashResultPayload, HttpStatusPayload, ImageConversionResponsePayload,
-    ImageToPdfResponsePayload, LocalIpPayload, PdfMergeResponsePayload, PdfSplitResponsePayload,
-    PdfToImagesResponsePayload, PingHostPayload, PortCheckPayload, SubnetScanResponse,
-    SystemInfoPayload, WifiNetwork,
+    ImageToPdfResponsePayload, LocalIpPayload, PdfMergeResponsePayload, PdfMetadataPayload,
+    PdfMetadataUpdatePayload, PdfSplitResponsePayload, PdfToImagesResponsePayload, PingHostPayload,
+    PortCheckPayload, SubnetScanResponse, SystemInfoPayload, WifiNetwork,
 };
 use crate::pdf_tools::{
-    image_to_pdf_payload, merge_pdfs_payload, pdf_to_images_payload, split_pdf_payload,
+    clear_pdf_metadata_payload, image_to_pdf_payload, merge_pdfs_payload, pdf_to_images_payload,
+    read_pdf_metadata_payload, split_pdf_payload, write_pdf_metadata_payload,
 };
 use crate::services::{
     build_bootstrap_payload, build_local_ip_payload, build_system_info_payload,
@@ -90,6 +91,30 @@ pub async fn pdf_to_images(
     output_dir: String,
 ) -> Result<PdfToImagesResponsePayload, AppError> {
     pdf_to_images_payload(window, file, output_dir)
+        .await
+        .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn read_pdf_metadata(file: String) -> Result<PdfMetadataPayload, AppError> {
+    read_pdf_metadata_payload(file).await.map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn write_pdf_metadata(
+    payload: PdfMetadataUpdatePayload,
+) -> Result<PdfMetadataPayload, AppError> {
+    write_pdf_metadata_payload(payload)
+        .await
+        .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn clear_pdf_metadata(
+    file: String,
+    output_path: String,
+) -> Result<PdfMetadataPayload, AppError> {
+    clear_pdf_metadata_payload(file, output_path)
         .await
         .map_err(Into::into)
 }

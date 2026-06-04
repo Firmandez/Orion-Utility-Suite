@@ -78,8 +78,8 @@ export function DashboardOverview() {
   });
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap gap-2">
           {dashboardFilters.map((filter) => (
             <button
@@ -90,7 +90,7 @@ export function DashboardOverview() {
                 startTransition(() => setActiveFilter(filter));
               }}
               className={cn(
-                "rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wide transition",
+                "rounded-lg border px-2.5 py-1.5 text-xs font-semibold tracking-wide transition",
                 activeFilter === filter
                   ? "border-(--accent-soft) bg-(--accent-surface) text-(--accent-strong)"
                   : "border-(--border-subtle) bg-white/5 text-(--text-secondary) hover:border-(--accent-soft) hover:text-(--text-primary)",
@@ -106,7 +106,7 @@ export function DashboardOverview() {
       </div>
 
       {filteredFeatures.length > 0 ? (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {filteredFeatures.map((feature) => (
             <FeatureCard key={feature.id} feature={feature} />
           ))}
@@ -141,7 +141,7 @@ export function DashboardOverview() {
 
       <PageSection
         title="Diagnostics & Security Status"
-        description="Real-time host environment, local network info, and offline security verification."
+        description="Host, network, and offline security status."
         actions={
           isDesktopRuntime && (
             <Button
@@ -158,9 +158,9 @@ export function DashboardOverview() {
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {/* Card 1: Host System */}
-          <div className="rounded-xl border border-(--border-subtle) bg-white/5 p-4 transition hover:border-(--accent-soft)">
-            <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg border border-sky-500/20 bg-sky-500/10 text-sky-400">
+          <div className="rounded-lg border border-(--border-subtle) bg-white/5 p-3 transition hover:border-(--accent-soft)">
+            <div className="flex items-center gap-2.5">
+              <div className="flex size-8 items-center justify-center rounded-lg border border-sky-500/20 bg-sky-500/10 text-sky-400">
                 <Laptop className="size-4.5" />
               </div>
               <div>
@@ -177,9 +177,9 @@ export function DashboardOverview() {
           </div>
 
           {/* Card 2: Local Network */}
-          <div className="rounded-xl border border-(--border-subtle) bg-white/5 p-4 transition hover:border-(--accent-soft)">
-            <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+          <div className="rounded-lg border border-(--border-subtle) bg-white/5 p-3 transition hover:border-(--accent-soft)">
+            <div className="flex items-center gap-2.5">
+              <div className="flex size-8 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
                 <Network className="size-4.5" />
               </div>
               <div>
@@ -196,9 +196,9 @@ export function DashboardOverview() {
           </div>
 
           {/* Card 3: Orion Suite Diagnostics */}
-          <div className="rounded-xl border border-(--border-subtle) bg-white/5 p-4 transition hover:border-(--accent-soft)">
-            <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-400">
+          <div className="rounded-lg border border-(--border-subtle) bg-white/5 p-3 transition hover:border-(--accent-soft)">
+            <div className="flex items-center gap-2.5">
+              <div className="flex size-8 items-center justify-center rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-400">
                 <ShieldCheck className="size-4.5" />
               </div>
               <div>

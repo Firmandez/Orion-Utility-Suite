@@ -15,16 +15,16 @@ export function AppSidebar({ bootstrap, open, onClose }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-40 flex w-[248px] flex-col border-r bg-(--surface-1) p-4 backdrop-blur-2xl transition duration-300 lg:static lg:translate-x-0 lg:bg-transparent",
+        "fixed inset-y-0 left-0 z-40 flex w-[228px] flex-col border-r bg-(--surface-1) p-3.5 backdrop-blur-2xl transition duration-300 lg:static lg:translate-x-0 lg:bg-transparent",
         open ? "translate-x-0" : "-translate-x-full",
       )}
     >
-      <div className="mb-5 flex items-center justify-between gap-3 lg:mb-6">
-        <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center overflow-hidden rounded-lg border border-(--accent-soft) bg-(--accent-surface)">
+      <div className="mb-4 flex items-center justify-between gap-3 lg:mb-5">
+        <div className="flex items-center gap-2.5">
+          <div className="flex size-8 items-center justify-center overflow-hidden rounded-lg border border-(--accent-soft) bg-(--accent-surface)">
             <img src={orionLogo} alt="Orion Utility Suite" className="size-full object-cover" />
           </div>
-          <div className="min-w-0 text-sm font-semibold leading-tight text-(--text-primary)">
+          <div className="min-w-0 text-[13px] font-semibold leading-tight text-(--text-primary)">
             Orion Utility Suite
           </div>
         </div>
@@ -38,11 +38,11 @@ export function AppSidebar({ bootstrap, open, onClose }: AppSidebarProps) {
         </button>
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto pr-1">
+      <div className="flex-1 space-y-3 overflow-y-auto pr-1">
         {navGroups.map((group) => (
           <div key={group.label}>
-            <div className="mb-2 text-xs uppercase tracking-widest text-(--text-muted)">{group.label}</div>
-            <div className="space-y-1">
+            <div className="mb-1.5 text-[11px] uppercase tracking-widest text-(--text-muted)">{group.label}</div>
+            <div className="space-y-0.5">
               {group.items.map((item) => {
                 const Icon = item.icon;
 
@@ -54,17 +54,17 @@ export function AppSidebar({ bootstrap, open, onClose }: AppSidebarProps) {
                     onClick={onClose}
                     className={({ isActive }) =>
                       cn(
-                        "group flex items-center gap-2.5 rounded-lg border px-2.5 py-2 transition",
+                        "group flex items-center gap-2 rounded-lg border px-2 py-1.5 transition",
                         isActive
                           ? "border-(--accent-soft) bg-(--accent-surface) text-(--text-primary)"
                           : "border-transparent text-(--text-secondary) hover:bg-white/5 hover:text-(--text-primary)",
                       )
                     }
                   >
-                    <div className="flex size-7 shrink-0 items-center justify-center rounded-md border border-(--accent-soft) bg-(--accent-surface) text-(--accent-strong)">
+                    <div className="flex size-6 shrink-0 items-center justify-center rounded-md border border-(--accent-soft) bg-(--accent-surface) text-(--accent-strong)">
                       <Icon className="size-3.5" />
                     </div>
-                    <div className="text-sm font-medium">{item.title}</div>
+                    <div className="text-[13px] font-medium">{item.title}</div>
                   </NavLink>
                 );
               })}
@@ -73,7 +73,7 @@ export function AppSidebar({ bootstrap, open, onClose }: AppSidebarProps) {
         ))}
       </div>
 
-      <div className="mt-6 px-2 text-xs text-(--text-muted)">
+      <div className="mt-4 px-2 text-xs text-(--text-muted)">
         v{bootstrap.data.version}
       </div>
     </aside>

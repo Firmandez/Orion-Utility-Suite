@@ -25,6 +25,7 @@ import { ErrorBanner } from "@/components/common/ErrorBanner";
 import { PageSection } from "@/components/common/PageSection";
 import { ResultCard } from "@/components/common/ResultCard";
 import { Button } from "@/components/ui/Button";
+import { CompactTabs, type CompactTabItem } from "@/components/ui/CompactTabs";
 import { Input } from "@/components/ui/Input";
 import { TextArea } from "@/components/ui/TextArea";
 import { notify } from "@/components/ui/Toast";
@@ -44,10 +45,18 @@ import {
 } from "./network-toolkit.utils";
 import { useNetworkToolkit } from "./useNetworkToolkit";
 
+type NetworkTab = "diagnostics" | "subnet" | "wifi";
+
+const networkTabs = [
+  { id: "diagnostics", label: "Diagnostics", icon: Activity },
+  { id: "subnet", label: "Subnet Scanner", icon: Radar },
+  { id: "wifi", label: "Wi-Fi Analyzer", icon: Wifi },
+] satisfies CompactTabItem<NetworkTab>[];
+
 export function NetworkToolkitWorkspace() {
   const bootstrap = useOutletContext<AppBootstrapState>();
   const toolkit = useNetworkToolkit(bootstrap);
-  const [activeTab, setActiveTab] = useState<"diagnostics" | "subnet" | "wifi">("diagnostics");
+  const [activeTab, setActiveTab] = useState<NetworkTab>("diagnostics");
 
   const {
     localIp,
@@ -313,53 +322,18 @@ export function NetworkToolkitWorkspace() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Premium Dynamic Tab Selector */}
-      <div className="flex border-b border-(--border-subtle) pb-px gap-2">
-        <button
-          onClick={() => setActiveTab("diagnostics")}
-          className={`flex items-center gap-2.5 px-5 py-3 text-sm font-medium border-b-2 transition-all duration-200 cursor-pointer ${
-            activeTab === "diagnostics"
-              ? "border-(--accent) text-(--text-primary) bg-(--accent-surface)/5"
-              : "border-transparent text-(--text-muted) hover:text-(--text-secondary)"
-          }`}
-        >
-          <Activity className="h-4.5 w-4.5" />
-          Diagnostics
-        </button>
-        <button
-          onClick={() => setActiveTab("subnet")}
-          className={`flex items-center gap-2.5 px-5 py-3 text-sm font-medium border-b-2 transition-all duration-200 cursor-pointer ${
-            activeTab === "subnet"
-              ? "border-(--accent) text-(--text-primary) bg-(--accent-surface)/5"
-              : "border-transparent text-(--text-muted) hover:text-(--text-secondary)"
-          }`}
-        >
-          <Radar className="h-4.5 w-4.5" />
-          Subnet Scanner
-        </button>
-        <button
-          onClick={() => setActiveTab("wifi")}
-          className={`flex items-center gap-2.5 px-5 py-3 text-sm font-medium border-b-2 transition-all duration-200 cursor-pointer ${
-            activeTab === "wifi"
-              ? "border-(--accent) text-(--text-primary) bg-(--accent-surface)/5"
-              : "border-transparent text-(--text-muted) hover:text-(--text-secondary)"
-          }`}
-        >
-          <Wifi className="h-4.5 w-4.5" />
-          Wi-Fi Analyzer
-        </button>
-      </div>
+    <div className="space-y-4">
+      <CompactTabs items={networkTabs} value={activeTab} onChange={setActiveTab} />
 
       {/* ============================================================== */}
       {/* TAB 1: BASIC DIAGNOSTICS                                       */}
       {/* ============================================================== */}
       {activeTab === "diagnostics" && (
-        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-200">
-          <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="grid items-start gap-4 xl:grid-cols-[1fr_1fr]">
             <PageSection
               title="Local IP"
-              description="Shows your device's local IP, subnet, gateway, DNS servers, and IP assignment mode."
+              description="Local IP, subnet, gateway, DNS, and assignment mode."
               actions={
                 <div className="flex gap-3">
                   <Button
@@ -450,20 +424,20 @@ export function NetworkToolkitWorkspace() {
                   <EmptyState
                     icon={Radar}
                     title="Running DNS lookup..."
-                    description="Resolver is checking the IP address for the domain you entered."
+                  description="Resolving the domain address."
                   />
                 ) : (
                   <EmptyState
                     icon={Globe2}
                     title="No DNS results yet"
-                    description="Enter a domain and run a lookup to see the resolved IP addresses."
+                    description="Run a lookup to see resolved IP addresses."
                   />
                 )}
               </div>
             </PageSection>
           </div>
 
-          <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
+          <div className="grid items-start gap-4 xl:grid-cols-[1fr_1fr]">
             <PageSection
               title="Ping Host"
               description="Check if a host or IP is reachable."
@@ -500,20 +474,20 @@ export function NetworkToolkitWorkspace() {
                       hint={ping.data.summary}
                       value={ping.data.output || "No additional details from the ping process."}
                       readOnly
-                      className="min-h-[220px] font-mono text-[13px]"
+                      className="min-h-[180px] font-mono text-[13px]"
                     />
                   </div>
                 ) : ping.status === "loading" ? (
                   <EmptyState
                     icon={Activity}
                     title="Running ping..."
-                    description="Orion is checking if the target is reachable."
+                    description="Checking target reachability."
                   />
                 ) : (
                   <EmptyState
                     icon={Activity}
                     title="No ping results yet"
-                    description="Enter a host and run a ping to check reachability."
+                    description="Run ping to check reachability."
                   />
                 )}
               </div>
@@ -562,13 +536,13 @@ export function NetworkToolkitWorkspace() {
                   <EmptyState
                     icon={Server}
                     title="Checking port..."
-                    description="Orion is attempting a TCP connection to the specified host and port."
+                    description="Trying a TCP connection."
                   />
                 ) : (
                   <EmptyState
                     icon={Server}
                     title="No port check results yet"
-                    description="Enter a host and port, then run a check to see if the port is open."
+                    description="Run a check to see if the port is open."
                   />
                 )}
               </div>
@@ -590,7 +564,7 @@ export function NetworkToolkitWorkspace() {
               </Button>
             }
           >
-            <div className="grid items-start gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+            <div className="grid items-start gap-4 xl:grid-cols-[0.9fr_1.1fr]">
               <div className="space-y-4">
                 <Input
                   label="URL"
@@ -612,13 +586,13 @@ export function NetworkToolkitWorkspace() {
                   <EmptyState
                     icon={ShieldAlert}
                     title="Sending HTTP request..."
-                    description="Orion is reading the status from the target URL."
+                    description="Reading target HTTP status."
                   />
                 ) : (
                   <EmptyState
                     icon={ShieldAlert}
                     title="No HTTP results yet"
-                    description="Enter a URL and run a check to see the status code, final URL, and summary."
+                    description="Run a check to see status, final URL, and summary."
                   />
                 )}
               </div>
@@ -631,10 +605,10 @@ export function NetworkToolkitWorkspace() {
       {/* TAB 2: NATIVE SUBNET SCANNER                                   */}
       {/* ============================================================== */}
       {activeTab === "subnet" && (
-        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
           <PageSection
             title="Subnet Scanner"
-            description="Performs a high-speed active discovery swept via parallel UDP probes, resolving device MAC addresses, vendors, and local hostnames in 1-2 seconds."
+            description="Fast local subnet discovery with MAC, vendor, and hostname details."
             actions={
               <div className="flex gap-3">
                 <Button
@@ -662,25 +636,23 @@ export function NetworkToolkitWorkspace() {
             )}
 
             {subnet.status === "loading" ? (
-              <div className="flex flex-col items-center justify-center py-16 border rounded-2xl bg-black/10 border-(--border-subtle)">
+              <div className="flex flex-col items-center justify-center rounded-xl border border-(--border-subtle) bg-black/10 py-8">
                 {/* Radar animation sweep */}
-                <div className="relative flex items-center justify-center h-28 w-28 mb-6">
+                <div className="relative mb-3 flex h-20 w-20 items-center justify-center">
                   <div className="absolute inset-0 rounded-full border-2 border-(--accent)/30 animate-ping" />
                   <div className="absolute inset-4 rounded-full border border-(--accent)/40" />
                   <div className="absolute h-full w-full rounded-full border border-(--accent)/20 animate-[spin_3s_linear_infinite] after:content-[''] after:absolute after:top-0 after:left-1/2 after:h-1/2 after:w-1/2 after:bg-gradient-to-tr after:from-(--accent)/40 after:to-transparent after:rounded-tr-full" />
-                  <Radar className="h-10 w-10 text-(--accent) animate-[pulse_1.5s_ease-in-out_infinite]" />
+                  <Radar className="h-7 w-7 animate-[pulse_1.5s_ease-in-out_infinite] text-(--accent)" />
                 </div>
-                <div className="text-lg font-semibold text-(--text-primary)">Sweeping Local Subnet...</div>
-                <div className="text-sm text-(--text-muted) mt-1.5 max-w-sm text-center">
-                  Sending dynamic sweeps and interrogating the system's ARP cache.
-                </div>
+                <div className="text-sm font-semibold text-(--text-primary)">Sweeping local subnet...</div>
+                <div className="mt-1 max-w-sm text-center text-xs text-(--text-muted)">Scanning devices and ARP cache.</div>
               </div>
             ) : subnet.errorMessage ? (
               <ErrorBanner title="Failed to scan subnet" message={subnet.errorMessage} />
             ) : subnet.data ? (
-              <div className="space-y-5">
+              <div className="space-y-4">
                 {/* Summary Banner */}
-                <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 flex items-center justify-between gap-4">
+                <div className="flex items-center justify-between gap-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
                     <div>
@@ -696,23 +668,23 @@ export function NetworkToolkitWorkspace() {
                 </div>
 
                 {/* Devices Grid */}
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {subnet.data.devices.map((device: DiscoveredDevice) => {
                     const DeviceIcon = getDeviceIcon(device.deviceType);
                     return (
                       <div
                         key={device.ip}
-                        className="surface-panel p-4 flex flex-col justify-between gap-4 hover:border-(--accent-soft) hover:shadow-lg transition-all duration-200"
+                        className="surface-panel flex flex-col justify-between gap-3 p-3 hover:border-(--accent-soft) hover:shadow-lg transition-all duration-200"
                       >
                         <div className="space-y-2.5">
                           <div className="flex items-start justify-between gap-2">
                             {/* Device Icon & IP */}
-                            <div className="flex items-center gap-3">
-                              <div className="p-2.5 rounded-xl bg-black/25 border border-(--border-subtle) text-(--accent)">
-                                <DeviceIcon className="h-5 w-5" />
+                            <div className="flex items-center gap-2.5">
+                              <div className="rounded-lg border border-(--border-subtle) bg-black/25 p-2 text-(--accent)">
+                                <DeviceIcon className="h-4 w-4" />
                               </div>
                               <div>
-                                <div className="font-mono font-bold text-base text-(--text-primary)">
+                                <div className="font-mono text-sm font-bold text-(--text-primary)">
                                   {device.ip}
                                 </div>
                                 <div className="text-xs text-(--text-muted) truncate max-w-[130px]" title={device.hostname}>
@@ -763,7 +735,7 @@ export function NetworkToolkitWorkspace() {
               <EmptyState
                 icon={Radar}
                 title="Subnet Scanner Ready"
-                description="Click Scan Subnet above to automatically query active devices on your local network."
+                description="Scan to query active devices on your local network."
               />
             )}
           </PageSection>
@@ -774,11 +746,11 @@ export function NetworkToolkitWorkspace() {
       {/* TAB 3: WI-FI ANALYZER                                          */}
       {/* ============================================================== */}
       {activeTab === "wifi" && (
-        <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
           {/* Active Interface Header */}
           <PageSection
             title="Active Interface"
-            description="Details of your currently connected Wi-Fi interface and wireless network connection speed."
+            description="Connected Wi-Fi status, adapter details, and signal speed."
             actions={
               <Button
                 variant="primary"
@@ -794,23 +766,23 @@ export function NetworkToolkitWorkspace() {
             {activeWifi.errorMessage ? (
               <ErrorBanner title="Failed to read active connection" message={activeWifi.errorMessage} />
             ) : activeWifi.data ? (
-              <div className="space-y-5">
-                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              <div className="space-y-4">
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                   {/* Connection Status Card */}
-                  <div className="surface-panel p-5 relative overflow-hidden border border-emerald-500/25 bg-emerald-500/[0.02]">
+                  <div className="surface-panel relative overflow-hidden border border-emerald-500/25 bg-emerald-500/[0.02] p-3.5">
                     <div className="absolute right-[-10px] top-[-10px] text-emerald-500/5 rotate-12">
                       <Wifi className="h-28 w-28" />
                     </div>
-                    <div className="flex items-center gap-3.5 mb-4">
-                      <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        <Wifi className="h-6 w-6" />
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-2 text-emerald-400">
+                        <Wifi className="h-4 w-4" />
                       </div>
                       <div>
                         <div className="text-xs uppercase tracking-wider text-emerald-400/80 font-bold">Connected SSID</div>
-                        <div className="text-xl font-bold text-emerald-300 font-display mt-0.5">{activeWifi.data.ssid}</div>
+                        <div className="mt-0.5 font-display text-base font-bold text-emerald-300">{activeWifi.data.ssid}</div>
                       </div>
                     </div>
-                    <div className="space-y-2 text-xs border-t border-emerald-500/10 pt-4">
+                    <div className="space-y-2 border-t border-emerald-500/10 pt-3 text-xs">
                       <div className="flex justify-between">
                         <span className="text-(--text-muted)">State:</span>
                         <span className="font-semibold text-emerald-400 capitalize">{activeWifi.data.state}</span>
@@ -836,13 +808,13 @@ export function NetworkToolkitWorkspace() {
                   </div>
 
                   {/* Adapter & Channels Card */}
-                  <div className="surface-panel p-5 relative overflow-hidden">
+                  <div className="surface-panel relative overflow-hidden p-3.5">
                     <div className="absolute right-[-10px] top-[-10px] text-(--accent)/5 rotate-12">
                       <Radio className="h-28 w-28" />
                     </div>
-                    <div className="flex items-center gap-3.5 mb-4">
-                      <div className="p-3 rounded-2xl bg-(--accent-surface) text-(--accent) border border-(--border-strong)">
-                        <Radio className="h-6 w-6" />
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="rounded-lg border border-(--border-strong) bg-(--accent-surface) p-2 text-(--accent)">
+                        <Radio className="h-4 w-4" />
                       </div>
                       <div>
                         <div className="text-xs uppercase tracking-wider text-(--text-muted) font-bold">Adapter & Band</div>
@@ -851,7 +823,7 @@ export function NetworkToolkitWorkspace() {
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-2 text-xs border-t border-(--border-subtle) pt-4">
+                    <div className="space-y-2 border-t border-(--border-subtle) pt-3 text-xs">
                       <div className="flex justify-between">
                         <span className="text-(--text-muted)">Interface Name:</span>
                         <span className="font-medium text-(--text-secondary)">{activeWifi.data.name}</span>
@@ -870,13 +842,13 @@ export function NetworkToolkitWorkspace() {
                   </div>
 
                   {/* Speed & Signal Card */}
-                  <div className="surface-panel p-5 relative overflow-hidden">
+                  <div className="surface-panel relative overflow-hidden p-3.5">
                     <div className="absolute right-[-10px] top-[-10px] text-sky-500/5 rotate-12">
                       <Gauge className="h-28 w-28" />
                     </div>
-                    <div className="flex items-center gap-3.5 mb-4">
-                      <div className="p-3 rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
-                        <Gauge className="h-6 w-6" />
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="rounded-lg border border-sky-500/20 bg-sky-500/10 p-2 text-sky-400">
+                        <Gauge className="h-4 w-4" />
                       </div>
                       <div>
                         <div className="text-xs uppercase tracking-wider text-(--text-muted) font-bold">Signal & Speeds</div>
@@ -886,7 +858,7 @@ export function NetworkToolkitWorkspace() {
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-2 text-xs border-t border-(--border-subtle) pt-4">
+                    <div className="space-y-2 border-t border-(--border-subtle) pt-3 text-xs">
                       <div className="flex justify-between">
                         <span className="text-(--text-muted)">Receive Rate (Rx):</span>
                         <span className="font-bold text-(--text-primary)">{activeWifi.data.receiveRate} Mbps</span>
@@ -904,8 +876,8 @@ export function NetworkToolkitWorkspace() {
                 </div>
 
                 {/* Real-time Signal Strength History Chart Card */}
-                <div className="surface-panel p-5 relative overflow-hidden border border-(--border-subtle) animate-in fade-in duration-300">
-                  <div className="text-sm font-semibold mb-4 text-(--text-primary) flex items-center gap-2">
+                <div className="surface-panel relative overflow-hidden border border-(--border-subtle) p-3.5 animate-in fade-in duration-300">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-(--text-primary)">
                     <Signal className="h-4.5 w-4.5 text-(--accent) animate-[pulse_1.5s_ease-in-out_infinite]" />
                     Real-time Connected Signal Strength History (Last 60s)
                   </div>
@@ -1007,7 +979,7 @@ export function NetworkToolkitWorkspace() {
                 </div>
               </div>
             ) : activeWifi.status === "loading" ? (
-              <div className="flex items-center justify-center p-8 border rounded-2xl bg-black/5">
+              <div className="flex items-center justify-center rounded-xl border bg-black/5 p-5">
                 <div className="text-sm text-(--text-muted) flex items-center gap-2">
                   <RefreshCw className="h-4 w-4 animate-spin text-(--accent)" />
                   Reading active adapter details...
@@ -1024,29 +996,29 @@ export function NetworkToolkitWorkspace() {
           {wifiNetworks.data && wifiNetworks.data.length > 0 && activeWifi.data && (
             <PageSection
               title="Channel Optimizer"
-              description="Analyzes surrounding channels to compute overlap interference weights, helping you select the quietest, most stable frequency channel for your Wi-Fi router."
+              description="Find the quietest stable router channel from nearby AP overlap."
             >
-              <div className="grid gap-5 lg:grid-cols-2">
+              <div className="grid gap-4 lg:grid-cols-2">
                 {/* Left Card: Recommendation */}
-                <div className="surface-panel p-5 relative overflow-hidden border border-(--accent-soft) bg-(--accent-surface)/5 animate-in fade-in duration-300">
+                <div className="surface-panel relative overflow-hidden border border-(--accent-soft) bg-(--accent-surface)/5 p-3.5 animate-in fade-in duration-300">
                   <div className="absolute right-[-10px] top-[-10px] text-(--accent)/5 rotate-12">
                     <Radar className="h-28 w-28" />
                   </div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 rounded-2xl bg-(--accent-surface) text-(--accent) border border-(--border-strong)">
-                      <CheckCircle2 className="h-5 w-5" />
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="rounded-lg border border-(--border-strong) bg-(--accent-surface) p-2 text-(--accent)">
+                      <CheckCircle2 className="h-4 w-4" />
                     </div>
                     <div>
                       <div className="text-xs uppercase tracking-wider text-(--text-muted) font-bold">Optimization Advisory</div>
-                      <h3 className="text-lg font-bold text-(--text-primary) font-display mt-0.5">Quiet Channel Recommendation</h3>
+                      <h3 className="mt-0.5 font-display text-base font-bold text-(--text-primary)">Quiet Channel Recommendation</h3>
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
-                    <div className="rounded-xl bg-black/20 p-4 border border-(--border-subtle)">
+                  <div className="space-y-3">
+                    <div className="rounded-xl border border-(--border-subtle) bg-black/20 p-3">
                       <div className="text-xs text-(--text-muted)">RECOMMENDED FOR YOUR {activeBand.toUpperCase()} NETWORK</div>
                       <div className="flex items-baseline gap-3 mt-2">
-                        <span className="text-3xl font-extrabold text-(--accent) font-display">Channel {recommendedChannelObj.channel}</span>
+                        <span className="font-display text-2xl font-extrabold text-(--accent)">Channel {recommendedChannelObj.channel}</span>
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getRatingStyle(recommendedChannelObj.rating)}`}>
                           Rating: {recommendedChannelObj.rating}
                         </span>
@@ -1086,8 +1058,8 @@ export function NetworkToolkitWorkspace() {
                 </div>
 
                 {/* Right Card: Channel Grid Map */}
-                <div className="surface-panel p-5">
-                  <div className="text-sm font-semibold mb-4 text-(--text-primary) flex items-center gap-2">
+                <div className="surface-panel p-3.5">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-(--text-primary)">
                     <Signal className="h-4.5 w-4.5 text-(--accent)" />
                     Channel Occupancy Rating List ({activeBand})
                   </div>
@@ -1120,15 +1092,15 @@ export function NetworkToolkitWorkspace() {
           {/* Nearby Networks Sweeper */}
           <PageSection
             title="Nearby Wi-Fi Networks"
-            description="Graphic representation of surrounding wireless channels, signal levels, encryption standards, and AP bands."
+            description="Nearby channel, signal, encryption, and AP band details."
           >
             {wifiNetworks.errorMessage ? (
               <ErrorBanner title="Wi-Fi Sweep Failed" message={wifiNetworks.errorMessage} />
             ) : wifiNetworks.data && wifiNetworks.data.length > 0 ? (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Visualizer Chart */}
-                <div className="surface-panel p-5">
-                  <div className="text-sm font-semibold mb-4 text-(--text-primary) flex items-center gap-2">
+                <div className="surface-panel p-3.5">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-(--text-primary)">
                     <Signal className="h-4.5 w-4.5 text-(--accent)" />
                     Signal Strength Comparison Map
                   </div>
@@ -1164,13 +1136,13 @@ export function NetworkToolkitWorkspace() {
                 </div>
 
                 {/* Networks Detail List */}
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-2">
                   {wifiNetworks.data.map((net: WifiNetwork) => (
-                    <div key={net.ssid} className="surface-panel p-4 flex flex-col justify-between gap-4">
+                    <div key={net.ssid} className="surface-panel flex flex-col justify-between gap-3 p-3">
                       <div>
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <div className="font-bold text-base text-(--text-primary) font-display leading-tight truncate max-w-[190px]">
+                            <div className="max-w-[190px] truncate font-display text-sm font-bold leading-tight text-(--text-primary)">
                               {net.ssid}
                             </div>
                             <div className="text-xs text-(--text-muted) mt-0.5">
@@ -1189,7 +1161,7 @@ export function NetworkToolkitWorkspace() {
                         </div>
 
                         {/* Expandable BSSID stats */}
-                        <div className="mt-4 border-t border-(--border-subtle)/40 pt-3 space-y-2 text-xs">
+                        <div className="mt-3 space-y-2 border-t border-(--border-subtle)/40 pt-3 text-xs">
                           {net.bssids.map((bssid) => (
                             <div key={bssid.bssid} className="flex flex-col gap-2.5 bg-black/20 p-3 rounded-xl border border-(--border-subtle)/20">
                               <div className="flex items-center justify-between gap-2">
@@ -1214,16 +1186,16 @@ export function NetworkToolkitWorkspace() {
                 </div>
               </div>
             ) : wifiNetworks.status === "loading" ? (
-              <div className="flex flex-col items-center justify-center py-16 border rounded-2xl bg-black/10 border-(--border-subtle)">
-                <RefreshCw className="h-8 w-8 text-(--accent) animate-spin mb-4" />
-                <div className="text-lg font-semibold text-(--text-primary)">Scanning wireless environment...</div>
-                <div className="text-xs text-(--text-muted) mt-1">Listening to beacons and scanning channels.</div>
+              <div className="flex flex-col items-center justify-center rounded-xl border border-(--border-subtle) bg-black/10 py-8">
+                <RefreshCw className="mb-2 h-5 w-5 animate-spin text-(--accent)" />
+                <div className="text-sm font-semibold text-(--text-primary)">Scanning wireless environment...</div>
+                <div className="mt-1 text-xs text-(--text-muted)">Listening to beacons and channels.</div>
               </div>
             ) : (
               <EmptyState
                 icon={Wifi}
                 title="Wi-Fi Scanner Ready"
-                description="Click Scan & Refresh above to automatically sweep and map surrounding wireless networks."
+                description="Scan to map nearby wireless networks."
               />
             )}
           </PageSection>

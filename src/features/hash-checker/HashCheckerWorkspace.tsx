@@ -42,13 +42,13 @@ export function HashCheckerWorkspace() {
   const compareState = compareReferenceHash(referenceHash, result);
 
   return (
-    <div className="space-y-5">
-      <div className="grid items-start gap-5 xl:grid-cols-[1.05fr_0.95fr]">
+    <div className="space-y-4">
+      <div className="grid items-start gap-4 xl:grid-cols-[1.05fr_0.95fr]">
         <PageSection
           title="Source File"
-          description="Choose a file from your device, then generate MD5, SHA1, and SHA256 hashes."
+          description="Choose a file and generate MD5, SHA1, and SHA256 hashes."
         >
-          <div className="space-y-5">
+          <div className="space-y-3">
             <HashFileDropZone
               selectedFilePath={selectedFilePath}
               selectedFileName={selectedFileName}
@@ -60,13 +60,13 @@ export function HashCheckerWorkspace() {
 
             <Input
               label="Reference hash"
-              hint="Paste a reference hash to check whether it matches any generated file digest."
+              hint="Paste a reference hash to compare against generated digests."
               placeholder="Enter an MD5, SHA1, or SHA256 hash..."
               value={referenceHash}
               onChange={(event) => setReferenceHash(event.target.value)}
             />
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
               <Button leadingIcon={Sparkles} onClick={runHash} loading={status === "loading"} disabled={!selectedFilePath || !isDesktopRuntime}>
                 Generate hashes
               </Button>
@@ -79,9 +79,9 @@ export function HashCheckerWorkspace() {
 
         <PageSection
           title="Progress & File Info"
-          description="Track progress and file information."
+          description="Progress and selected file summary."
         >
-          <div className="space-y-5">
+          <div className="space-y-3">
             <ProgressBar
               label={progressStatus}
               value={progressPercent}
@@ -106,7 +106,7 @@ export function HashCheckerWorkspace() {
               <EmptyState
                 icon={Gauge}
                 title="No hash results yet"
-                description="Choose a file and run the hash generator to see digests, progress, and reference status."
+                description="Choose a file and generate hashes to see results."
               />
             )}
           </div>
@@ -115,9 +115,9 @@ export function HashCheckerWorkspace() {
 
       <PageSection
         title="Generated Digests"
-        description="Each digest can be copied individually and is automatically compared with the reference hash."
+        description="Copy individual digests and compare against the reference."
       >
-        <div className="grid gap-4 xl:grid-cols-3">
+        <div className="grid gap-3 xl:grid-cols-3">
           <HashDigestCard
             label="MD5"
             value={result?.md5}

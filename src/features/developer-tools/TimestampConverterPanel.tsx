@@ -43,7 +43,7 @@ export function TimestampConverterPanel({ className }: TimestampConverterPanelPr
   return (
     <DeveloperToolCard
       title="Timestamp Converter"
-      description="Convert Unix timestamps or date strings into local time, UTC, ISO, seconds, and milliseconds."
+      description="Convert Unix timestamps or date strings into common time formats."
       icon={Clock3}
       className={className}
       actions={
@@ -60,10 +60,10 @@ export function TimestampConverterPanel({ className }: TimestampConverterPanelPr
         </div>
       }
     >
-      <div className="space-y-5">
+      <div className="space-y-3">
         <Input
           label="Timestamp or date string"
-          hint="Example: 1716449923000, 1716449923, or 2026-05-23T08:00:00Z"
+          hint="Examples: 1716449923000, 1716449923, or ISO date."
           placeholder="Enter Unix seconds, milliseconds, or an ISO date string..."
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
@@ -113,9 +113,9 @@ function MetricCard({
   mono?: boolean;
 }) {
   return (
-    <div className="rounded-xl border bg-black/10 p-3">
+    <div className="rounded-lg border bg-black/10 p-2.5">
       <div className="text-xs uppercase tracking-widest text-(--text-muted)">{label}</div>
-      <div className={`mt-3 break-words text-sm text-(--text-primary) ${mono ? "font-mono" : ""}`}>{value}</div>
+      <div className={`mt-2 break-words text-sm text-(--text-primary) ${mono ? "font-mono" : ""}`}>{value}</div>
     </div>
   );
 }
@@ -138,14 +138,14 @@ function StatusNotice({
         : "border-(--border-subtle) bg-white/5 text-(--text-secondary)";
 
   return (
-    <div className={`rounded-xl border p-3 ${toneClassName}`}>
+    <div className={`rounded-lg border p-3 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
-          className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-(--accent-strong)"}`}
+          className={`mt-0.5 size-4 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-(--accent-strong)"}`}
         />
         <div>
           <div className="text-sm font-semibold text-(--text-primary)">{title}</div>
-          <div className="mt-1 text-sm leading-5">{description}</div>
+          <div className="mt-1 text-xs leading-4">{description}</div>
         </div>
       </div>
     </div>

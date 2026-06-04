@@ -35,17 +35,17 @@ export function PdfQueueDropZone({
   const isSingle = isPdfOperationSingleFile(operation);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
       <div
         className={cn(
-          "rounded-2xl border border-dashed bg-(--surface-2) p-4 transition",
+          "rounded-lg border border-dashed bg-(--surface-2) p-3 transition",
           isDragActive ? "border-amber-400/55 bg-amber-500/10" : "hover:border-amber-400/28 hover:bg-white/5",
           disabled && "pointer-events-none opacity-70",
         )}
       >
-        <div className="mx-auto flex max-w-2xl flex-col items-center gap-3 text-center">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-amber-500/12 text-amber-300">
-            <Icon className="size-5" />
+        <div className="mx-auto flex max-w-2xl flex-col items-center gap-2.5 text-center">
+          <div className="flex size-9 items-center justify-center rounded-lg bg-amber-500/12 text-amber-300">
+            <Icon className="size-4" />
           </div>
           <div>
             <div className="text-sm font-semibold text-(--text-primary)">
@@ -55,20 +55,18 @@ export function PdfQueueDropZone({
                   ? "Drop one source file into this area"
                   : "Drop multiple files into this area"}
             </div>
-            <div className="mt-1.5 text-sm leading-5 text-(--text-secondary)">
+            <div className="mt-1 text-xs leading-4 text-(--text-secondary)">
               {getQueueDescription(operation)}
             </div>
-            <div className="mt-1.5 text-xs uppercase tracking-[0.08em] text-(--text-muted)">
+            <div className="mt-1 text-[11px] uppercase tracking-[0.08em] text-(--text-muted)">
               {getOperationHint(operation)}
             </div>
             {!isSingle ? (
-              <div className="mt-2 text-xs text-(--text-muted)">
-                Use the arrows on each item to adjust processing order.
-              </div>
+              <div className="mt-1 text-xs text-(--text-muted)">Use arrows to adjust order.</div>
             ) : null}
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2">
             <Button variant="outline" leadingIcon={FolderPlus} onClick={onPick} disabled={disabled}>
               Choose files
             </Button>
@@ -80,11 +78,11 @@ export function PdfQueueDropZone({
       </div>
 
       {files.length > 0 ? (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {files.map((file, index) => (
             <div
               key={file.path}
-              className="flex items-start justify-between gap-3 rounded-2xl border bg-(--surface-2) px-3 py-3"
+              className="flex items-start justify-between gap-3 rounded-lg border bg-(--surface-2) px-3 py-2.5"
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
@@ -98,7 +96,7 @@ export function PdfQueueDropZone({
                 <div className="mt-1 break-all font-mono text-[12px] leading-5 text-(--text-muted)">
                   {truncateMiddle(file.path, 36, 18)}
                 </div>
-                <div className="mt-2 inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-2.5 py-0.5 text-[11px] uppercase tracking-[0.08em] text-amber-200">
+                <div className="mt-1.5 inline-flex rounded-full border border-amber-400/18 bg-amber-500/10 px-2.5 py-0.5 text-[11px] uppercase tracking-[0.08em] text-amber-200">
                   {file.extension.toUpperCase()}
                 </div>
               </div>
@@ -111,7 +109,7 @@ export function PdfQueueDropZone({
                     aria-label={`Move ${file.fileName} up`}
                       onClick={() => onMoveUp(file.path)}
                       disabled={disabled || index === 0}
-                      className="inline-flex size-9 items-center justify-center rounded-xl border bg-black/10 text-(--text-secondary) transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex size-8 items-center justify-center rounded-lg border bg-black/10 text-(--text-secondary) transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <ArrowUp className="size-4" />
                     </button>
@@ -120,7 +118,7 @@ export function PdfQueueDropZone({
                     aria-label={`Move ${file.fileName} down`}
                       onClick={() => onMoveDown(file.path)}
                       disabled={disabled || index === files.length - 1}
-                      className="inline-flex size-9 items-center justify-center rounded-xl border bg-black/10 text-(--text-secondary) transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex size-8 items-center justify-center rounded-lg border bg-black/10 text-(--text-secondary) transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <ArrowDown className="size-4" />
                     </button>
@@ -132,7 +130,7 @@ export function PdfQueueDropZone({
                   aria-label={`Remove ${file.fileName}`}
                   onClick={() => onRemove(file.path)}
                   disabled={disabled}
-                  className="inline-flex size-9 items-center justify-center rounded-xl border bg-black/10 text-(--text-secondary) transition hover:border-rose-400/30 hover:text-rose-200 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex size-8 items-center justify-center rounded-lg border bg-black/10 text-(--text-secondary) transition hover:border-rose-400/30 hover:text-rose-200 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <X className="size-4" />
                 </button>

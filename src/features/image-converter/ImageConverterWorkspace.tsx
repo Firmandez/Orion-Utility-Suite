@@ -72,11 +72,11 @@ export function ImageConverterWorkspace() {
       ];
 
   return (
-    <div className="space-y-5">
-      <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
+    <div className="space-y-4">
+      <div className="grid items-start gap-4 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Image Queue"
-          description="Add images from your device. You can add files incrementally."
+          description="Add images from your device."
         >
           <ImageBatchDropZone
             files={files}
@@ -90,37 +90,37 @@ export function ImageConverterWorkspace() {
 
         <PageSection
           title="Conversion Settings"
-          description="Configure output folder, format, quality, resize, and compression."
+          description="Set output, format, quality, resize, and compression."
           actions={
             <Button variant="outline" leadingIcon={FolderSearch2} onClick={pickOutputFolder} disabled={!isDesktopRuntime || status === "loading"}>
               {outputFolderSource === "default" ? "Choose custom folder" : "Choose output folder"}
             </Button>
           }
         >
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Input
               label="Output folder"
               hint={
                 outputFolderSource === "default"
-                  ? "Currently using the default output folder from Settings. Choose a different folder for a custom location."
-                  : "This folder is used to save all converted files."
+                  ? "Using the Settings default. Choose a folder to override."
+                  : "Converted files are saved here."
               }
               placeholder="Choose output folder..."
               value={outputFolderPath ?? ""}
               readOnly
             />
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               <Select
                 label="Target format"
-                hint="Choose JPG for smaller size or PNG for lossless quality."
+                hint="JPG for smaller files, PNG for lossless output."
                 options={imageOutputFormatOptions}
                 value={outputFormat}
                 onChange={(event) => updateOutputFormat(event.target.value as "jpg" | "png")}
               />
               <Input
                 label="JPG quality"
-                hint="Value 1-100. Only used when target format is JPG."
+                hint="1-100. Used only for JPG."
                 inputMode="numeric"
                 value={qualityInput}
                 onChange={(event) => updateQualityInput(event.target.value)}
@@ -131,15 +131,15 @@ export function ImageConverterWorkspace() {
 
             <Toggle
               label="Enable resize"
-              hint="Enable to limit output width or height while preserving aspect ratio."
+                hint="Limit width or height while preserving aspect ratio."
               checked={resizeEnabled}
               onCheckedChange={updateResizeEnabled}
             />
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               <Input
                 label="Resize width"
-                hint="Leave empty to control only height."
+                hint="Leave empty to use height only."
                 inputMode="numeric"
                 placeholder="e.g. 1600"
                 value={resizeWidth}
@@ -148,7 +148,7 @@ export function ImageConverterWorkspace() {
               />
               <Input
                 label="Resize height"
-                hint="Leave empty to control only width."
+                hint="Leave empty to use width only."
                 inputMode="numeric"
                 placeholder="e.g. 1200"
                 value={resizeHeight}
@@ -159,12 +159,12 @@ export function ImageConverterWorkspace() {
 
             <Toggle
               label="Enable compression"
-              hint="For PNG, this uses stronger compression. For JPG, file size is mainly controlled by quality."
+              hint="PNG uses stronger compression; JPG follows quality."
               checked={compress}
               onCheckedChange={updateCompress}
             />
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
               <Button
                 leadingIcon={Sparkles}
                 onClick={runConversion}
@@ -188,9 +188,9 @@ export function ImageConverterWorkspace() {
 
       <PageSection
         title="Progress"
-        description="Monitor conversion progress and batch results."
+        description="Conversion progress and batch summary."
       >
-        <div className="space-y-5">
+        <div className="space-y-3">
           <ProgressBar
             label={currentFileName ? `${progressStatus} - ${currentFileName}` : progressStatus}
             value={progressPercent}
@@ -211,7 +211,7 @@ export function ImageConverterWorkspace() {
             <EmptyState
               icon={Gauge}
               title="No batch has been run yet"
-              description="Set up the queue and output folder first, then run conversion to see progress and results."
+              description="Run conversion to see progress and results."
             />
           )}
         </div>
@@ -219,7 +219,7 @@ export function ImageConverterWorkspace() {
 
       <PageSection
         title="Per-file Results"
-        description="Each item shows success or failure separately, so you can review problem files without losing other results."
+        description="Review per-file status and output paths."
       >
         <ImageConversionResultList
           results={response?.results ?? []}

@@ -107,20 +107,20 @@ export function ToolWorkspace({
   };
 
   return (
-    <div className="grid items-start gap-5 xl:grid-cols-[1.2fr_0.8fr]">
+    <div className="grid items-start gap-4 xl:grid-cols-[1.2fr_0.8fr]">
       <PageSection title={feature.title} description={note}>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <TextArea
             label={inputLabel}
-            hint="Use this field for text, file locations, or any input this tool needs."
+            hint="Text, file locations, or tool input."
             placeholder={inputPlaceholder}
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
           />
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2">
             <Select
               label={selectLabel}
-              hint="Choose the right mode before running the process."
+              hint="Choose the processing mode."
               options={selectOptions}
               value={selectedMode}
               onChange={(event) => setSelectedMode(event.target.value)}
@@ -138,7 +138,7 @@ export function ToolWorkspace({
             files={files}
             onFilesChange={setFiles}
           />
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2">
             <Button onClick={handleRun} loading={isRunning} leadingIcon={Sparkles}>
               {actionLabel}
             </Button>
@@ -149,7 +149,7 @@ export function ToolWorkspace({
         </div>
       </PageSection>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         <ResultCard
           title="Summary"
           description="Quick information about the current tool."
@@ -164,7 +164,7 @@ export function ToolWorkspace({
           title="Progress"
           description="Track progress and the latest result."
         >
-          <div className="space-y-4">
+          <div className="space-y-3">
             <ProgressBar label="Progress workflow" value={progress} tone={advancedEnabled ? "cyan" : "amber"} />
             {result ? (
               <ResultCard
@@ -181,7 +181,7 @@ export function ToolWorkspace({
               <EmptyState
                 icon={CircleDashed}
                 title="No process results yet"
-                description="Run the process to see progress and results here."
+                description="Run the process to see progress and results."
               />
             )}
           </div>

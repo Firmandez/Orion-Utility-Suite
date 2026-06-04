@@ -32,16 +32,16 @@ export function RouteErrorState() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-8">
-      <div className="surface-panel w-full max-w-2xl p-5 sm:p-6">
-        <div className="flex size-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-300">
-          <AlertTriangle className="size-5" />
+      <div className="surface-panel w-full max-w-xl p-4 sm:p-5">
+        <div className="flex size-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-300">
+          <AlertTriangle className="size-4" />
         </div>
-        <div className="mt-6">
+        <div className="mt-4">
           <div className="text-xs uppercase tracking-widest text-(--text-muted)">Page Error</div>
-          <h1 className="mt-3 text-3xl font-semibold text-(--text-primary)">{details.title}</h1>
-          <p className="mt-3 max-w-xl text-sm leading-7 text-(--text-secondary)">{details.description}</p>
+          <h1 className="mt-2 text-2xl font-semibold text-(--text-primary)">{details.title}</h1>
+          <p className="mt-2 max-w-xl text-sm leading-5 text-(--text-secondary)">{details.description}</p>
         </div>
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-4 flex flex-wrap gap-2">
           <Button leadingIcon={Home} onClick={() => window.location.assign(`${window.location.pathname}#/`)}>
             Back to dashboard
           </Button>

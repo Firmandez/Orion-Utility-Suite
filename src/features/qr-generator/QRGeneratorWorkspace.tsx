@@ -16,6 +16,7 @@ import { useOutletContext } from "react-router-dom";
 import { EmptyState } from "@/components/common/EmptyState";
 import { PageSection } from "@/components/common/PageSection";
 import { Button } from "@/components/ui/Button";
+import { CompactTabs, type CompactTabItem } from "@/components/ui/CompactTabs";
 import { FileDropZone } from "@/components/ui/FileDropZone";
 import { Select } from "@/components/ui/Select";
 import { notify } from "@/components/ui/Toast";
@@ -51,6 +52,12 @@ const presetIconMap = {
   email: Mail,
   vcard: ContactRound,
 } satisfies Record<QRPresetId, typeof QrCode>;
+
+const qrPresetTabs = qrPresetDefinitions.map((preset) => ({
+  id: preset.id,
+  label: preset.label,
+  icon: presetIconMap[preset.id],
+})) satisfies CompactTabItem<QRPresetId>[];
 
 export function QRGeneratorWorkspace() {
   useOutletContext<AppBootstrapState>();
@@ -165,37 +172,14 @@ export function QRGeneratorWorkspace() {
   };
 
   return (
-    <div className="grid items-start gap-5 2xl:grid-cols-[1.12fr_0.88fr]">
-      <div className="space-y-5">
+    <div className="grid items-start gap-4 2xl:grid-cols-[1.12fr_0.88fr]">
+      <div className="space-y-4">
         <PageSection
           title="QR Content"
-          description="Choose a QR type and fill in the required fields. Preview updates automatically."
+          description="Choose a QR type and fill the required fields."
         >
-          <div className="space-y-5">
-            <div className="flex flex-wrap gap-2">
-              {qrPresetDefinitions.map((preset) => {
-                const Icon = presetIconMap[preset.id];
-                const isActive = preset.id === form.preset;
-
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    aria-pressed={isActive}
-                    onClick={() => handlePresetChange(preset.id)}
-                    className={cn(
-                      "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-widest transition",
-                      isActive
-                        ? "border-(--accent-soft) bg-(--accent-surface) text-(--accent-strong)"
-                        : "border-(--border-subtle) bg-white/5 text-(--text-secondary) hover:border-(--accent-soft) hover:text-(--text-primary)",
-                    )}
-                  >
-                    <Icon className="size-3.5" />
-                    {preset.label}
-                  </button>
-                );
-              })}
-            </div>
+          <div className="space-y-3">
+            <CompactTabs items={qrPresetTabs} value={form.preset} onChange={handlePresetChange} />
             <DynamicPresetFields form={form} updateForm={updateForm} />
             <ValidationPanel errors={qrBuild.errors} warnings={qrBuild.warnings} />
           </div>
@@ -203,15 +187,15 @@ export function QRGeneratorWorkspace() {
 
         <PageSection
           title="Style & Export"
-          description="Customize colors, size, error correction, and center logo. Changes are reflected in the live preview."
+          description="Tune colors, size, scan protection, and logo."
           actions={
             <div className="rounded-full border border-(--accent-soft) bg-(--accent-surface) px-3 py-1 text-[11px] uppercase tracking-widest text-(--accent-strong)">
               PNG + SVG
             </div>
           }
         >
-          <div className="space-y-5">
-            <div className="grid gap-4 lg:grid-cols-2">
+          <div className="space-y-3">
+            <div className="grid gap-3 lg:grid-cols-2">
               <ColorSwatchCard
                 label="Foreground color"
                 hint="Color for QR modules, finder patterns, and corner markers."
@@ -226,7 +210,7 @@ export function QRGeneratorWorkspace() {
               />
             </div>
 
-            <div className="grid gap-4 xl:grid-cols-[1fr_1fr_0.9fr]">
+            <div className="grid gap-3 xl:grid-cols-[1fr_1fr_0.9fr]">
               <RangeField
                 label="QR size"
                 hint="Export resolution matches this value."
@@ -257,7 +241,7 @@ export function QRGeneratorWorkspace() {
               />
             </div>
 
-            <div className="grid gap-4 xl:grid-cols-[1.12fr_0.88fr]">
+            <div className="grid gap-3 xl:grid-cols-[1.12fr_0.88fr]">
               <FileDropZone
                 label="Center logo"
                 hint="Use a simple, high-contrast logo. Formats: PNG, JPG, SVG, or WEBP."
@@ -267,24 +251,22 @@ export function QRGeneratorWorkspace() {
                 multiple={false}
               />
 
-              <div className="surface-panel-alt flex flex-col gap-4 p-5">
+              <div className="surface-panel-alt flex flex-col gap-3 p-3">
                 <div>
                   <div className="text-sm font-semibold text-(--text-primary)">Preview logo</div>
-                  <div className="mt-1 text-xs leading-6 text-(--text-muted)">
-                   Use a simple logo with enough whitespace around it.
-                  </div>
+                  <div className="mt-0.5 text-xs leading-4 text-(--text-muted)">Use a simple logo with clear padding.</div>
                 </div>
 
                 {logoPreviewUrl && logoFiles[0] ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 rounded-xl border bg-black/10 p-3">
-                      <div className="flex size-12 items-center justify-center overflow-hidden rounded-xl border bg-white">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 rounded-lg border bg-black/10 p-2.5">
+                      <div className="flex size-10 items-center justify-center overflow-hidden rounded-lg border bg-white">
                         <img src={logoPreviewUrl} alt={logoFiles[0].name} className="max-h-full max-w-full object-contain" />
                       </div>
                       <div className="min-w-0">
                         <div className="truncate text-sm font-semibold text-(--text-primary)">{logoFiles[0].name}</div>
                         <div className="mt-1 text-xs text-(--text-muted)">{formatFileSize(logoFiles[0].size)}</div>
-                        <div className="mt-2 text-xs text-(--accent-strong)">Rendered at {form.logoSizePercent}% of QR area</div>
+                        <div className="mt-1 text-xs text-(--accent-strong)">Rendered at {form.logoSizePercent}%</div>
                       </div>
                     </div>
                     <Button variant="outline" leadingIcon={Trash2} onClick={() => clearLogo()}>
@@ -316,37 +298,35 @@ export function QRGeneratorWorkspace() {
         </PageSection>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         <PageSection
           title="QR Preview"
-          description="Preview reflects content, colors, size, and logo settings."
+          description="Live code preview and export readiness."
         >
-          <div className="space-y-4">
-            <div className="surface-panel-alt relative overflow-hidden p-5">
+          <div className="space-y-3">
+            <div className="surface-panel-alt relative overflow-hidden p-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-xs uppercase tracking-widest text-(--text-muted)">Realtime canvas</div>
                 <div className="rounded-full border border-(--accent-soft) bg-(--accent-surface) px-3 py-1 text-[11px] uppercase tracking-widest text-(--accent-strong)">
                   {form.size}px
                 </div>
               </div>
-              <div className="mt-5 flex justify-center">
+              <div className="mt-3 flex justify-center">
                 <div
                   className={cn(
-                    "relative flex min-h-[320px] w-full items-center justify-center rounded-2xl border bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(235,245,255,0.92))] p-4",
+                    "relative flex min-h-[260px] w-full items-center justify-center rounded-xl border bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(235,245,255,0.92))] p-3",
                     qrBuild.errors.length > 0 && "opacity-65",
                   )}
                 >
                   <div ref={containerRef} className="flex items-center justify-center" />
                   {qrBuild.errors.length > 0 ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-[rgba(4,10,18,0.42)] p-4 backdrop-blur-[2px]">
-                      <div className="max-w-sm rounded-2xl border border-amber-300/20 bg-[rgba(11,20,34,0.92)] p-4 text-center">
-                        <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-amber-500/12 text-amber-300">
-                          <AlertTriangle className="size-6" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-[rgba(4,10,18,0.42)] p-3 backdrop-blur-[2px]">
+                      <div className="max-w-xs rounded-xl border border-amber-300/20 bg-[rgba(11,20,34,0.92)] p-3 text-center">
+                        <div className="mx-auto flex size-9 items-center justify-center rounded-lg bg-amber-500/12 text-amber-300">
+                          <AlertTriangle className="size-4" />
                         </div>
-                        <div className="mt-4 text-lg font-semibold text-(--text-primary)">Preview waiting for valid input</div>
-                        <p className="mt-2 text-sm leading-6 text-(--text-secondary)">
-                          Fix the highlighted fields so the QR can be generated and exported.
-                        </p>
+                        <div className="mt-2 text-sm font-semibold text-(--text-primary)">Waiting for valid input</div>
+                        <p className="mt-1 text-xs leading-4 text-(--text-secondary)">Fix the highlighted fields to preview and export.</p>
                       </div>
                     </div>
                   ) : null}

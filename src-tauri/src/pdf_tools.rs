@@ -12,8 +12,9 @@ use printpdf::{
 use tauri::{Emitter, Manager};
 
 use crate::models::{
-    ImageToPdfResponsePayload, PdfMergeResponsePayload, PdfSplitResponsePayload,
-    PdfToImagesResponsePayload, PdfToolsProgressPayload,
+    ImageToPdfResponsePayload, PdfMergeResponsePayload, PdfMetadataPayload,
+    PdfMetadataUpdatePayload, PdfSplitResponsePayload, PdfToImagesResponsePayload,
+    PdfToolsProgressPayload,
 };
 
 const PDF_TOOLS_PROGRESS_EVENT: &str = "pdf-tools-progress";
@@ -727,12 +728,241 @@ fn map_file_io_error(error: std::io::Error, path: &Path, action: &str) -> anyhow
     }
 }
 
+pub async fn read_pdf_metadata_payload(file: String) -> anyhow::Result<PdfMetadataPayload> {
+    tokio::task::spawn_blocking(move || {
+        validate_pdf_input_file(&file)?;
+        let document = load_pdf_document(&file)?;
+        let metadata = extract_info_dictionary(&document);
+
+        Ok(PdfMetadataPayload {
+            file_path: file,
+            title: metadata.0,
+            author: metadata.1,
+            subject: metadata.2,
+            keywords: metadata.3,
+            creator: metadata.4,
+            producer: metadata.5,
+            creation_date: metadata.6,
+            modification_date: metadata.7,
+        })
+    })
+    .await
+    .context("PDF metadata read worker panicked before completing.")?
+}
+
+pub async fn write_pdf_metadata_payload(
+    payload: PdfMetadataUpdatePayload,
+) -> anyhow::Result<PdfMetadataPayload> {
+    tokio::task::spawn_blocking(move || {
+        validate_pdf_input_file(&payload.file_path)?;
+        validate_output_pdf_path(&payload.output_path)?;
+
+        let mut document = load_pdf_document(&payload.file_path)?;
+
+        let info_id = get_or_create_info_dictionary(&mut document)?;
+
+        if payload.clear_existing {
+            if let Ok(Object::Dictionary(ref mut dict)) = document.get_object_mut(info_id) {
+                *dict = lopdf::Dictionary::new();
+            }
+            remove_xmp_metadata_reference(&mut document);
+        }
+
+        if let Ok(Object::Dictionary(ref mut dict)) = document.get_object_mut(info_id) {
+            set_optional_metadata_field(dict, b"Title", payload.title.as_deref());
+            set_optional_metadata_field(dict, b"Author", payload.author.as_deref());
+            set_optional_metadata_field(dict, b"Subject", payload.subject.as_deref());
+            set_optional_metadata_field(dict, b"Keywords", payload.keywords.as_deref());
+            dict.set(
+                "ModDate",
+                Object::string_literal(current_pdf_date_string().as_str()),
+            );
+        }
+
+        let output_path_buf = PathBuf::from(&payload.output_path);
+        ensure_parent_directory(&output_path_buf)?;
+        document.save(&output_path_buf).with_context(|| {
+            format!(
+                "Failed to save PDF with updated metadata to {}.",
+                output_path_buf.display()
+            )
+        })?;
+
+        let saved_document = load_pdf_document(&payload.output_path)?;
+        let metadata = extract_info_dictionary(&saved_document);
+
+        Ok(PdfMetadataPayload {
+            file_path: payload.output_path,
+            title: metadata.0,
+            author: metadata.1,
+            subject: metadata.2,
+            keywords: metadata.3,
+            creator: metadata.4,
+            producer: metadata.5,
+            creation_date: metadata.6,
+            modification_date: metadata.7,
+        })
+    })
+    .await
+    .context("PDF metadata write worker panicked before completing.")?
+}
+
+pub async fn clear_pdf_metadata_payload(
+    file: String,
+    output_path: String,
+) -> anyhow::Result<PdfMetadataPayload> {
+    tokio::task::spawn_blocking(move || {
+        validate_pdf_input_file(&file)?;
+        validate_output_pdf_path(&output_path)?;
+
+        let mut document = load_pdf_document(&file)?;
+
+        // Clear the Info dictionary
+        if let Ok(info_ref) = document.trailer.get(b"Info") {
+            if let Ok(info_id) = info_ref.as_reference() {
+                if let Ok(Object::Dictionary(ref mut dict)) = document.get_object_mut(info_id) {
+                    *dict = lopdf::Dictionary::new();
+                }
+            }
+        }
+
+        remove_xmp_metadata_reference(&mut document);
+
+        let output_path_buf = PathBuf::from(&output_path);
+        ensure_parent_directory(&output_path_buf)?;
+        document.save(&output_path_buf).with_context(|| {
+            format!(
+                "Failed to save metadata-cleared PDF to {}.",
+                output_path_buf.display()
+            )
+        })?;
+
+        Ok(PdfMetadataPayload {
+            file_path: output_path,
+            title: None,
+            author: None,
+            subject: None,
+            keywords: None,
+            creator: None,
+            producer: None,
+            creation_date: None,
+            modification_date: None,
+        })
+    })
+    .await
+    .context("PDF metadata clear worker panicked before completing.")?
+}
+
+fn extract_info_dictionary(
+    document: &Document,
+) -> (
+    Option<String>,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+) {
+    let info_dict = document
+        .trailer
+        .get(b"Info")
+        .ok()
+        .and_then(|r| r.as_reference().ok())
+        .and_then(|id| document.get_object(id).ok())
+        .and_then(|obj| obj.as_dict().ok());
+
+    let dict = match info_dict {
+        Some(d) => d,
+        None => return (None, None, None, None, None, None, None, None),
+    };
+
+    (
+        extract_dict_string(dict, b"Title"),
+        extract_dict_string(dict, b"Author"),
+        extract_dict_string(dict, b"Subject"),
+        extract_dict_string(dict, b"Keywords"),
+        extract_dict_string(dict, b"Creator"),
+        extract_dict_string(dict, b"Producer"),
+        extract_dict_string(dict, b"CreationDate"),
+        extract_dict_string(dict, b"ModDate"),
+    )
+}
+
+fn extract_dict_string(dict: &lopdf::Dictionary, key: &[u8]) -> Option<String> {
+    dict.get(key)
+        .ok()
+        .and_then(|obj| match obj {
+            Object::String(bytes, _) => {
+                // Try UTF-8 first, fall back to latin-1
+                String::from_utf8(bytes.clone())
+                    .ok()
+                    .or_else(|| Some(bytes.iter().map(|&b| b as char).collect()))
+            }
+            _ => None,
+        })
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+}
+
+fn set_optional_metadata_field(dict: &mut lopdf::Dictionary, key: &[u8], value: Option<&str>) {
+    if let Some(value) = value {
+        let trimmed = value.trim();
+
+        if trimmed.is_empty() {
+            dict.remove(key);
+            return;
+        }
+
+        dict.set(key, Object::string_literal(trimmed));
+    }
+}
+
+fn get_or_create_info_dictionary(document: &mut Document) -> anyhow::Result<ObjectId> {
+    // Try to get existing Info dictionary reference
+    if let Ok(info_ref) = document.trailer.get(b"Info") {
+        if let Ok(id) = info_ref.as_reference() {
+            return Ok(id);
+        }
+    }
+
+    // Create a new Info dictionary
+    let info_dict = lopdf::Dictionary::new();
+    let info_id = document.add_object(Object::Dictionary(info_dict));
+    document.trailer.set("Info", Object::Reference(info_id));
+    Ok(info_id)
+}
+
+fn remove_xmp_metadata_reference(document: &mut Document) {
+    let metadata_id = document
+        .trailer
+        .get(b"Root")
+        .ok()
+        .and_then(|catalog_ref| catalog_ref.as_reference().ok())
+        .and_then(|catalog_id| document.get_object_mut(catalog_id).ok())
+        .and_then(|catalog_object| catalog_object.as_dict_mut().ok())
+        .and_then(|catalog_dict| catalog_dict.remove(b"Metadata"))
+        .and_then(|metadata_object| metadata_object.as_reference().ok());
+
+    if let Some(metadata_id) = metadata_id {
+        document.delete_object(metadata_id);
+    }
+}
+
+fn current_pdf_date_string() -> String {
+    let now = chrono::Utc::now();
+    now.format("D:%Y%m%d%H%M%S+00'00'").to_string()
+}
+
 #[cfg(test)]
 mod tests {
     use std::env;
     use std::io::Write;
+    use std::path::Path;
 
     use super::*;
+    use tokio::runtime::Runtime;
     use uuid::Uuid;
 
     #[test]
@@ -787,6 +1017,114 @@ mod tests {
         let error = validate_image_input_files(&["C:\\temp\\not-image.txt".into()])
             .expect_err("invalid image should fail");
         assert!(error.to_string().contains("Unsupported image file"));
+    }
+
+    #[test]
+    fn read_pdf_metadata_extracts_document_info_dictionary() {
+        let temp_dir = env::temp_dir().join(format!("orion-pdf-metadata-read-{}", Uuid::new_v4()));
+        fs::create_dir_all(&temp_dir).expect("temp dir should be created");
+        let pdf_path = create_test_pdf_with_metadata(&temp_dir, "source.pdf");
+
+        let metadata = Runtime::new()
+            .expect("tokio runtime should start")
+            .block_on(read_pdf_metadata_payload(
+                pdf_path.to_string_lossy().into_owned(),
+            ))
+            .expect("metadata should be read");
+
+        assert_eq!(metadata.title.as_deref(), Some("Original Title"));
+        assert_eq!(metadata.author.as_deref(), Some("Orion Author"));
+        assert_eq!(metadata.subject.as_deref(), Some("Metadata Smoke"));
+        assert_eq!(metadata.keywords.as_deref(), Some("orion, pdf, metadata"));
+
+        let _ = fs::remove_dir_all(&temp_dir);
+    }
+
+    #[test]
+    fn write_pdf_metadata_saves_copy_and_preserves_original() {
+        let temp_dir = env::temp_dir().join(format!("orion-pdf-metadata-write-{}", Uuid::new_v4()));
+        fs::create_dir_all(&temp_dir).expect("temp dir should be created");
+        let source_path = create_test_pdf_with_metadata(&temp_dir, "source.pdf");
+        let output_path = temp_dir.join("updated.pdf");
+
+        let runtime = Runtime::new().expect("tokio runtime should start");
+        let updated = runtime
+            .block_on(write_pdf_metadata_payload(PdfMetadataUpdatePayload {
+                file_path: source_path.to_string_lossy().into_owned(),
+                output_path: output_path.to_string_lossy().into_owned(),
+                title: Some("Updated Title".into()),
+                author: Some("".into()),
+                subject: Some("Updated Subject".into()),
+                keywords: Some("orion, updated".into()),
+                clear_existing: false,
+            }))
+            .expect("metadata copy should be saved");
+
+        assert_eq!(updated.title.as_deref(), Some("Updated Title"));
+        assert_eq!(updated.author, None);
+        assert_eq!(updated.subject.as_deref(), Some("Updated Subject"));
+        assert_eq!(updated.keywords.as_deref(), Some("orion, updated"));
+        assert!(updated.modification_date.is_some());
+
+        let original = runtime
+            .block_on(read_pdf_metadata_payload(
+                source_path.to_string_lossy().into_owned(),
+            ))
+            .expect("original metadata should remain readable");
+        assert_eq!(original.title.as_deref(), Some("Original Title"));
+        assert_eq!(original.author.as_deref(), Some("Orion Author"));
+
+        let _ = fs::remove_dir_all(&temp_dir);
+    }
+
+    #[test]
+    fn clear_pdf_metadata_removes_info_values_and_xmp_reference() {
+        let temp_dir = env::temp_dir().join(format!("orion-pdf-metadata-clear-{}", Uuid::new_v4()));
+        fs::create_dir_all(&temp_dir).expect("temp dir should be created");
+        let source_path = create_test_pdf_with_metadata(&temp_dir, "source.pdf");
+        let output_path = temp_dir.join("clean.pdf");
+
+        let metadata = Runtime::new()
+            .expect("tokio runtime should start")
+            .block_on(clear_pdf_metadata_payload(
+                source_path.to_string_lossy().into_owned(),
+                output_path.to_string_lossy().into_owned(),
+            ))
+            .expect("metadata should be cleared");
+
+        assert_eq!(metadata.title, None);
+        assert_eq!(metadata.author, None);
+        assert_eq!(metadata.subject, None);
+        assert_eq!(metadata.keywords, None);
+
+        let cleaned_document = Document::load(&output_path).expect("cleaned PDF should load");
+        let extracted = extract_info_dictionary(&cleaned_document);
+        assert_eq!(extracted.0, None);
+        assert_eq!(extracted.1, None);
+        assert_eq!(extracted.2, None);
+        assert_eq!(extracted.3, None);
+
+        let catalog_id = cleaned_document
+            .trailer
+            .get(b"Root")
+            .expect("cleaned PDF should have catalog")
+            .as_reference()
+            .expect("catalog should be a reference");
+        let catalog = cleaned_document
+            .get_object(catalog_id)
+            .expect("catalog object should exist")
+            .as_dict()
+            .expect("catalog should be a dictionary");
+        assert!(catalog.get(b"Metadata").is_err());
+        assert!(cleaned_document.objects.values().all(|object| {
+            !matches!(
+                object,
+                Object::Stream(stream)
+                    if stream.content == b"<x:xmpmeta>orion metadata smoke</x:xmpmeta>".to_vec()
+            )
+        }));
+
+        let _ = fs::remove_dir_all(&temp_dir);
     }
 
     #[test]
@@ -901,5 +1239,52 @@ mod tests {
         let _ = fs::remove_file(&pdf_path);
         let _ = fs::remove_file(&rendered_path);
         let _ = fs::remove_dir_all(&temp_dir);
+    }
+
+    fn create_test_pdf_with_metadata(temp_dir: &Path, file_name: &str) -> PathBuf {
+        let pdf_path = temp_dir.join(file_name);
+        let mut document = PdfDocument::new("metadata-test");
+        document.with_pages(vec![PdfPage::new(Mm(20.0), Mm(20.0), Vec::<Op>::new())]);
+
+        let mut warnings = Vec::<PdfWarnMsg>::new();
+        let mut writer =
+            BufWriter::new(File::create(&pdf_path).expect("pdf file should be created"));
+        document.save_writer(&mut writer, &PdfSaveOptions::default(), &mut warnings);
+        writer.flush().expect("writer should flush to disk");
+
+        let mut document = Document::load(&pdf_path).expect("generated PDF should load");
+        let mut info = lopdf::Dictionary::new();
+        info.set("Title", Object::string_literal("Original Title"));
+        info.set("Author", Object::string_literal("Orion Author"));
+        info.set("Subject", Object::string_literal("Metadata Smoke"));
+        info.set("Keywords", Object::string_literal("orion, pdf, metadata"));
+        info.set("Creator", Object::string_literal("Orion Test"));
+        info.set("Producer", Object::string_literal("printpdf"));
+        info.set(
+            "CreationDate",
+            Object::string_literal("D:20260602000000+00'00'"),
+        );
+        info.set("ModDate", Object::string_literal("D:20260602010000+00'00'"));
+        let info_id = document.add_object(Object::Dictionary(info));
+        document.trailer.set("Info", Object::Reference(info_id));
+
+        let metadata_id = document.add_object(Object::Stream(lopdf::Stream::new(
+            lopdf::Dictionary::new(),
+            b"<x:xmpmeta>orion metadata smoke</x:xmpmeta>".to_vec(),
+        )));
+        let catalog_id = document
+            .trailer
+            .get(b"Root")
+            .expect("generated PDF should have catalog")
+            .as_reference()
+            .expect("catalog should be a reference");
+        if let Ok(Object::Dictionary(ref mut catalog)) = document.get_object_mut(catalog_id) {
+            catalog.set("Metadata", Object::Reference(metadata_id));
+        }
+
+        document
+            .save(&pdf_path)
+            .expect("metadata test PDF should be saved");
+        pdf_path
     }
 }

@@ -285,3 +285,25 @@ export interface ActiveWifiInterface {
   vendor: string;
 }
 
+export interface PdfMetadataResponse {
+  filePath: string;
+  title?: string;
+  author?: string;
+  subject?: string;
+  keywords?: string;
+  creator?: string;
+  producer?: string;
+  creationDate?: string;
+  modificationDate?: string;
+}
+
+export interface PdfMetadataUpdateRequest {
+  filePath: string;
+  outputPath: string;
+  title?: string;
+  author?: string;
+  subject?: string;
+  keywords?: string;
+  clearExisting: boolean;
+}
+

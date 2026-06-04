@@ -3,7 +3,7 @@ import { Select } from "@/components/ui/Select";
 import { TextArea } from "@/components/ui/TextArea";
 import { Toggle } from "@/components/ui/Toggle";
 import type { QRFormState } from "./qr-generator.types";
-import { wifiSecurityOptions } from "./qr-generator.utils";
+import { wifiEapMethodOptions, wifiPhase2MethodOptions, wifiSecurityOptions } from "./qr-generator.utils";
 
 export function DynamicPresetFields({
   form,
@@ -17,7 +17,7 @@ export function DynamicPresetFields({
       return (
         <TextArea
           label="Text or link"
-          hint="Use for free-form text, URLs, small JSON snippets, or other short codes."
+          hint="Free-form text, URLs, or short codes."
           placeholder="Enter text or a link to encode into QR..."
           value={form.rawText}
           onChange={(event) => updateForm("rawText", event.target.value)}
@@ -28,14 +28,16 @@ export function DynamicPresetFields({
       return (
         <Input
           label="Destination URL"
-          hint="If you do not include a protocol, Orion will assume https://."
+          hint="Orion assumes https:// when protocol is omitted."
           placeholder="https://example.com/product/orion"
           value={form.url}
           onChange={(event) => updateForm("url", event.target.value)}
         />
       );
 
-    case "wifi":
+    case "wifi": {
+      const isEnterpriseWifi = form.wifiSecurity === "WPA2-EAP";
+
       return (
         <div className="grid gap-4 xl:grid-cols-2">
           <Input
@@ -52,10 +54,42 @@ export function DynamicPresetFields({
             value={form.wifiSecurity}
             onChange={(event) => updateForm("wifiSecurity", event.target.value as QRFormState["wifiSecurity"])}
           />
+          {isEnterpriseWifi ? (
+            <>
+              <Input
+                label="Identity"
+                hint="Username sent for Enterprise authentication."
+                placeholder="username@example.com"
+                value={form.wifiIdentity}
+                onChange={(event) => updateForm("wifiIdentity", event.target.value)}
+              />
+              <Input
+                label="Anonymous identity"
+                hint="Optional outer identity used by some RADIUS setups."
+                placeholder="anonymous@example.com"
+                value={form.wifiAnonymousIdentity}
+                onChange={(event) => updateForm("wifiAnonymousIdentity", event.target.value)}
+              />
+              <Select
+                label="EAP method"
+                hint="Choose the method configured by the network admin."
+                options={wifiEapMethodOptions}
+                value={form.wifiEapMethod}
+                onChange={(event) => updateForm("wifiEapMethod", event.target.value as QRFormState["wifiEapMethod"])}
+              />
+              <Select
+                label="Phase 2 auth"
+                hint="Common default for PEAP networks is MSCHAPV2."
+                options={wifiPhase2MethodOptions}
+                value={form.wifiPhase2Method}
+                onChange={(event) => updateForm("wifiPhase2Method", event.target.value as QRFormState["wifiPhase2Method"])}
+              />
+            </>
+          ) : null}
           <Input
             label="Password"
-            hint="Leave empty only when the network is truly open."
-            placeholder="Enter WiFi password"
+            hint={isEnterpriseWifi ? "Enterprise account password for this identity." : "Leave empty only when the network is truly open."}
+            placeholder={isEnterpriseWifi ? "Enter account password" : "Enter WiFi password"}
             type="password"
             value={form.wifiPassword}
             onChange={(event) => updateForm("wifiPassword", event.target.value)}
@@ -68,6 +102,7 @@ export function DynamicPresetFields({
           />
         </div>
       );
+    }
 
     case "whatsapp":
       return (
@@ -85,6 +120,7 @@ export function DynamicPresetFields({
             placeholder="Hi, I'm interested in Orion Utility Suite..."
             value={form.whatsappMessage}
             onChange={(event) => updateForm("whatsappMessage", event.target.value)}
+            className="min-h-[92px]"
           />
         </div>
       );
@@ -112,6 +148,7 @@ export function DynamicPresetFields({
             placeholder="Write the email body to prefill..."
             value={form.emailBody}
             onChange={(event) => updateForm("emailBody", event.target.value)}
+            className="min-h-[92px]"
           />
         </div>
       );
@@ -163,11 +200,11 @@ export function DynamicPresetFields({
           />
           <TextArea
             label="Address"
-            hint="The full address will be inserted as the ADR field in the vCard."
+            hint="Inserted as the vCard ADR field."
             placeholder="123 Example St, Jakarta"
             value={form.contactAddress}
             onChange={(event) => updateForm("contactAddress", event.target.value)}
-            className="min-h-[128px] xl:col-span-2"
+            className="min-h-[104px] xl:col-span-2"
           />
         </div>
       );

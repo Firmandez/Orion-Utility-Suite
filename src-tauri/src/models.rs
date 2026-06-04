@@ -259,3 +259,29 @@ pub struct ActiveWifiInterface {
     pub transmit_rate: u32,
     pub vendor: String,
 }
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PdfMetadataPayload {
+    pub file_path: String,
+    pub title: Option<String>,
+    pub author: Option<String>,
+    pub subject: Option<String>,
+    pub keywords: Option<String>,
+    pub creator: Option<String>,
+    pub producer: Option<String>,
+    pub creation_date: Option<String>,
+    pub modification_date: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PdfMetadataUpdatePayload {
+    pub file_path: String,
+    pub output_path: String,
+    pub title: Option<String>,
+    pub author: Option<String>,
+    pub subject: Option<String>,
+    pub keywords: Option<String>,
+    pub clear_existing: bool,
+}

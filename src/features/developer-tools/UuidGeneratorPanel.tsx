@@ -77,7 +77,7 @@ export function UuidGeneratorPanel({ className }: UuidGeneratorPanelProps) {
   return (
     <DeveloperToolCard
       title="UUID Generator"
-      description="Create local UUID v4 values for seeds, internal identifiers, or test data without an online connection."
+      description="Create local UUID v4 values for seeds, identifiers, or test data."
       icon={Binary}
       className={className}
       actions={
@@ -99,21 +99,21 @@ export function UuidGeneratorPanel({ className }: UuidGeneratorPanelProps) {
           {uuidResult.errorMessage}
         </div>
       ) : (
-        <div className="space-y-4">
-          <div className="rounded-xl border bg-black/10 p-3">
+        <div className="space-y-3">
+          <div className="rounded-lg border bg-black/10 p-3">
             <div className="text-xs uppercase tracking-widest text-(--text-muted)">Active UUID</div>
-            <div className="mt-4 break-all font-mono text-lg text-(--text-primary)">
+            <div className="mt-2 break-all font-mono text-sm text-(--text-primary)">
               {uuidResult.value?.value ?? "No UUID has been generated yet."}
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border bg-white/5 p-3">
+            <div className="rounded-lg border bg-white/5 p-2.5">
               <div className="text-xs uppercase tracking-widest text-(--text-muted)">Version</div>
-              <div className="mt-3 text-sm font-semibold text-(--text-primary)">UUID v4</div>
+              <div className="mt-2 text-sm font-semibold text-(--text-primary)">UUID v4</div>
             </div>
-            <div className="rounded-xl border bg-white/5 p-3">
+            <div className="rounded-lg border bg-white/5 p-2.5">
               <div className="text-xs uppercase tracking-widest text-(--text-muted)">Source</div>
-              <div className="mt-3 text-sm font-semibold text-(--text-primary)">
+              <div className="mt-2 text-sm font-semibold text-(--text-primary)">
                 {uuidResult.value?.source === "randomUUID" ? "crypto.randomUUID()" : uuidResult.value?.source === "getRandomValues" ? "crypto.getRandomValues()" : "Unavailable"}
               </div>
             </div>

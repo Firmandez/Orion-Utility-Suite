@@ -14,18 +14,16 @@ import { useOutletContext } from "react-router-dom";
 import { PageSection } from "@/components/common/PageSection";
 import { ResultCard } from "@/components/common/ResultCard";
 import { Button } from "@/components/ui/Button";
-import { Select } from "@/components/ui/Select";
+import { CompactTabs, type CompactTabItem } from "@/components/ui/CompactTabs";
 import { TextArea } from "@/components/ui/TextArea";
 import { notify } from "@/components/ui/Toast";
-import { cn } from "@/lib/utils";
 import type { AppBootstrapState } from "@/types/app";
 import type { TextUtilityCategory, TextUtilityOperationId } from "./text-utilities.types";
 import {
   copyText,
   defaultTextUtilityOperation,
   getTextUtilityOperation,
-  groupTextUtilityOperations,
-  textUtilityOperationOptions,
+  textUtilityOperations,
   transformText,
 } from "./text-utilities.utils";
 
@@ -36,12 +34,17 @@ const categoryIconMap: Record<TextUtilityCategory, typeof FileJson2> = {
   Metrics: Hash,
 };
 
+const textUtilityTabs = textUtilityOperations.map((operation) => ({
+  id: operation.id,
+  label: operation.label,
+  icon: categoryIconMap[operation.category],
+})) satisfies CompactTabItem<TextUtilityOperationId>[];
+
 export function TextUtilitiesWorkspace() {
   useOutletContext<AppBootstrapState>();
   const [inputValue, setInputValue] = useState('{\n  "app": "Orion Utility Suite",\n  "mode": "offline-first"\n}');
   const [operationId, setOperationId] = useState<TextUtilityOperationId>(defaultTextUtilityOperation);
   const deferredInputValue = useDeferredValue(inputValue);
-  const operationGroups = groupTextUtilityOperations();
   const activeOperation = getTextUtilityOperation(operationId);
   const transformResult = transformText(deferredInputValue, operationId);
   const canCopy = Boolean(transformResult.output) && !transformResult.errorMessage;
@@ -93,56 +96,20 @@ export function TextUtilitiesWorkspace() {
   };
 
   return (
-    <div className="space-y-5">
-      <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
+    <div className="space-y-4">
+      <div className="grid items-start gap-4 xl:grid-cols-[1fr_1fr]">
         <PageSection
           title="Input Panel"
-          description="Paste text or JSON, then choose an operation to run."
-          actions={
-            <div className="w-full min-w-[220px] sm:w-[280px]">
-              <Select
-                options={textUtilityOperationOptions}
-                value={operationId}
-                onChange={(event) => setOperationId(event.target.value as TextUtilityOperationId)}
-              />
-            </div>
-          }
+          description="Paste text or JSON, then choose a transform."
         >
-          <div className="space-y-5">
-            <div className="space-y-4">
-              {Object.entries(operationGroups).map(([category, operations]) => {
-                const Icon = categoryIconMap[category as TextUtilityCategory];
-
-                return (
-                  <div key={category}>
-                    <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-(--text-muted)">
-                      <Icon className="size-3.5" />
-                      {category}
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {operations.map((operation) => (
-                        <button
-                          key={operation.id}
-                          type="button"
-                          aria-pressed={operation.id === operationId}
-                          onClick={() => {
-                            startTransition(() => setOperationId(operation.id));
-                          }}
-                          className={cn(
-                            "rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-widest transition",
-                            operation.id === operationId
-                              ? "border-(--accent-soft) bg-(--accent-surface) text-(--accent-strong)"
-                              : "border-(--border-subtle) bg-white/5 text-(--text-secondary) hover:border-(--accent-soft) hover:text-(--text-primary)",
-                          )}
-                        >
-                          {operation.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="space-y-3">
+            <CompactTabs
+              items={textUtilityTabs}
+              value={operationId}
+              onChange={(nextOperation) => {
+                startTransition(() => setOperationId(nextOperation));
+              }}
+            />
 
             <TextArea
               label="Source input"
@@ -150,10 +117,10 @@ export function TextUtilitiesWorkspace() {
               placeholder="Paste text, JSON, Base64, query string, or sentences..."
               value={inputValue}
               onChange={(event) => setInputValue(event.target.value)}
-              className="min-h-[340px]"
+              className="min-h-[260px]"
             />
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
               <Button variant="outline" leadingIcon={ClipboardCopy} onClick={handleCopy} disabled={!canCopy}>
                 Copy result
               </Button>
@@ -172,28 +139,26 @@ export function TextUtilitiesWorkspace() {
 
         <PageSection
           title="Output Panel"
-          description="Results are displayed here and ready to copy."
+          description="Copy-ready result output."
         >
-          <div className="space-y-5">
+          <div className="space-y-3">
             {transformResult.errorMessage ? (
-              <div className="rounded-2xl border border-rose-400/18 bg-rose-500/10 p-3">
+              <div className="rounded-xl border border-rose-400/18 bg-rose-500/10 p-3">
                 <div className="flex items-start gap-3">
-                  <FileJson2 className="mt-0.5 size-5 shrink-0 text-rose-300" />
+                  <FileJson2 className="mt-0.5 size-4 shrink-0 text-rose-300" />
                   <div>
                     <div className="text-sm font-semibold text-(--text-primary)">Transform failed</div>
-                    <div className="mt-1 text-sm leading-6 text-rose-100/90">{transformResult.errorMessage}</div>
+                    <div className="mt-1 text-xs leading-4 text-rose-100/90">{transformResult.errorMessage}</div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="rounded-2xl border border-emerald-400/18 bg-emerald-500/10 p-3">
+              <div className="rounded-xl border border-emerald-400/18 bg-emerald-500/10 p-3">
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-300" />
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-300" />
                   <div>
                     <div className="text-sm font-semibold text-(--text-primary)">{activeOperation.label} ready</div>
-                    <div className="mt-1 text-sm leading-6 text-(--text-secondary)">
-                      Processed locally, ready to copy or reuse as new input.
-                    </div>
+                    <div className="mt-1 text-xs leading-4 text-(--text-secondary)">Processed locally and ready to copy.</div>
                   </div>
                 </div>
               </div>
@@ -208,7 +173,7 @@ export function TextUtilitiesWorkspace() {
                   : transformResult.output || "No results yet. Start by filling the input panel or choosing another operation."
               }
               readOnly
-              className="min-h-[340px] font-mono text-[13px]"
+              className="min-h-[260px] font-mono text-[13px]"
             />
           </div>
         </PageSection>

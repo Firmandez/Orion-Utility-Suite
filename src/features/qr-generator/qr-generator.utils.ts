@@ -28,7 +28,7 @@ export const qrPresetDefinitions: QRPresetDefinition[] = [
   {
     id: "wifi",
     label: "WiFi QR",
-    description: "SSID, password, and security mode for quick connection.",
+    description: "SSID, personal password, or Enterprise identity details.",
   },
   {
     id: "whatsapp",
@@ -57,7 +57,21 @@ export const qrErrorCorrectionOptions: SelectOption[] = [
 export const wifiSecurityOptions: SelectOption[] = [
   { value: "WPA", label: "WPA / WPA2" },
   { value: "WEP", label: "WEP" },
+  { value: "WPA2-EAP", label: "WPA/WPA2 Enterprise" },
   { value: "nopass", label: "Open network" },
+];
+
+export const wifiEapMethodOptions: SelectOption[] = [
+  { value: "PEAP", label: "PEAP" },
+  { value: "TTLS", label: "TTLS" },
+];
+
+export const wifiPhase2MethodOptions: SelectOption[] = [
+  { value: "MSCHAPV2", label: "MSCHAPV2" },
+  { value: "PAP", label: "PAP" },
+  { value: "CHAP", label: "CHAP" },
+  { value: "GTC", label: "GTC" },
+  { value: "None", label: "None" },
 ];
 
 export function buildInitialQrFormState(): QRFormState {
@@ -68,6 +82,10 @@ export function buildInitialQrFormState(): QRFormState {
     wifiSsid: "",
     wifiPassword: "",
     wifiSecurity: "WPA",
+    wifiIdentity: "",
+    wifiAnonymousIdentity: "",
+    wifiEapMethod: "PEAP",
+    wifiPhase2Method: "MSCHAPV2",
     wifiHidden: false,
     whatsappPhone: "",
     whatsappMessage: "",
@@ -152,16 +170,40 @@ export function buildQrPayload(form: QRFormState, hasLogo: boolean): QRBuildResu
       fileStem = "orion-qr-wifi";
       const ssid = form.wifiSsid.trim();
       const password = form.wifiPassword.trim();
+      const identity = form.wifiIdentity.trim();
+      const anonymousIdentity = form.wifiAnonymousIdentity.trim();
+      const isEnterprise = form.wifiSecurity === "WPA2-EAP";
 
       if (!ssid) {
         errors.push("WiFi SSID is required.");
       }
 
-      if (form.wifiSecurity !== "nopass" && !password) {
-        errors.push("WiFi password is required for WPA or WEP networks.");
+      if (isEnterprise && !identity) {
+        errors.push("WiFi Enterprise identity or username is required.");
       }
 
-      data = `WIFI:T:${escapeWifiValue(form.wifiSecurity)};S:${escapeWifiValue(ssid)};P:${escapeWifiValue(password)};H:${form.wifiHidden ? "true" : "false"};;`;
+      if (form.wifiSecurity !== "nopass" && !password) {
+        errors.push("WiFi password is required for secured networks.");
+      }
+
+      if (isEnterprise) {
+        warnings.push("Enterprise WiFi QR compatibility depends on the scanner and operating system.");
+        data = [
+          `WIFI:T:${escapeWifiValue(form.wifiSecurity)}`,
+          `S:${escapeWifiValue(ssid)}`,
+          `E:${escapeWifiValue(form.wifiEapMethod)}`,
+          `PH2:${escapeWifiValue(form.wifiPhase2Method)}`,
+          anonymousIdentity ? `A:${escapeWifiValue(anonymousIdentity)}` : undefined,
+          `I:${escapeWifiValue(identity)}`,
+          `P:${escapeWifiValue(password)}`,
+          `H:${form.wifiHidden ? "true" : "false"}`,
+        ]
+          .filter(Boolean)
+          .join(";")
+          .concat(";;");
+      } else {
+        data = `WIFI:T:${escapeWifiValue(form.wifiSecurity)};S:${escapeWifiValue(ssid)};P:${escapeWifiValue(password)};H:${form.wifiHidden ? "true" : "false"};;`;
+      }
       break;
     }
     case "whatsapp": {

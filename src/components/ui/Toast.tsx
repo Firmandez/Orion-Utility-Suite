@@ -18,7 +18,7 @@ export function Toast() {
       theme={resolvedTheme}
       toastOptions={{
         classNames: {
-          toast: "!rounded-2xl !border !shadow-2xl",
+          toast: "!rounded-xl !border !shadow-2xl",
           title: "!text-sm !font-semibold",
           description: "!text-xs",
         },

@@ -1,7 +1,9 @@
 import type { ErrorCorrectionLevel } from "qr-code-styling";
 
 export type QRPresetId = "text" | "url" | "wifi" | "whatsapp" | "email" | "vcard";
-export type WifiSecurity = "WPA" | "WEP" | "nopass";
+export type WifiSecurity = "WPA" | "WEP" | "nopass" | "WPA2-EAP";
+export type WifiEapMethod = "PEAP" | "TTLS";
+export type WifiPhase2Method = "MSCHAPV2" | "PAP" | "CHAP" | "GTC" | "None";
 
 export interface QRFormState {
   preset: QRPresetId;
@@ -10,6 +12,10 @@ export interface QRFormState {
   wifiSsid: string;
   wifiPassword: string;
   wifiSecurity: WifiSecurity;
+  wifiIdentity: string;
+  wifiAnonymousIdentity: string;
+  wifiEapMethod: WifiEapMethod;
+  wifiPhase2Method: WifiPhase2Method;
   wifiHidden: boolean;
   whatsappPhone: string;
   whatsappMessage: string;

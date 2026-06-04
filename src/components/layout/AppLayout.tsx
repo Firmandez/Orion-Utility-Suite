@@ -29,7 +29,7 @@ export function AppLayout() {
         ) : null}
         <div className="relative z-10 flex min-h-screen min-w-0 flex-1 flex-col">
           <AppHeader bootstrap={bootstrap} onOpenSidebar={() => setSidebarOpen(true)} />
-          <main className="min-w-0 flex-1 px-4 py-4 sm:px-5 lg:px-6 lg:py-6">
+          <main className="min-w-0 flex-1 px-3.5 py-3.5 sm:px-4 lg:px-5 lg:py-4">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}

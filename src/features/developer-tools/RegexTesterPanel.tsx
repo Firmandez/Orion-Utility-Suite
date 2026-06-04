@@ -46,7 +46,7 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
   return (
     <DeveloperToolCard
       title="Regex Tester"
-      description="Test JavaScript regex patterns, flags, and sample text locally."
+      description="Test JavaScript regex patterns, flags, and sample text."
       icon={Braces}
       className={className}
       actions={
@@ -60,18 +60,18 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
         </div>
       }
     >
-      <div className="space-y-5">
-        <div className="grid gap-4 lg:grid-cols-[1fr_180px]">
+      <div className="space-y-3">
+        <div className="grid gap-3 lg:grid-cols-[1fr_160px]">
           <Input
             label="Regex pattern"
-            hint="Write the pattern without wrapping slashes. Example: \\b(?:TODO|FIXME)\\b"
+            hint="Write the pattern without wrapping slashes."
             value={pattern}
             onChange={(event) => setPattern(event.target.value)}
             placeholder="Enter a regex pattern..."
           />
           <Input
             label="Flags"
-            hint="Contoh: g, gi, m, s"
+            hint="Examples: g, gi, m, s"
             value={flags}
             onChange={(event) => setFlags(event.target.value)}
             placeholder="g"
@@ -83,7 +83,7 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
           hint="Paste logs, source code, or free-form text to test against the active regex."
           value={sampleText}
           onChange={(event) => setSampleText(event.target.value)}
-          className="min-h-[220px] font-mono text-[13px]"
+          className="min-h-[180px] font-mono text-[13px]"
         />
 
         {result.state === "error" ? (
@@ -110,19 +110,19 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
                         Index {match.index}
                       </div>
                     </div>
-                    <div className="mt-2.5 break-all rounded-xl border bg-white/5 px-3 py-2.5 font-mono text-sm text-(--text-primary)">
+                    <div className="mt-2 break-all rounded-lg border bg-white/5 px-3 py-2 font-mono text-sm text-(--text-primary)">
                       {match.value}
                     </div>
                     <div className="mt-3 text-xs uppercase tracking-widest text-(--text-muted)">Capture groups</div>
                     <div className="mt-2 space-y-2">
                       {match.captureGroups.length > 0 ? (
                         match.captureGroups.map((group, index) => (
-                          <div key={`${match.matchNumber}-group-${index}`} className="rounded-xl border bg-white/5 px-3 py-2.5 font-mono text-sm text-(--text-secondary)">
+                          <div key={`${match.matchNumber}-group-${index}`} className="rounded-lg border bg-white/5 px-3 py-2 font-mono text-sm text-(--text-secondary)">
                             Group {index + 1}: {group}
                           </div>
                         ))
                       ) : (
-                        <div className="rounded-xl border bg-white/5 px-3 py-2.5 text-sm text-(--text-secondary)">
+                        <div className="rounded-lg border bg-white/5 px-3 py-2 text-sm text-(--text-secondary)">
                           No capture groups in this match.
                         </div>
                       )}
@@ -146,9 +146,9 @@ export function RegexTesterPanel({ className }: RegexTesterPanelProps) {
 
 function MatchStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border bg-white/5 p-3">
+    <div className="rounded-lg border bg-white/5 p-2.5">
       <div className="text-xs uppercase tracking-widest text-(--text-muted)">{label}</div>
-      <div className="mt-3 break-words text-sm font-semibold text-(--text-primary)">{value}</div>
+      <div className="mt-2 break-words text-sm font-semibold text-(--text-primary)">{value}</div>
     </div>
   );
 }
@@ -171,14 +171,14 @@ function ToolNotice({
         : "border-(--border-subtle) bg-white/5 text-(--text-secondary)";
 
   return (
-    <div className={`rounded-xl border p-3 ${toneClassName}`}>
+    <div className={`rounded-lg border p-3 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-(--accent-strong)"}`}
         />
         <div>
           <div className="text-sm font-semibold text-(--text-primary)">{title}</div>
-          <div className="mt-1 text-sm leading-5">{description}</div>
+          <div className="mt-1 text-xs leading-4">{description}</div>
         </div>
       </div>
     </div>

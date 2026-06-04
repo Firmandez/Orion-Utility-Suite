@@ -120,12 +120,12 @@ export function SettingsWorkspace() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {settingsState.status === "loading" ? (
         <PageSection title="Loading Settings" description="Just a moment, settings are loading.">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-3">
             {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="surface-panel-alt p-4">
+              <div key={index} className="surface-panel-alt p-3">
                 <div className="h-3 w-24 animate-pulse rounded-full bg-white/10" />
                 <div className="mt-3 h-9 w-full animate-pulse rounded-xl bg-white/8" />
                 <div className="mt-3 h-3 w-3/4 animate-pulse rounded-full bg-white/8" />
@@ -136,13 +136,13 @@ export function SettingsWorkspace() {
       ) : (
         <>
           {settingsState.errorMessage ? (
-            <div className="rounded-2xl border border-amber-400/18 bg-amber-500/10 p-3 sm:p-4">
+            <div className="rounded-xl border border-amber-400/18 bg-amber-500/10 p-3">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-3">
-                  <Info className="mt-0.5 size-5 shrink-0 text-amber-300" />
+                  <Info className="mt-0.5 size-4 shrink-0 text-amber-300" />
                   <div>
                     <div className="text-sm font-semibold text-(--text-primary)">Settings recovered</div>
-                    <div className="mt-1 text-sm leading-5 text-amber-100/85">{settingsState.errorMessage}</div>
+                    <div className="mt-1 text-xs leading-4 text-amber-100/85">{settingsState.errorMessage}</div>
                   </div>
                 </div>
                 <Button variant="outline" size="sm" leadingIcon={RefreshCw} onClick={() => void reloadSettings()}>
@@ -152,31 +152,29 @@ export function SettingsWorkspace() {
             </div>
           ) : null}
 
-          <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
+          <div className="grid items-start gap-4 xl:grid-cols-[1fr_1fr]">
             <PageSection title="Appearance" description="Choose Orion's theme and accent color.">
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <Select
                   label="Theme"
-                  hint="System follows your device settings. Dark and Light can be set manually."
+                  hint="Use system, dark, or light mode."
                   options={themeModeOptions}
                   value={themeMode}
                   onChange={(event) => void handleThemeModeChange(event.target.value as ThemeMode)}
                 />
 
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   <div>
-                    <div className="text-sm font-semibold text-(--text-primary)">Accent color</div>
-                    <div className="mt-1 text-xs text-(--text-muted)">
-                      Used for primary buttons, highlights, and active elements.
-                    </div>
+                    <div className="text-[12px] font-semibold text-(--text-primary)">Accent color</div>
+                    <div className="mt-0.5 text-[11px] text-(--text-muted)">Used for buttons, highlights, and active states.</div>
                   </div>
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-2.5 sm:grid-cols-2">
                     {accentPalettes.map((palette) => (
                       <button
                         key={palette.id}
                         type="button"
                         onClick={() => void handleAccentChange(palette.id)}
-                        className={`rounded-xl border p-3 text-left transition ${
+                        className={`rounded-lg border p-2.5 text-left transition ${
                           accentColor === palette.id
                             ? "border-(--accent-soft) bg-(--accent-surface)"
                             : "border-(--border-subtle) bg-white/5 hover:border-(--accent-soft) hover:bg-white/8"
@@ -184,7 +182,7 @@ export function SettingsWorkspace() {
                       >
                         <div className="flex items-center gap-3">
                           <div
-                            className="size-9 rounded-lg border"
+                            className="size-7 rounded-md border"
                             style={{
                               background: `linear-gradient(145deg, ${palette.accent}, ${palette.accentStrong})`,
                               borderColor: palette.accentSoft,
@@ -192,7 +190,7 @@ export function SettingsWorkspace() {
                           />
                           <div>
                             <div className="text-sm font-semibold text-(--text-primary)">{palette.label}</div>
-                            <div className="mt-1 text-xs leading-5 text-(--text-secondary)">{palette.description}</div>
+                            <div className="mt-0.5 text-xs leading-4 text-(--text-secondary)">{palette.description}</div>
                           </div>
                         </div>
                       </button>
@@ -204,7 +202,7 @@ export function SettingsWorkspace() {
 
             <PageSection
               title="Output"
-              description="Choose the default folder for saving Image Converter and PDF Tools results."
+              description="Default folder for Image Converter and PDF Tools results."
               actions={
                 <div className="flex flex-wrap gap-2">
                   <Button variant="outline" size="sm" leadingIcon={FolderSearch2} onClick={handlePickDefaultFolder}>
@@ -223,10 +221,10 @@ export function SettingsWorkspace() {
                 </div>
               }
             >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <Input
                   label="Default output folder"
-                  hint="If empty, Orion will ask for a destination when you run an export."
+                  hint="If empty, Orion asks during export."
                   value={defaultOutputFolder}
                   placeholder="No default output folder set."
                   readOnly
@@ -235,20 +233,20 @@ export function SettingsWorkspace() {
             </PageSection>
           </div>
 
-          <div className="grid items-start gap-5 xl:grid-cols-[1fr_1fr]">
+          <div className="grid items-start gap-4 xl:grid-cols-[1fr_1fr]">
             <PageSection
               title="Application"
-              description="Configure basic Orion behavior."
+              description="Basic Orion behavior."
               actions={
                 <Button variant="outline" size="sm" leadingIcon={RefreshCw} onClick={handleResetSettings}>
                   Reset settings
                 </Button>
               }
             >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <Toggle
                   label="Remember window size and position"
-                  hint="Orion will reopen with the last window size."
+                  hint="Reopen with the last window size."
                   checked={settings.windowPreferences.rememberWindowState}
                   onCheckedChange={(checked) => {
                     void updateWindowPreferences({ rememberWindowState: checked });
@@ -257,7 +255,7 @@ export function SettingsWorkspace() {
                 />
                 <Toggle
                   label="Restore maximized mode"
-                  hint="If previously closed while maximized, Orion will try to reopen that way."
+                  hint="Reopen maximized when previously maximized."
                   checked={settings.windowPreferences.restoreMaximizedWindow}
                   onCheckedChange={(checked) => {
                     void updateWindowPreferences({ restoreMaximizedWindow: checked });
@@ -267,8 +265,8 @@ export function SettingsWorkspace() {
               </div>
             </PageSection>
 
-            <PageSection title="About" description="Information about Orion Utility Suite.">
-              <div className="space-y-5">
+            <PageSection title="About" description="App version and project information.">
+              <div className="space-y-3">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <AboutItem icon={AppWindow} label="App" value="Orion Utility Suite" />
                   <AboutItem icon={Tag} label="Version" value={bootstrap.data.version} />
@@ -276,7 +274,7 @@ export function SettingsWorkspace() {
                   <AboutItem icon={Cpu} label="Platform" value={bootstrap.data.platformLabel} />
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2">
                   {isDesktopRuntime && (
                     <Button
                       variant="outline"
@@ -298,7 +296,7 @@ export function SettingsWorkspace() {
                         window.open(githubProfileUrl, "_blank", "noopener,noreferrer");
                       }
                     }}
-                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-(--text-primary) transition hover:border-(--accent-soft) hover:bg-white/5 cursor-pointer"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border px-3 text-[13px] font-semibold text-(--text-primary) transition hover:border-(--accent-soft) hover:bg-white/5 cursor-pointer"
                   >
                     <ExternalLink className="size-4" />
                     GitHub
@@ -314,7 +312,7 @@ export function SettingsWorkspace() {
                         window.open(url, "_blank", "noopener,noreferrer");
                       }
                     }}
-                    className="inline-flex h-10 items-center gap-2 rounded-lg border px-3.5 text-sm font-semibold text-(--text-primary) transition hover:border-(--accent-soft) hover:bg-white/5 cursor-pointer"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border px-3 text-[13px] font-semibold text-(--text-primary) transition hover:border-(--accent-soft) hover:bg-white/5 cursor-pointer"
                   >
                     <ExternalLink className="size-4" />
                     License
@@ -339,14 +337,14 @@ function AboutItem({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border bg-black/10 p-3">
-      <div className="flex items-center gap-3">
-        <div className="flex size-9 items-center justify-center rounded-lg border bg-(--accent-surface) text-(--accent-strong)">
+    <div className="rounded-lg border bg-black/10 p-2.5">
+      <div className="flex items-center gap-2.5">
+        <div className="flex size-8 items-center justify-center rounded-lg border bg-(--accent-surface) text-(--accent-strong)">
           <Icon className="size-4" />
         </div>
         <div>
           <div className="text-[11px] uppercase tracking-[0.08em] text-(--text-muted)">{label}</div>
-          <div className="mt-1 text-sm font-semibold text-(--text-primary)">{value}</div>
+          <div className="mt-0.5 text-sm font-semibold text-(--text-primary)">{value}</div>
         </div>
       </div>
     </div>

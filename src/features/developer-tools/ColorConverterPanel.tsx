@@ -38,7 +38,7 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
   return (
     <DeveloperToolCard
       title="Color Converter"
-      description="Convert colors between HEX, RGB, and HSL with strict input validation and swatch preview."
+      description="Convert colors between HEX, RGB, and HSL with preview."
       icon={Palette}
       className={className}
       actions={
@@ -52,10 +52,10 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
         </div>
       }
     >
-      <div className="space-y-5">
+      <div className="space-y-3">
         <Input
           label="Color input"
-          hint="Example: #0ea5e9, rgb(14, 165, 233), or hsl(199, 89%, 48%)"
+          hint="Examples: #0ea5e9, rgb(...), or hsl(...)."
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
           placeholder="Enter HEX, RGB, or HSL..."
@@ -70,9 +70,9 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
               title="Color ready"
               description={`Input recognized as ${result.inputFormat} and converted to the other formats.`}
             />
-            <div className="grid gap-4 xl:grid-cols-[220px_1fr]">
+            <div className="grid gap-3 xl:grid-cols-[160px_1fr]">
               <div
-                className="min-h-[180px] rounded-2xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                className="min-h-[130px] rounded-xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                 style={{
                   background: `linear-gradient(160deg, ${result.swatch} 0%, rgba(255,255,255,0.12) 100%)`,
                 }}
@@ -95,9 +95,9 @@ export function ColorConverterPanel({ className }: ColorConverterPanelProps) {
 
 function ColorMetric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border bg-black/10 p-3">
+    <div className="rounded-lg border bg-black/10 p-2.5">
       <div className="text-xs uppercase tracking-widest text-(--text-muted)">{label}</div>
-      <div className="mt-3 break-words font-mono text-sm text-(--text-primary)">{value}</div>
+      <div className="mt-2 break-words font-mono text-sm text-(--text-primary)">{value}</div>
     </div>
   );
 }
@@ -120,14 +120,14 @@ function ColorNotice({
         : "border-(--border-subtle) bg-white/5 text-(--text-secondary)";
 
   return (
-    <div className={`rounded-xl border p-3 ${toneClassName}`}>
+    <div className={`rounded-lg border p-3 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-(--accent-strong)"}`}
         />
         <div>
           <div className="text-sm font-semibold text-(--text-primary)">{title}</div>
-          <div className="mt-1 text-sm leading-5">{description}</div>
+          <div className="mt-1 text-xs leading-4">{description}</div>
         </div>
       </div>
     </div>

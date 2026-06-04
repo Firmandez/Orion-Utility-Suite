@@ -17,11 +17,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   const selectId = id ?? fallbackId;
 
   return (
-    <label className="block space-y-1.5" htmlFor={selectId}>
+    <label className="block space-y-1" htmlFor={selectId}>
       {label ? (
         <div>
-          <div className="text-[13px] font-semibold text-(--text-primary)">{label}</div>
-          {hint ? <div className="mt-1 text-xs text-(--text-muted)">{hint}</div> : null}
+          <div className="text-[12px] font-semibold text-(--text-primary)">{label}</div>
+          {hint ? <div className="mt-0.5 text-[11px] leading-4 text-(--text-muted)">{hint}</div> : null}
         </div>
       ) : null}
       <div className="relative">
@@ -29,7 +29,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           id={selectId}
           ref={ref}
           className={cn(
-            "h-10 w-full appearance-none rounded-lg border bg-(--surface-2) px-3.5 pr-10 text-sm text-(--text-primary) outline-none transition focus:border-(--accent-soft) focus:ring-4 focus:ring-(--accent-surface)",
+            "h-9 w-full appearance-none rounded-lg border bg-(--surface-2) px-3 pr-9 text-[13px] text-(--text-primary) outline-none transition focus:border-(--accent-soft) focus:ring-2 focus:ring-(--accent-surface)",
             className,
           )}
           {...props}
@@ -40,7 +40,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-(--text-muted)" />
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-(--text-muted)" />
       </div>
     </label>
   );

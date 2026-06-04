@@ -11,6 +11,8 @@ import type {
   ImageToPdfResponse,
   LocalIpResponse,
   PdfMergeResponse,
+  PdfMetadataResponse,
+  PdfMetadataUpdateRequest,
   PdfSplitResponse,
   PdfToImagesResponse,
   PingHostResponse,
@@ -83,6 +85,18 @@ export async function pdfToImages(file: string, outputDir: string) {
   return invoke<PdfToImagesResponse>("pdf_to_images", { file, outputDir });
 }
 
+export async function readPdfMetadata(file: string) {
+  return invoke<PdfMetadataResponse>("read_pdf_metadata", { file });
+}
+
+export async function writePdfMetadata(payload: PdfMetadataUpdateRequest) {
+  return invoke<PdfMetadataResponse>("write_pdf_metadata", { payload });
+}
+
+export async function clearPdfMetadata(file: string, outputPath: string) {
+  return invoke<PdfMetadataResponse>("clear_pdf_metadata", { file, outputPath });
+}
+
 export async function generateHash(filePath: string) {
   return invoke<HashResultResponse>("generate_hash", { filePath });
 }
@@ -106,4 +120,3 @@ export async function getActiveWifiInterface() {
 export async function openExternalUrl(url: string) {
   return invoke<void>("open_external_url", { url });
 }
-

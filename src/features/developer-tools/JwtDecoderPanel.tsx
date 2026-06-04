@@ -38,7 +38,7 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
   return (
     <DeveloperToolCard
       title="JWT Decoder"
-      description="Read JWT headers and payloads locally without signature verification."
+      description="Read JWT headers and payloads locally."
       icon={ShieldAlert}
       className={className}
       actions={
@@ -52,14 +52,14 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
         </div>
       }
     >
-      <div className="space-y-5">
+      <div className="space-y-3">
         <TextArea
           label="JWT token"
-          hint="Tokens are decoded locally only. Signatures are not verified by this tool."
+          hint="Decoded locally. Signatures are not verified."
           placeholder="Paste JWT here..."
           value={token}
           onChange={(event) => setToken(event.target.value)}
-          className="min-h-[150px] font-mono text-[13px]"
+          className="min-h-[120px] font-mono text-[13px]"
         />
 
         {result.state === "error" ? (
@@ -76,8 +76,8 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
               <StatPill label="Signature" value={result.signaturePresent ? "Present" : "Missing"} />
             </div>
             <div className="grid gap-4 xl:grid-cols-2">
-              <TextArea label="Header" value={result.headerPretty ?? ""} readOnly className="min-h-[260px] font-mono text-[13px]" />
-              <TextArea label="Payload" value={result.payloadPretty ?? ""} readOnly className="min-h-[260px] font-mono text-[13px]" />
+              <TextArea label="Header" value={result.headerPretty ?? ""} readOnly className="min-h-[220px] font-mono text-[13px]" />
+              <TextArea label="Payload" value={result.payloadPretty ?? ""} readOnly className="min-h-[220px] font-mono text-[13px]" />
             </div>
           </>
         ) : (
@@ -94,9 +94,9 @@ export function JwtDecoderPanel({ className }: JwtDecoderPanelProps) {
 
 function StatPill({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border bg-white/5 p-3">
+    <div className="rounded-lg border bg-white/5 p-2.5">
       <div className="text-xs uppercase tracking-widest text-(--text-muted)">{label}</div>
-      <div className="mt-3 text-sm font-semibold text-(--text-primary)">{value}</div>
+      <div className="mt-2 text-sm font-semibold text-(--text-primary)">{value}</div>
     </div>
   );
 }
@@ -119,14 +119,14 @@ function JwtNotice({
         : "border-(--border-subtle) bg-white/5 text-(--text-secondary)";
 
   return (
-    <div className={`rounded-xl border p-3 ${toneClassName}`}>
+    <div className={`rounded-lg border p-3 ${toneClassName}`}>
       <div className="flex items-start gap-3">
         <Icon
           className={`mt-0.5 size-5 shrink-0 ${tone === "success" ? "text-emerald-300" : tone === "error" ? "text-rose-300" : "text-(--accent-strong)"}`}
         />
         <div>
           <div className="text-sm font-semibold text-(--text-primary)">{title}</div>
-          <div className="mt-1 text-sm leading-5">{description}</div>
+          <div className="mt-1 text-xs leading-4">{description}</div>
         </div>
       </div>
     </div>
