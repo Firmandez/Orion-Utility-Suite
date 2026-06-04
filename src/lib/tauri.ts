@@ -20,6 +20,11 @@ import type {
   SubnetScanResponse,
   SystemInfoResponse,
   WifiNetwork,
+  YtdlpAvailability,
+  YtdlpDownloadOptions,
+  YtdlpDownloadResult,
+  YtdlpUpdateResult,
+  YtdlpVideoInfo,
 } from "@/types/app";
 
 export const fallbackBootstrap: AppBootstrapPayload = {
@@ -37,6 +42,7 @@ export const fallbackBootstrap: AppBootstrapPayload = {
     { id: "hash-checker", title: "Hash Checker", area: "File Checks", status: "Desktop only" },
     { id: "network-toolkit", title: "Network Toolkit", area: "Network Tools", status: "Desktop only" },
     { id: "developer-tools", title: "Advanced Tools", area: "Advanced Tools", status: "Ready" },
+    { id: "youtube-downloader", title: "YouTube Downloader", area: "Media Tools", status: "Desktop only" },
     { id: "settings", title: "Settings", area: "Preferences", status: "Ready" }
   ]
 };
@@ -119,4 +125,26 @@ export async function getActiveWifiInterface() {
 
 export async function openExternalUrl(url: string) {
   return invoke<void>("open_external_url", { url });
+}
+
+// --- YouTube Downloader (yt-dlp) ---
+
+export async function checkYtdlpAvailable() {
+  return invoke<YtdlpAvailability>("check_ytdlp_available");
+}
+
+export async function fetchYtdlpInfo(url: string) {
+  return invoke<YtdlpVideoInfo>("fetch_ytdlp_info", { url });
+}
+
+export async function startYtdlpDownload(options: YtdlpDownloadOptions) {
+  return invoke<YtdlpDownloadResult>("start_ytdlp_download", { options });
+}
+
+export async function cancelYtdlpDownload(downloadId: string) {
+  return invoke<void>("cancel_ytdlp_download", { downloadId });
+}
+
+export async function updateYtdlp() {
+  return invoke<YtdlpUpdateResult>("update_ytdlp");
 }

@@ -36,6 +36,35 @@ jobs:
         with:
           workspaces: './src-tauri -> target'
 
+      - name: Download yt-dlp and ffmpeg
+        shell: pwsh
+        run: |
+          # Create tools directory
+          New-Item -ItemType Directory -Force -Path "src-tauri/resources/tools/yt-dlp"
+
+          # Download yt-dlp
+          Write-Host "Downloading yt-dlp..."
+          Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/download/2026.03.17/yt-dlp.exe" -OutFile "src-tauri/resources/tools/yt-dlp/yt-dlp.exe"
+
+          # Download ffmpeg essentials build
+          Write-Host "Downloading ffmpeg..."
+          Invoke-WebRequest -Uri "https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-8.1.1-essentials_build.zip" -OutFile "ffmpeg.zip"
+
+          # Extract and copy ffmpeg.exe and ffprobe.exe
+          Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg_temp" -Force
+          $ffmpegBin = Get-ChildItem -Path "ffmpeg_temp" -Recurse -Filter "ffmpeg.exe" | Select-Object -First 1
+          $ffprobeBin = Get-ChildItem -Path "ffmpeg_temp" -Recurse -Filter "ffprobe.exe" | Select-Object -First 1
+          Copy-Item $ffmpegBin.FullName -Destination "src-tauri/resources/tools/yt-dlp/ffmpeg.exe"
+          Copy-Item $ffprobeBin.FullName -Destination "src-tauri/resources/tools/yt-dlp/ffprobe.exe"
+
+          # Cleanup
+          Remove-Item "ffmpeg.zip" -Force
+          Remove-Item "ffmpeg_temp" -Recurse -Force
+
+          # Verify
+          Write-Host "Tools downloaded:"
+          Get-ChildItem "src-tauri/resources/tools/yt-dlp" | ForEach-Object { Write-Host "  $($_.Name) ($([math]::Round($_.Length / 1MB, 1)) MB)" }
+
       - name: Install dependencies
         run: npm ci
 
@@ -69,8 +98,12 @@ jobs:
           
           # Create temporary folder for portable zip package
           New-Item -ItemType Directory -Force -Path "./temp_portable/resources/pdfium/windows-x64"
+          New-Item -ItemType Directory -Force -Path "./temp_portable/resources/tools/yt-dlp"
           Copy-Item "src-tauri/target/release/orion-utility-suite.exe" -Destination "./temp_portable/orion-utility-suite.exe"
           Copy-Item "src-tauri/resources/pdfium/windows-x64/pdfium.dll" -Destination "./temp_portable/resources/pdfium/windows-x64/pdfium.dll"
+          Copy-Item "src-tauri/resources/tools/yt-dlp/yt-dlp.exe" -Destination "./temp_portable/resources/tools/yt-dlp/yt-dlp.exe"
+          Copy-Item "src-tauri/resources/tools/yt-dlp/ffmpeg.exe" -Destination "./temp_portable/resources/tools/yt-dlp/ffmpeg.exe"
+          Copy-Item "src-tauri/resources/tools/yt-dlp/ffprobe.exe" -Destination "./temp_portable/resources/tools/yt-dlp/ffprobe.exe"
           
           # Compress the folder into a zip archive
           Compress-Archive -Path "./temp_portable/*" -DestinationPath "./$zipName" -Force

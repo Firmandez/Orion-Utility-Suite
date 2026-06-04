@@ -1,4 +1,5 @@
 import {
+  Download,
   Files,
   Hash,
   ImagePlus,
@@ -94,6 +95,18 @@ export const toolCatalog: ToolDefinition[] = [
     accent: "from-slate-300/20 via-cyan-500/10 to-transparent",
     icon: Wrench,
     keywords: ["developer", "uuid", "timestamp", "jwt", "regex", "color"],
+  },
+  {
+    id: "youtube-downloader",
+    path: "/youtube-downloader",
+    title: "YouTube Downloader",
+    description: "Download video or audio from YouTube using yt-dlp.",
+    summary: "Local YouTube downloader with format selection, progress tracking, and yt-dlp integration.",
+    category: "Converter",
+    status: "Ready",
+    accent: "from-red-500/22 via-rose-500/10 to-transparent",
+    icon: Download,
+    keywords: ["youtube", "video", "audio", "download", "yt-dlp", "mp4", "mp3"],
   },
 ];
 

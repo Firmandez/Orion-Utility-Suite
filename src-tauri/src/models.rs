@@ -285,3 +285,92 @@ pub struct PdfMetadataUpdatePayload {
     pub keywords: Option<String>,
     pub clear_existing: bool,
 }
+
+// --- YouTube Downloader (yt-dlp) ---
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct YtdlpAvailabilityPayload {
+    pub ytdlp_available: bool,
+    pub ytdlp_version: Option<String>,
+    pub ffmpeg_available: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct YtdlpFormatInfo {
+    pub format_id: String,
+    pub extension: String,
+    pub resolution: Option<String>,
+    pub fps: Option<f64>,
+    pub filesize: Option<u64>,
+    pub filesize_approx: Option<u64>,
+    pub vcodec: Option<String>,
+    pub acodec: Option<String>,
+    pub abr: Option<f64>,
+    pub vbr: Option<f64>,
+    pub format_note: Option<String>,
+    pub has_video: bool,
+    pub has_audio: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct YtdlpVideoInfo {
+    pub title: String,
+    pub uploader: Option<String>,
+    pub duration: Option<f64>,
+    pub duration_string: Option<String>,
+    pub thumbnail: Option<String>,
+    pub webpage_url: Option<String>,
+    pub description: Option<String>,
+    pub view_count: Option<u64>,
+    pub upload_date: Option<String>,
+    pub formats: Vec<YtdlpFormatInfo>,
+    pub is_playlist: bool,
+    pub playlist_count: Option<u64>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct YtdlpDownloadOptions {
+    pub url: String,
+    pub download_type: String,
+    pub video_quality: Option<String>,
+    pub video_format: Option<String>,
+    pub audio_format: Option<String>,
+    pub output_folder: String,
+    pub filename_template: String,
+    pub download_id: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct YtdlpProgressPayload {
+    pub download_id: String,
+    pub status: String,
+    pub progress_percent: f64,
+    pub speed: Option<String>,
+    pub eta: Option<String>,
+    pub downloaded_size: Option<String>,
+    pub total_size: Option<String>,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct YtdlpDownloadResult {
+    pub download_id: String,
+    pub status: String,
+    pub output_path: Option<String>,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct YtdlpUpdateResult {
+    pub success: bool,
+    pub old_version: Option<String>,
+    pub new_version: Option<String>,
+    pub message: String,
+}

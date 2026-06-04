@@ -30,6 +30,25 @@ const themeModeOptions = [
   { value: "light", label: "Light" },
 ];
 
+function formatUpdaterErrorMessage(error: unknown) {
+  const rawMessage = error instanceof Error ? error.message : String(error ?? "An unexpected error occurred.");
+  const normalized = rawMessage.toLowerCase();
+
+  if (normalized.includes("404") || normalized.includes("not found")) {
+    return "The update file was found, but the installer URL returned 404. Check updater/update.json and the GitHub release asset name.";
+  }
+
+  if (normalized.includes("signature") || normalized.includes("verify") || normalized.includes("pubkey")) {
+    return "The updater could not verify the installer signature. Make sure update.json uses the .sig from the exact release asset.";
+  }
+
+  if (normalized.includes("network") || normalized.includes("connection") || normalized.includes("dns") || normalized.includes("timed out")) {
+    return "The update server could not be reached. Check your connection and try again.";
+  }
+
+  return rawMessage || "An unexpected error occurred.";
+}
+
 export function SettingsWorkspace() {
   const bootstrap = useOutletContext<AppBootstrapState>();
   const {
@@ -57,25 +76,42 @@ export function SettingsWorkspace() {
     try {
       const { check } = await import("@tauri-apps/plugin-updater");
       const { relaunch } = await import("@tauri-apps/plugin-process");
-      
-      const update = await check();
-      
+
+      let update;
+
+      try {
+        update = await check();
+      } catch (error) {
+        console.error("Failed to check for updates:", error);
+        notify.error("Failed to check for updates", formatUpdaterErrorMessage(error));
+        return;
+      }
+
       if (update && update.available) {
         notify.success("Update Available", `Downloading version v${update.version} in the background...`);
-        
-        // Download and install the update
-        await update.downloadAndInstall();
-        
+
+        try {
+          await update.downloadAndInstall();
+        } catch (error) {
+          console.error("Failed to download or install update:", error);
+          notify.error("Failed to download update", formatUpdaterErrorMessage(error));
+          return;
+        }
+
         notify.success("Update Complete", "Relaunching Orion to apply changes...");
-        
-        // Relaunch the application
-        await relaunch();
+
+        try {
+          await relaunch();
+        } catch (error) {
+          console.error("Failed to relaunch after update:", error);
+          notify.error("Update installed", "Restart Orion manually to finish applying the update.");
+        }
       } else {
         notify.success("Up to Date", "You are already using the latest version of Orion.");
       }
     } catch (error) {
-      console.error("Failed to check for updates:", error);
-      notify.error("Failed to check update", error instanceof Error ? error.message : "An unexpected error occurred.");
+      console.error("Unexpected updater error:", error);
+      notify.error("Updater error", formatUpdaterErrorMessage(error));
     } finally {
       setCheckingUpdate(false);
     }

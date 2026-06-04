@@ -51,6 +51,12 @@ pub async fn build_bootstrap_payload() -> AppBootstrapPayload {
             status: "Stage 9".into(),
         },
         AppModuleSummary {
+            id: "youtube-downloader".into(),
+            title: "YouTube Downloader".into(),
+            area: "Media tools".into(),
+            status: "Stage 11".into(),
+        },
+        AppModuleSummary {
             id: "settings".into(),
             title: "Settings".into(),
             area: "System".into(),

@@ -307,3 +307,79 @@ export interface PdfMetadataUpdateRequest {
   clearExisting: boolean;
 }
 
+// --- YouTube Downloader (yt-dlp) ---
+
+export type YtdlpStatus = "idle" | "checking" | "analyzing" | "ready" | "downloading" | "completed" | "failed" | "cancelled";
+
+export interface YtdlpAvailability {
+  ytdlpAvailable: boolean;
+  ytdlpVersion: string | null;
+  ffmpegAvailable: boolean;
+}
+
+export interface YtdlpFormatInfo {
+  formatId: string;
+  extension: string;
+  resolution: string | null;
+  fps: number | null;
+  filesize: number | null;
+  filesizeApprox: number | null;
+  vcodec: string | null;
+  acodec: string | null;
+  abr: number | null;
+  vbr: number | null;
+  formatNote: string | null;
+  hasVideo: boolean;
+  hasAudio: boolean;
+}
+
+export interface YtdlpVideoInfo {
+  title: string;
+  uploader: string | null;
+  duration: number | null;
+  durationString: string | null;
+  thumbnail: string | null;
+  webpageUrl: string | null;
+  description: string | null;
+  viewCount: number | null;
+  uploadDate: string | null;
+  formats: YtdlpFormatInfo[];
+  isPlaylist: boolean;
+  playlistCount: number | null;
+}
+
+export interface YtdlpDownloadOptions {
+  url: string;
+  downloadType: string;
+  videoQuality: string | null;
+  videoFormat: string | null;
+  audioFormat: string | null;
+  outputFolder: string;
+  filenameTemplate: string;
+  downloadId: string;
+}
+
+export interface YtdlpProgressPayload {
+  downloadId: string;
+  status: string;
+  progressPercent: number;
+  speed: string | null;
+  eta: string | null;
+  downloadedSize: string | null;
+  totalSize: string | null;
+  message: string;
+}
+
+export interface YtdlpDownloadResult {
+  downloadId: string;
+  status: string;
+  outputPath: string | null;
+  message: string;
+}
+
+export interface YtdlpUpdateResult {
+  success: boolean;
+  oldVersion: string | null;
+  newVersion: string | null;
+  message: string;
+}

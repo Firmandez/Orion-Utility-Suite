@@ -5,7 +5,10 @@ use crate::models::{
     ImageToPdfResponsePayload, LocalIpPayload, PdfMergeResponsePayload, PdfMetadataPayload,
     PdfMetadataUpdatePayload, PdfSplitResponsePayload, PdfToImagesResponsePayload, PingHostPayload,
     PortCheckPayload, SubnetScanResponse, SystemInfoPayload, WifiNetwork,
+    YtdlpAvailabilityPayload, YtdlpDownloadOptions, YtdlpDownloadResult, YtdlpUpdateResult,
+    YtdlpVideoInfo,
 };
+use crate::services::YtdlpState;
 use crate::pdf_tools::{
     clear_pdf_metadata_payload, image_to_pdf_payload, merge_pdfs_payload, pdf_to_images_payload,
     read_pdf_metadata_payload, split_pdf_payload, write_pdf_metadata_payload,
@@ -174,4 +177,55 @@ pub async fn get_active_wifi_interface() -> Result<Option<ActiveWifiInterface>, 
 #[tauri::command]
 pub fn open_external_url(url: String) -> Result<(), AppError> {
     open::that(&url).map_err(|err| AppError::Message(err.to_string()))
+}
+
+// --- YouTube Downloader (yt-dlp) ---
+
+#[tauri::command]
+pub async fn check_ytdlp_available(
+    app_handle: tauri::AppHandle,
+) -> Result<YtdlpAvailabilityPayload, AppError> {
+    crate::services::check_ytdlp_available_payload(&app_handle)
+        .await
+        .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn fetch_ytdlp_info(
+    app_handle: tauri::AppHandle,
+    url: String,
+) -> Result<YtdlpVideoInfo, AppError> {
+    crate::services::fetch_ytdlp_info_payload(&app_handle, url)
+        .await
+        .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn start_ytdlp_download(
+    window: tauri::Window,
+    state: tauri::State<'_, YtdlpState>,
+    options: YtdlpDownloadOptions,
+) -> Result<YtdlpDownloadResult, AppError> {
+    crate::services::start_ytdlp_download_payload(window, state, options)
+        .await
+        .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn cancel_ytdlp_download(
+    state: tauri::State<'_, YtdlpState>,
+    download_id: String,
+) -> Result<(), AppError> {
+    crate::services::cancel_ytdlp_download_payload(state, download_id)
+        .await
+        .map_err(Into::into)
+}
+
+#[tauri::command]
+pub async fn update_ytdlp(
+    app_handle: tauri::AppHandle,
+) -> Result<YtdlpUpdateResult, AppError> {
+    crate::services::update_ytdlp_payload(&app_handle)
+        .await
+        .map_err(Into::into)
 }

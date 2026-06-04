@@ -8,6 +8,7 @@ mod progress;
 mod subnet;
 mod vendor;
 mod wifi;
+mod ytdlp;
 
 pub use self::app::{build_bootstrap_payload, build_system_info_payload};
 pub use self::hash::generate_hash_payload;
@@ -18,3 +19,8 @@ pub use self::network_diagnostics::{
 };
 pub use self::subnet::scan_subnet_payload;
 pub use self::wifi::{get_active_wifi_interface_payload, get_wifi_networks_payload};
+pub use self::ytdlp::{
+    cancel_ytdlp_download_payload, check_ytdlp_available_payload, fetch_ytdlp_info_payload,
+    start_ytdlp_download_payload, update_ytdlp_payload, YtdlpState,
+};
+

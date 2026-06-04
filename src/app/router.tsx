@@ -12,6 +12,7 @@ const TextUtilitiesPage = lazy(() => import("@/pages/TextUtilitiesPage"));
 const HashCheckerPage = lazy(() => import("@/pages/HashCheckerPage"));
 const NetworkToolkitPage = lazy(() => import("@/pages/NetworkToolkitPage"));
 const DeveloperToolsPage = lazy(() => import("@/pages/DeveloperToolsPage"));
+const YouTubeDownloaderPage = lazy(() => import("@/pages/YouTubeDownloaderPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 
 function handle(title: string, searchPlaceholder: string, subtitle?: string): RouteHandle {
@@ -110,6 +111,15 @@ export const router = createHashRouter([
           "Advanced Tools",
           "Search advanced tools",
           "Tools for UUIDs, timestamps, regex, JWTs, and color conversion.",
+        ),
+      },
+      {
+        path: "youtube-downloader",
+        element: withSuspense(<YouTubeDownloaderPage />),
+        handle: handle(
+          "YouTube Downloader",
+          "Search download options",
+          "Download video or audio from YouTube with yt-dlp.",
         ),
       },
       {

@@ -6,7 +6,6 @@ dist/
 src-tauri/target/
 .orion-build-temp/
 *.tsbuildinfo
-package-lock.json
 pnpm-lock.yaml
 yarn.lock
 
@@ -21,6 +20,9 @@ src-tauri/resources/pdfium/**/*.tgz
 src-tauri/resources/pdfium/**/*.tar
 src-tauri/resources/pdfium/**/*.tar.gz
 src-tauri/resources/pdfium/**/*.zip
+
+# Bundled yt-dlp/ffmpeg tools (downloaded in CI, not committed)
+src-tauri/resources/tools/
 
 # OS and editor files
 .DS_Store
