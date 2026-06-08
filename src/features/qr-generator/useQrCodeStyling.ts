@@ -1,5 +1,8 @@
 import QRCodeStyling, { type ErrorCorrectionLevel, type FileExtension } from "qr-code-styling";
+import { isTauri } from "@tauri-apps/api/core";
+import { save } from "@tauri-apps/plugin-dialog";
 import { useEffect, useEffectEvent, useRef } from "react";
+import { saveQrExport } from "@/lib/tauri";
 import { buildQrFileName, DEFAULT_LOGO_SIZE_PERCENT } from "./qr-generator.utils";
 
 interface UseQrCodeStylingOptions {
@@ -23,6 +26,33 @@ function buildMimeType(extension: FileExtension) {
     default:
       return "image/png";
   }
+}
+
+function downloadBlob(blob: Blob, fileName: string) {
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  link.download = fileName;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(objectUrl);
+}
+
+async function blobToBase64(blob: Blob) {
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error ?? new Error("QR export data could not be read."));
+    reader.readAsDataURL(blob);
+  });
+
+  const separatorIndex = dataUrl.indexOf(",");
+  if (separatorIndex === -1) {
+    throw new Error("QR export data could not be encoded.");
+  }
+
+  return dataUrl.slice(separatorIndex + 1);
 }
 
 export function useQrCodeStyling({
@@ -103,14 +133,29 @@ export function useQrCodeStyling({
     }
 
     const blob = rawData instanceof Blob ? rawData : new Blob([rawData], { type: buildMimeType(extension) });
-    const objectUrl = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = objectUrl;
-    link.download = buildQrFileName(fileStem, extension);
-    document.body.append(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(objectUrl);
+    const fileName = buildQrFileName(fileStem, extension);
+
+    if (!isTauri()) {
+      downloadBlob(blob, fileName);
+      return fileName;
+    }
+
+    const outputPath = await save({
+      title: `Save QR as ${extension.toUpperCase()}`,
+      defaultPath: fileName,
+      filters: [
+        {
+          name: extension === "png" ? "PNG image" : "SVG image",
+          extensions: [extension],
+        },
+      ],
+    });
+
+    if (!outputPath) {
+      return null;
+    }
+
+    return saveQrExport(outputPath, extension, await blobToBase64(blob));
   });
 
   return {

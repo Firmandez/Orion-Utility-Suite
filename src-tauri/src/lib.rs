@@ -31,6 +31,7 @@ pub fn run() {
             commands::convert_images,
             commands::generate_hash,
             commands::validate_text_input,
+            commands::save_qr_export,
             commands::scan_subnet,
             commands::get_wifi_networks,
             commands::get_active_wifi_interface,
@@ -44,4 +45,3 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running Orion Utility Suite");
 }
-

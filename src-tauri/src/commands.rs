@@ -16,7 +16,7 @@ use crate::pdf_tools::{
 use crate::services::{
     build_bootstrap_payload, build_local_ip_payload, build_system_info_payload,
     check_http_status_payload, check_port_payload, convert_images_payload, dns_lookup_payload,
-    generate_hash_payload, ping_host_payload,
+    generate_hash_payload, ping_host_payload, save_qr_export_payload,
 };
 
 #[tauri::command]
@@ -151,6 +151,17 @@ pub async fn validate_text_input(value: String) -> Result<bool, AppError> {
     }
 
     Ok(true)
+}
+
+#[tauri::command]
+pub async fn save_qr_export(
+    output_path: String,
+    extension: String,
+    data_base64: String,
+) -> Result<String, AppError> {
+    save_qr_export_payload(output_path, extension, data_base64)
+        .await
+        .map_err(Into::into)
 }
 
 #[tauri::command]

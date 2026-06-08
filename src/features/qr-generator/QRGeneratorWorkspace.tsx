@@ -154,10 +154,15 @@ export function QRGeneratorWorkspace() {
     }
 
     try {
-      await exportQr(extension, qrBuild.fileStem);
+      const outputPath = await exportQr(extension, qrBuild.fileStem);
+
+      if (!outputPath) {
+        return;
+      }
+
       notify.success(
         `QR ${extension.toUpperCase()} exported`,
-        `QR ${activePreset.label} exported as ${extension.toUpperCase()}.`,
+        `QR ${activePreset.label} saved to ${outputPath}.`,
       );
     } catch (error) {
       const message = error instanceof Error ? error.message : "Export could not be processed.";

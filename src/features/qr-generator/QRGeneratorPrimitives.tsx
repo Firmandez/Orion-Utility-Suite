@@ -25,12 +25,12 @@ export function ScanProtectionTooltip() {
       <span
         id={tooltipId}
         role="tooltip"
-        className="invisible pointer-events-none absolute left-0 top-6 z-50 w-72 max-w-[calc(100vw-2rem)] translate-y-1 rounded-lg border bg-(--surface-4) p-3 text-left opacity-0 shadow-xl transition duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
+        className="invisible pointer-events-none absolute right-0 top-6 z-50 w-80 max-w-[calc(100vw-2rem)] translate-y-1 rounded-lg border bg-(--surface-4) p-3 text-left opacity-0 shadow-xl transition duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
       >
         <span className="block text-xs font-semibold text-(--text-primary)">Recommended use</span>
         <span className="mt-2 grid gap-2">
           {scanProtectionRecommendations.map(([level, recommendation]) => (
-            <span key={level} className="grid grid-cols-[84px_1fr] gap-2 text-[11px] leading-4">
+            <span key={level} className="grid grid-cols-[92px_minmax(0,1fr)] gap-2 text-[11px] leading-4">
               <span className="font-semibold text-(--accent-strong)">{level}</span>
               <span className="text-(--text-secondary)">{recommendation}</span>
             </span>

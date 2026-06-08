@@ -111,6 +111,10 @@ export async function convertImages(options: ConvertImagesOptionsRequest) {
   return invoke<ImageConversionResponse>("convert_images", { options });
 }
 
+export async function saveQrExport(outputPath: string, extension: "png" | "svg", dataBase64: string) {
+  return invoke<string>("save_qr_export", { outputPath, extension, dataBase64 });
+}
+
 export async function scanSubnet() {
   return invoke<SubnetScanResponse>("scan_subnet");
 }
