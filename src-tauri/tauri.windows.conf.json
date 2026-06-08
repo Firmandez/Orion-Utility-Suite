@@ -2,7 +2,8 @@
   "bundle": {
     "targets": ["nsis"],
     "resources": [
-      "resources/pdfium/windows-x64/pdfium.dll"
+      "resources/pdfium/windows-x64/pdfium.dll",
+      "resources/tools/yt-dlp/*"
     ]
   }
 }

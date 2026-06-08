@@ -1,5 +1,45 @@
-import { AlertTriangle, CheckCircle2, ShieldCheck, type LucideIcon } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info, ShieldCheck, type LucideIcon } from "lucide-react";
+import { useId } from "react";
 import { cn } from "@/lib/utils";
+
+const scanProtectionRecommendations = [
+  ["L - Compact", "Best for clean digital use and short content without a logo."],
+  ["M - Balanced", "Recommended default for most QR codes without a logo."],
+  ["Q - Brand-safe", "Use for light branding, print, or minor wear."],
+  ["H - Logo-safe", "Recommended for center logos or harsh scanning conditions."],
+] as const;
+
+export function ScanProtectionTooltip() {
+  const tooltipId = useId();
+
+  return (
+    <span className="group relative inline-flex">
+      <button
+        type="button"
+        aria-label="Scan protection recommendations"
+        aria-describedby={tooltipId}
+        className="flex size-4 items-center justify-center rounded-full text-(--text-muted) outline-none transition hover:text-(--accent-strong) focus-visible:text-(--accent-strong) focus-visible:ring-2 focus-visible:ring-(--accent-surface)"
+      >
+        <Info className="size-3.5" />
+      </button>
+      <span
+        id={tooltipId}
+        role="tooltip"
+        className="invisible pointer-events-none absolute left-0 top-6 z-50 w-72 max-w-[calc(100vw-2rem)] translate-y-1 rounded-lg border bg-(--surface-4) p-3 text-left opacity-0 shadow-xl transition duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
+      >
+        <span className="block text-xs font-semibold text-(--text-primary)">Recommended use</span>
+        <span className="mt-2 grid gap-2">
+          {scanProtectionRecommendations.map(([level, recommendation]) => (
+            <span key={level} className="grid grid-cols-[84px_1fr] gap-2 text-[11px] leading-4">
+              <span className="font-semibold text-(--accent-strong)">{level}</span>
+              <span className="text-(--text-secondary)">{recommendation}</span>
+            </span>
+          ))}
+        </span>
+      </span>
+    </span>
+  );
+}
 
 export function ValidationPanel({ errors, warnings }: { errors: string[]; warnings: string[] }) {
   if (errors.length === 0 && warnings.length === 0) {

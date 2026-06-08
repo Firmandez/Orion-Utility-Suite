@@ -23,7 +23,7 @@ import { notify } from "@/components/ui/Toast";
 import { cn, formatFileSize } from "@/lib/utils";
 import type { AppBootstrapState } from "@/types/app";
 import { DynamicPresetFields } from "./QRGeneratorFields";
-import { ColorSwatchCard, RangeField, ValidationPanel } from "./QRGeneratorPrimitives";
+import { ColorSwatchCard, RangeField, ScanProtectionTooltip, ValidationPanel } from "./QRGeneratorPrimitives";
 import type { QRFormState, QRPresetId } from "./qr-generator.types";
 import { useQrCodeStyling } from "./useQrCodeStyling";
 import {
@@ -172,7 +172,7 @@ export function QRGeneratorWorkspace() {
   };
 
   return (
-    <div className="grid items-start gap-4 2xl:grid-cols-[1.12fr_0.88fr]">
+    <div className="grid items-start gap-4 min-[1120px]:grid-cols-[minmax(0,1.12fr)_minmax(340px,0.88fr)]">
       <div className="space-y-4">
         <PageSection
           title="QR Content"
@@ -232,13 +232,23 @@ export function QRGeneratorWorkspace() {
                 disabled={!hasLogo}
                 onChange={(value) => updateForm("logoSizePercent", value)}
               />
-              <Select
-                label="Scan protection"
-                hint="When a logo is active, export automatically uses at least level H."
-                options={qrErrorCorrectionOptions}
-                value={form.errorCorrectionLevel}
-                onChange={(event) => updateForm("errorCorrectionLevel", event.target.value as QRFormState["errorCorrectionLevel"])}
-              />
+              <div className="space-y-1">
+                <div>
+                  <div className="flex items-center gap-1.5 text-[12px] font-semibold text-(--text-primary)">
+                    <span>Scan protection</span>
+                    <ScanProtectionTooltip />
+                  </div>
+                  <div className="mt-0.5 text-[11px] leading-4 text-(--text-muted)">
+                    When a logo is active, export automatically uses at least level H.
+                  </div>
+                </div>
+                <Select
+                  aria-label="Scan protection"
+                  options={qrErrorCorrectionOptions}
+                  value={form.errorCorrectionLevel}
+                  onChange={(event) => updateForm("errorCorrectionLevel", event.target.value as QRFormState["errorCorrectionLevel"])}
+                />
+              </div>
             </div>
 
             <div className="grid gap-3 xl:grid-cols-[1.12fr_0.88fr]">
@@ -298,7 +308,7 @@ export function QRGeneratorWorkspace() {
         </PageSection>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 min-[1120px]:sticky min-[1120px]:top-4">
         <PageSection
           title="QR Preview"
           description="Live code preview and export readiness."
@@ -318,7 +328,10 @@ export function QRGeneratorWorkspace() {
                     qrBuild.errors.length > 0 && "opacity-65",
                   )}
                 >
-                  <div ref={containerRef} className="flex items-center justify-center" />
+                  <div
+                    ref={containerRef}
+                    className="flex w-full items-center justify-center [&>svg]:h-auto [&>svg]:max-w-full"
+                  />
                   {qrBuild.errors.length > 0 ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-[rgba(4,10,18,0.42)] p-3 backdrop-blur-[2px]">
                       <div className="max-w-xs rounded-xl border border-amber-300/20 bg-[rgba(11,20,34,0.92)] p-3 text-center">

@@ -65,6 +65,25 @@ jobs:
           Write-Host "Tools downloaded:"
           Get-ChildItem "src-tauri/resources/tools/yt-dlp" | ForEach-Object { Write-Host "  $($_.Name) ($([math]::Round($_.Length / 1MB, 1)) MB)" }
 
+      - name: Verify Windows bundled tools
+        shell: pwsh
+        run: |
+          $config = Get-Content "src-tauri/tauri.windows.conf.json" -Raw | ConvertFrom-Json
+          $requiredResource = "resources/tools/yt-dlp/*"
+          if ($config.bundle.resources -notcontains $requiredResource) {
+            throw "Windows bundle resources must include $requiredResource"
+          }
+
+          $requiredTools = "yt-dlp.exe", "ffmpeg.exe", "ffprobe.exe"
+          foreach ($tool in $requiredTools) {
+            $path = Join-Path "src-tauri/resources/tools/yt-dlp" $tool
+            if (-not (Test-Path $path)) {
+              throw "Missing required bundled tool: $path"
+            }
+          }
+
+          Write-Host "Windows bundle configuration includes all required yt-dlp tools."
+
       - name: Install dependencies
         run: npm ci
 
