@@ -1,11 +1,11 @@
 {
-  "version": "0.6.1",
-  "notes": "add PDF metadata management features, update settings UI for improved spacing and accessibility, enhance text utilities with compact tabs",
-  "pub_date": "2026-06-04T11:55:00Z",
+  "version": "0.6.3",
+  "notes": "add scan protection tooltip in QR generator, implement QR export functionality",
+  "pub_date": "2026-06-08T11:40:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYWFsYk9iUkdrdkxJdnA5ZTJIWTV2Umk0Y2JFWEZ4eHRnaTZvS0c0VDZhSXBVcDE1a3l3eGNva1RjSVVLeWYrSDl6RU5uK1pqeFp1VU5QK2grRk5MTlhibEdDb0w3cndrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNTQ4NTU2CWZpbGU6T3Jpb24gVXRpbGl0eSBTdWl0ZV8wLjYuMV94NjQtc2V0dXAuZXhlCjF4OVZxYk1NWUh3M0UybnFia0EwcDNRVTh5L3lTbDVPRms4Q1VES1d4Z1JQNk1nczd1c2F1azc0K25iY25BZjhNNFJ0WisxUCtKYmJDZGhNR1BOK0JBPT0K",
-      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.6.1/Orion.Utility.Suite_0.6.1_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYWFsYk9iUkdrdkxxZXBpOUxib1VNckVOQlBHZm91czRMS0FXSStnRE9YVTZGRWY2NEJrdHltMFdTU3U3VldPV0xNMG90b000aCtobVF4bWN3YXVIb29DUCtJajkwNlFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwODkyMTEzCWZpbGU6T3Jpb24gVXRpbGl0eSBTdWl0ZV8wLjYuM194NjQtc2V0dXAuZXhlCjJUSlRHSUZMVDV1SnZUSWNzNXU5NU5iaXE3Qll4UzV2aGEvSllFMlJNeGxXNWRVTTRmR0gyVDFkRTV5TnR0MVNmVi8vZUovMllIUFpTNHZvVFh6U0NRPT0K",
+      "url": "https://github.com/Firmandez/Orion-Utility-Suite/releases/download/v0.6.1/Orion.Utility.Suite_0.6.3_x64-setup.exe"
     }
   }
 }
